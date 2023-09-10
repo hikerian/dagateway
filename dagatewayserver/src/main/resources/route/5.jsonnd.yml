@@ -1,0 +1,84 @@
+routes:
+  - predicates:
+    - path=/composite/json/nd
+    client-request:
+      aggregate-type: application/json
+    client-response:
+      content-type: application/x-ndjson
+      content-handling: passthrough
+    service-targets:
+      - endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /json/influencers
+        request:
+          header:
+            retain:
+            - CHROMIUM
+            - SEC-CH-UA-PLATFORM
+            - USER-AGENT
+            - ACCEPT
+            - ACCEPT-ENCODING
+            - ACCEPT-LANGUAGE
+            - PRAGMA
+            add:
+            - X-PROXY=BFF
+            rename:
+            - HOST=X-HOST
+          body:
+            transform:
+              content-type: application/json
+        response:
+          body:
+            transform:
+            - content-type: application/json
+      - endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /json/comcode
+        request:
+          header:
+            retain:
+            - CHROMIUM
+            - SEC-CH-UA-PLATFORM
+            - USER-AGENT
+            - ACCEPT
+            - ACCEPT-ENCODING
+            - ACCEPT-LANGUAGE
+            - PRAGMA
+            add:
+            - X-PROXY=BFF
+            rename:
+            - HOST=X-HOST
+          body:
+            transform:
+              content-type: application/json
+        response:
+          body:
+            transform:
+            - content-type: application/json
+      - endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /json/comparison
+        request:
+          header:
+            retain:
+            - CHROMIUM
+            - SEC-CH-UA-PLATFORM
+            - USER-AGENT
+            - ACCEPT
+            - ACCEPT-ENCODING
+            - ACCEPT-LANGUAGE
+            - PRAGMA
+            add:
+            - X-PROXY=BFF
+            rename:
+            - HOST=X-HOST
+          body:
+            transform:
+              content-type: application/json
+        response:
+          body:
+            transform:
+            - content-type: application/json

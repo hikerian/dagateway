@@ -1,0 +1,23 @@
+package dagateway.api.resolver;
+
+import org.springframework.web.reactive.function.server.ServerRequest;
+
+import dagateway.api.context.RouteContext;
+import reactor.core.publisher.Mono;
+
+
+
+public abstract class SingleRequestDataResolver<Cq> extends AbstractClientRequestResolver<Cq, Mono<Cq>> {
+	
+	
+	public SingleRequestDataResolver() {
+	}
+	
+	public Mono<Cq> resolve(RouteContext routeContext, ServerRequest serverRequest) {
+		Mono<Cq> resultMono = this.doResolve(routeContext, serverRequest);
+		return resultMono.defaultIfEmpty(this.emptyValue());
+	}
+	
+	public abstract Mono<Cq> doResolve(RouteContext routeContext, ServerRequest serverRequest);
+	public abstract Cq emptyValue();
+}

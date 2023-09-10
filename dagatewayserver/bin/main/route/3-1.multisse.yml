@@ -1,0 +1,59 @@
+routes:
+  - predicates:
+    - path=/composite/sse/receive
+    client-request:
+      aggregate-type: application/x-www-form-urlencoded
+    client-response:
+      content-type: text/event-stream
+      content-handling: passthrough
+    service-targets:
+      - endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /sse/receive1
+        request:
+          header:
+            retain:
+            - CHROMIUM
+            - SEC-CH-UA-PLATFORM
+            - USER-AGENT
+            - ACCEPT
+            - ACCEPT-ENCODING
+            - ACCEPT-LANGUAGE
+            - PRAGMA
+            add:
+            - X-PROXY=BFF
+            rename:
+            - HOST=X-HOST
+          body:
+            transform:
+              content-type: application/x-www-form-urlencoded
+        response:
+          body:
+            transform:
+            - content-type: text/event-stream
+      - endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /sse/receive2
+        request:
+          header:
+            retain:
+            - CHROMIUM
+            - SEC-CH-UA-PLATFORM
+            - USER-AGENT
+            - ACCEPT
+            - ACCEPT-ENCODING
+            - ACCEPT-LANGUAGE
+            - PRAGMA
+            add:
+            - X-PROXY=BFF
+            rename:
+            - HOST=X-HOST
+          body:
+            transform:
+              content-type: application/x-www-form-urlencoded
+        response:
+          body:
+            transform:
+            - content-type: text/event-stream

@@ -1,0 +1,16 @@
+routes:
+  - predicates:
+    - path=/ws/chat
+    service-targets:
+      - endpoint:
+          type: WEBSOCKET
+          uri: ws://localhost:8888
+          path: /ws/chat
+        request:
+          body:
+            transform:
+              content-type: text/plain
+        response:
+          body:
+            transform:
+            - content-type: text/plain
