@@ -17,6 +17,12 @@ version = '0.0.1'
 sourceCompatibility = '11'
 targetCompatibility = '11'
 
+/**
+ * Setting encoding during compilation in Java and Test classes
+ */
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()

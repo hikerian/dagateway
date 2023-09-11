@@ -9,7 +9,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import reactor.core.publisher.Mono;
 
@@ -18,12 +18,12 @@ import reactor.core.publisher.Mono;
 public class WebSocketRequestRouteHandler implements WebSocketHandler {
 	private final Logger log = LoggerFactory.getLogger(WebSocketRequestRouteHandler.class);
 	
-	private RouteContext.ServiceSpec serviceSpec;
+	private ServiceSpec serviceSpec;
 	private WebSocketMessageResolver<?> requestResolver;
 	private WebSocketMessageResolver<?> responseResolver;
 	
 	
-	public WebSocketRequestRouteHandler(RouteContext.ServiceSpec serviceSpec
+	public WebSocketRequestRouteHandler(ServiceSpec serviceSpec
 			, WebSocketMessageResolver<?> requestResolver
 			, WebSocketMessageResolver<?> responseResolver) {
 		this.serviceSpec = serviceSpec;
@@ -33,7 +33,7 @@ public class WebSocketRequestRouteHandler implements WebSocketHandler {
 
 	@Override
 	public Mono<Void> handle(WebSocketSession session) {
-		this.log.debug("get ServiceSpec"); // TODO protocol Convert
+		this.log.debug("handle"); // TODO protocol Convert
 
 		this.log.debug("create WebSocketClient");
 		URI backendURI = this.serviceSpec.createBackendURI();
