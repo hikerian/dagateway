@@ -51,6 +51,7 @@ import dagateway.server.handler.request.FormDataRequestHandler;
 import dagateway.server.handler.request.JSONObjectRequestHandler;
 import dagateway.server.handler.request.MultiDataBufferRequestHandler;
 import dagateway.server.handler.request.MultipartRequestHandler;
+import dagateway.server.handler.request.TextPlainRequestHandler;
 import dagateway.server.handler.response.CharDelimiterResponseHandler;
 import dagateway.server.handler.response.JSONObjectResponseHandler;
 import dagateway.server.handler.response.MultiDataBufferResponseHandler;
@@ -223,6 +224,7 @@ public class GatewayConfiguration {
 		serviceHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_FORM_URLENCODED, FormDataRequestHandler.class);
 		serviceHandlerFactory.addServiceRequestHandler(MediaType.MULTIPART_FORM_DATA, MultipartRequestHandler.class);
 		serviceHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, JSONObjectRequestHandler.class);
+		serviceHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, TextPlainRequestHandler.class);
 		serviceHandlerFactory.addServiceRequestHandler(MediaType.ALL, MultiDataBufferRequestHandler.class);
 		
 		serviceHandlerFactory.addServiceResponseHandler(MediaType.APPLICATION_JSON, JSONObjectResponseHandler.class);

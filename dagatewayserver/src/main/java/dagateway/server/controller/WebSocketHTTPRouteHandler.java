@@ -20,6 +20,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
+/**
+ * https://stackoverflow.com/questions/50757766/spring-boot-reactive-websoket-block-out-flux-until-received-all-information-fr
+ */
 public class WebSocketHTTPRouteHandler implements WebSocketHandler {
 	private final Logger log = LoggerFactory.getLogger(WebSocketHTTPRouteHandler.class);
 	
@@ -32,7 +35,7 @@ public class WebSocketHTTPRouteHandler implements WebSocketHandler {
 		this.serviceSpec = serviceSpec;
 		this.serviceHandlerFactory = serviceHandlerFactory;
 	}
-
+	
 	@Override
 	public Mono<Void> handle(WebSocketSession session) {
 		this.log.debug("handle");
@@ -41,7 +44,7 @@ public class WebSocketHTTPRouteHandler implements WebSocketHandler {
 		HandshakeInfo handShakeInfo = session.getHandshakeInfo();
 		HttpHeaders headers = handShakeInfo.getHeaders();
 		
-		Flux<ServiceResult<Mono<String>>> serviceResults = session.receive().flatMap(message -> {
+		return session.receive().flatMap(message -> {
 			// TODO add WebSocketMessageResolver
 			String payload = message.getPayloadAsText();
 			
@@ -56,23 +59,59 @@ public class WebSocketHTTPRouteHandler implements WebSocketHandler {
 
 			Mono<ServiceResult<Mono<String>>> serviceResult = serviceDelegator.run(headers, Mono.just(payload));
 			
-			return serviceResult;
-		});
-		
-		Mono<Void> sessionResult = session.send(serviceResults.flatMap(result -> {
-			Mono<String> strBody = result.getBody();
-			
-			Mono<WebSocketMessage> rtnMsg = strBody.map(stringBody -> {
+			return serviceResult.flatMap(result -> {
+				Mono<String> strBody = result.getBody();
 				
-				// TODO add WebSocketMessageResolver
-				WebSocketMessage message = session.textMessage(stringBody);
-				return message;
+				Mono<WebSocketMessage> rtnMsg = strBody.map(stringBody -> {
+					// TODO add WebSocketMessageResolver
+					return session.textMessage(stringBody);
+				});
+				
+				return session.send(rtnMsg);
 			});
-			
-			return rtnMsg;
-		}));
-		
-		return sessionResult;
+		}).then();
 	}
+
+//	@Override
+//	public Mono<Void> handle(WebSocketSession session) {
+//		this.log.debug("handle");
+//		
+//		// TODO complete below codes
+//		HandshakeInfo handShakeInfo = session.getHandshakeInfo();
+//		HttpHeaders headers = handShakeInfo.getHeaders();
+//		
+//		Flux<ServiceResult<Mono<String>>> serviceResults = session.receive().flatMap(message -> {
+//			// TODO add WebSocketMessageResolver
+//			String payload = message.getPayloadAsText();
+//			
+//			// TODO ServiceDelegator
+//			WebClient webClient = Utils.newWebClient();
+//			RequestBodyUriSpec requestBodyUriSpec = webClient.method(this.serviceSpec.getMethod());
+//			requestBodyUriSpec.uri(this.serviceSpec.createBackendURI());
+//			ServiceDelegator<Mono<String>, String, Mono<String>> serviceDelegator = new ServiceDelegatorImpl<>(requestBodyUriSpec
+//					, this.serviceHandlerFactory
+//					, this.serviceSpec
+//					, "reactor.core.publisher.Mono<java.lang.String>");
+//
+//			Mono<ServiceResult<Mono<String>>> serviceResult = serviceDelegator.run(headers, Mono.just(payload));
+//			
+//			return serviceResult;
+//		});
+//		
+//		Mono<Void> sessionResult = session.send(serviceResults.flatMap(result -> {
+//			Mono<String> strBody = result.getBody();
+//			
+//			Mono<WebSocketMessage> rtnMsg = strBody.map(stringBody -> {
+//				
+//				// TODO add WebSocketMessageResolver
+//				WebSocketMessage message = session.textMessage(stringBody);
+//				return message;
+//			});
+//			
+//			return rtnMsg;
+//		}));
+//		
+//		return sessionResult;
+//	}
 
 }
