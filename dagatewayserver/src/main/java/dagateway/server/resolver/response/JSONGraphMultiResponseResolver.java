@@ -36,6 +36,20 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 	@Override
 	public Mono<ServerResponse> resolve(RouteContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
 		this.log.debug("resolve");
+		
+		Flux<Flux<DataBuffer>> responseBody = this.resolveBody(routeContext, serviceResults);
+		
+		ServerResponse.BodyBuilder bodyBuilder = ServerResponse.ok();
+		
+		this.buildHeader(bodyBuilder, routeContext, MediaType.APPLICATION_JSON);
+
+		return bodyBuilder.body((outputMessage, context) -> {
+			return outputMessage.writeAndFlushWith(responseBody);
+		});
+	}
+	
+	public Flux<Flux<DataBuffer>> resolveBody(RouteContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
+		this.log.debug("resolve");
 				
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
@@ -69,13 +83,7 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 			return resBuffers;
 		});
 		
-		ServerResponse.BodyBuilder bodyBuilder = ServerResponse.ok();
-		
-		this.buildHeader(bodyBuilder, routeContext, MediaType.APPLICATION_JSON);
-
-		return bodyBuilder.body((outputMessage, context) -> {
-			return outputMessage.writeAndFlushWith(responseBody);
-		});
+		return responseBody;
 	}
 	
 

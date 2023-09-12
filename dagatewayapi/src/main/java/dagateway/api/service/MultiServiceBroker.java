@@ -47,7 +47,7 @@ public class MultiServiceBroker<Cq, Sr> implements ServiceBroker<Mono<Cq>, Cq, S
 		
 		HttpHeaders requestHeaders = this.routeContext.getRequestHeaders();
 		// Divided Data is not support
-		Mono<Cq> monoBody = this.requestResolver.resolve(this.routeContext, serverRequest);
+		Mono<Cq> monoBody = this.requestResolver.resolve(serverRequest);
 
 		Flux<ServiceResult<Sr>> serviceResults = monoBody
 				.flatMapMany(body -> {

@@ -37,6 +37,17 @@ public class TextEventMultiStreamResponseResolver extends MultiBackendResponseRe
 		
 		return bodyBuilder.body(BodyInserters.fromServerSentEvents(serverSentEvents));
 	}
+	
+	public Flux<ServerSentEvent<String>> resolveBody(RouteContext routeContext, Flux<ServiceResult<Flux<ServerSentEvent<String>>>> serviceResults) {
+		this.log.debug("resolve");
+		
+		Flux<ServerSentEvent<String>> serverSentEvents = serviceResults.flatMap(result -> {
+			Flux<ServerSentEvent<String>> backendEvents = result.getBody();
+			return backendEvents;
+		});
+		
+		return serverSentEvents;
+	}
 
 
 }

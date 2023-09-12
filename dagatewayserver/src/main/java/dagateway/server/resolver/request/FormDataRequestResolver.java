@@ -5,7 +5,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-import dagateway.api.context.RouteContext;
 import dagateway.api.resolver.SingleRequestDataResolver;
 import reactor.core.publisher.Mono;
 
@@ -18,7 +17,7 @@ public class FormDataRequestResolver extends SingleRequestDataResolver<MultiValu
 	}
 	
 	@Override
-	public Mono<MultiValueMap<String, String>> doResolve(RouteContext routeContext, ServerRequest serverRequest) {
+	public Mono<MultiValueMap<String, String>> doResolve(ServerRequest serverRequest) {
 		return serverRequest.body(BodyExtractors.toFormData());
 	}
 

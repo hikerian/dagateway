@@ -1,0 +1,34 @@
+routes:
+  - predicates:
+    - path=/ws/httpchat
+    client-request:
+      aggregate-type: text/plain
+    client-response:
+      content-type: text/plain
+    service-targets:
+      - endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /httpchat
+        request:
+          method: PUT
+          header:
+            retain:
+            - CHROMIUM
+            - SEC-CH-UA-PLATFORM
+            - USER-AGENT
+            - ACCEPT
+            - ACCEPT-ENCODING
+            - ACCEPT-LANGUAGE
+            - PRAGMA
+            add:
+            - X-PROXY=BFF
+            rename:
+            - HOST=X-HOST
+          body:
+            transform:
+              content-type: text/plain
+        response:
+          body:
+            transform:
+            - content-type: text/plain

@@ -9,7 +9,7 @@ import dagateway.api.transform.DataTransformer;
 import reactor.core.publisher.Mono;
 
 
-public class WebSocketBinaryMessageResolver implements WebSocketMessageResolver<DataBuffer, DataBuffer> {
+public class WebSocketBinaryMessageResolver implements WebSocketMessageResolver<DataBuffer> {
 	protected DataTransformer<DataBuffer, DataBuffer> transformer;
 	
 	
@@ -20,7 +20,6 @@ public class WebSocketBinaryMessageResolver implements WebSocketMessageResolver<
 		this.transformer = transformer;
 	}
 
-	@Override
 	public DataBuffer resolveMessage(WebSocketMessage message) {
 		DataBuffer payload = message.getPayload();
 		payload = this.transformer.transform(payload);
@@ -28,7 +27,6 @@ public class WebSocketBinaryMessageResolver implements WebSocketMessageResolver<
 		return payload;
 	}
 
-	@Override
 	public Mono<WebSocketMessage> resolveResult(WebSocketSession session, ServiceResult<Mono<DataBuffer>> result) {
 		Mono<DataBuffer> resultBody = result.getBody();
 
@@ -40,7 +38,14 @@ public class WebSocketBinaryMessageResolver implements WebSocketMessageResolver<
 	}
 
 	@Override
-	public WebSocketMessage convertMessage(WebSocketSession session, WebSocketMessage message) {
+	public WebSocketMessage convertToBackendMessage(WebSocketSession session, WebSocketMessage message) {
+		DataBuffer payload = this.resolveMessage(message);
+
+		return session.binaryMessage(factory -> factory.wrap(payload.asByteBuffer()));
+	}
+	
+	@Override
+	public WebSocketMessage convertToClientMessage(WebSocketSession session, WebSocketMessage message) {
 		DataBuffer payload = this.resolveMessage(message);
 
 		return session.binaryMessage(factory -> factory.wrap(payload.asByteBuffer()));

@@ -49,6 +49,12 @@ public class DynamicResponseResolver<Sr> extends SingleBackendResponseResolver<S
 			return serviceResponseHandler.buildBody(bodyBuilder, backendBody);
 		});
 	}
+	
+	public Sr resolveBody(RouteContext routeContext, ServiceResult<Sr> serviceResult) {
+		this.log.debug("RESPONSE CONTENTTYPE: " + this.contentType);
+		
+		return serviceResult.getBody();
+	}
 
 
 }

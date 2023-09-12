@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -27,7 +26,7 @@ public class JSONObjectResponseHandler extends AbstractServiceResponseHandler<Mo
 	}
 
 	@Override
-	protected Mono<JSONObject> resolveBody(HttpHeaders headers, Flux<DataBuffer> responseBody) {
+	protected Mono<JSONObject> resolveBody(Flux<DataBuffer> responseBody) {
 		this.log.debug("resolveBody");
 		
 		ParameterizedTypeReference<JSONObject> jsonType = new ParameterizedTypeReference<>() {};

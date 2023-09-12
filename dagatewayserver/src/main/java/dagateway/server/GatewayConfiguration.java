@@ -36,7 +36,9 @@ import dagateway.api.context.GatewayRoutes;
 import dagateway.api.context.RouteContext;
 import dagateway.api.context.RoutePredicate;
 import dagateway.api.context.predicate.RoutePredicateBuilder;
+import dagateway.api.extracter.BodyExtractorBuilderFactory;
 import dagateway.api.handler.ServiceHandlerFactory;
+import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ClientRequestResolverId;
 import dagateway.api.resolver.ClientResolverFactory;
 import dagateway.api.resolver.ClientResponseResolverId;
@@ -53,6 +55,7 @@ import dagateway.server.handler.response.CharDelimiterResponseHandler;
 import dagateway.server.handler.response.JSONObjectResponseHandler;
 import dagateway.server.handler.response.MultiDataBufferResponseHandler;
 import dagateway.server.handler.response.TextEventStreamResponseHandler;
+import dagateway.server.handler.response.TextPlainResponseHandler;
 import dagateway.server.resolver.request.FormDataRequestResolver;
 import dagateway.server.resolver.request.JSONObjectRequestResolver;
 import dagateway.server.resolver.request.MultipartRequestResolver;
@@ -150,6 +153,18 @@ public class GatewayConfiguration {
 	}
 	
 	@Bean
+	BodyExtractorBuilderFactory bodyExtractorBuilderFactory() {
+		BodyExtractorBuilderFactory factory = new BodyExtractorBuilderFactory();
+		return factory;
+	}
+	
+	@Bean
+	BodyInserterBuilderFactory bodyInserterBuilderFactory() {
+		BodyInserterBuilderFactory factory = new BodyInserterBuilderFactory();
+		return factory;
+	}
+	
+	@Bean
 	ServiceBrokerBuilder serviceBrokerBuilder(ServiceHandlerFactory serviceHandlerFactory, ClientResolverFactory clientResolverFactory) {
 		ServiceBrokerBuilder serviceBrokerBuilder = new ServiceBrokerBuilder();
 		serviceBrokerBuilder.setServiceHandlerFactory(serviceHandlerFactory);
@@ -213,6 +228,7 @@ public class GatewayConfiguration {
 		serviceHandlerFactory.addServiceResponseHandler(MediaType.APPLICATION_JSON, JSONObjectResponseHandler.class);
 		serviceHandlerFactory.addServiceResponseHandler(MediaType.TEXT_EVENT_STREAM, TextEventStreamResponseHandler.class);
 		serviceHandlerFactory.addServiceResponseHandler(MediaType.valueOf("text/semi-colon-seperated-values"), CharDelimiterResponseHandler.class);
+		serviceHandlerFactory.addServiceResponseHandler(MediaType.TEXT_PLAIN, TextPlainResponseHandler.class);
 		serviceHandlerFactory.addServiceResponseHandler(MediaType.ALL, MultiDataBufferResponseHandler.class);
 		
 		return serviceHandlerFactory;

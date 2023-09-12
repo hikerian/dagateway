@@ -3,7 +3,6 @@ package dagateway.server.resolver.request;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-import dagateway.api.context.RouteContext;
 import dagateway.api.resolver.SingleRequestDataResolver;
 import net.minidev.json.JSONObject;
 import reactor.core.publisher.Mono;
@@ -17,7 +16,7 @@ public class JSONObjectRequestResolver extends SingleRequestDataResolver<JSONObj
 	}
 	
 	@Override
-	public Mono<JSONObject> doResolve(RouteContext routeContext, ServerRequest serverRequest) {
+	public Mono<JSONObject> doResolve(ServerRequest serverRequest) {
 		ParameterizedTypeReference<JSONObject> jsonType = new ParameterizedTypeReference<>() {};
 		
 		return serverRequest.bodyToMono(jsonType);

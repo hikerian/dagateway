@@ -8,7 +8,7 @@ import dagateway.api.transform.DataTransformer;
 import reactor.core.publisher.Mono;
 
 
-public class WebSocketStringMessageResolver implements WebSocketMessageResolver<String, String> {
+public class WebSocketStringMessageResolver implements WebSocketMessageResolver<String> {
 	protected DataTransformer<String, String> transformer;
 	
 	
@@ -19,7 +19,6 @@ public class WebSocketStringMessageResolver implements WebSocketMessageResolver<
 		this.transformer = transformer;
 	}
 
-	@Override
 	public String resolveMessage(WebSocketMessage message) {
 		String payload = message.getPayloadAsText();
 		payload = this.transformer.transform(payload);
@@ -27,7 +26,6 @@ public class WebSocketStringMessageResolver implements WebSocketMessageResolver<
 		return payload;
 	}
 
-	@Override
 	public Mono<WebSocketMessage> resolveResult(WebSocketSession session, ServiceResult<Mono<String>> result) {
 		Mono<String> resultBody = result.getBody();
 
@@ -39,10 +37,17 @@ public class WebSocketStringMessageResolver implements WebSocketMessageResolver<
 	}
 
 	@Override
-	public WebSocketMessage convertMessage(WebSocketSession session, WebSocketMessage message) {
+	public WebSocketMessage convertToBackendMessage(WebSocketSession session, WebSocketMessage message) {
 		String payload = this.resolveMessage(message);
 
 		return session.textMessage(payload);
 	}
 
+
+	@Override
+	public WebSocketMessage convertToClientMessage(WebSocketSession session, WebSocketMessage message) {
+		String payload = this.resolveMessage(message);
+
+		return session.textMessage(payload);
+	}
 }

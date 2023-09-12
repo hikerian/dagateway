@@ -40,6 +40,14 @@ public class TextEventSingleStreamResponseResolver extends SingleBackendResponse
 
 		return serverResponse;
 	}
+	
+	public Flux<ServerSentEvent<String>> resolveBody(RouteContext routeContext, ServiceResult<Flux<ServerSentEvent<String>>> serviceResults) {
+		this.log.debug("resolve");
+		
+		Flux<ServerSentEvent<String>> serverSentEvent = serviceResults.getBody();
+		
+		return serverSentEvent;
+	}
 
 
 }

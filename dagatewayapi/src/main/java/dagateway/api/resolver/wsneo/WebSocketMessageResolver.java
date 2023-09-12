@@ -3,39 +3,25 @@ package dagateway.api.resolver.wsneo;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
-import dagateway.api.service.ServiceResult;
-import reactor.core.publisher.Mono;
-
 
 /**
  * 
  * @param <T>
  * @param <V>
  */
-public interface WebSocketMessageResolver<T, V> {
-	
+public interface WebSocketMessageResolver<T> {
 	/**
-	 * websocket to http
-	 * receive
-	 * @param message
-	 * @return
+	 * client websocket to backend websocket
+	 * @param message<T>
+	 * @return T
 	 */
-	public V resolveMessage(WebSocketMessage message); // T
+	public WebSocketMessage convertToBackendMessage(WebSocketSession session, WebSocketMessage message);
 
 	/**
-	 * http to websocket
-	 * send
-	 * @param result
-	 * @return V
-	 */
-	public Mono<WebSocketMessage> resolveResult(WebSocketSession session, ServiceResult<Mono<T>> result);
-	
-	/**
-	 * websocket to websocket
+	 * backend websocket to client websocket
 	 * @param message<T>
-	 * @return V
+	 * @return T
 	 */
-	public WebSocketMessage convertMessage(WebSocketSession session, WebSocketMessage message);
-	
+	public WebSocketMessage convertToClientMessage(WebSocketSession session, WebSocketMessage message);
 
 }

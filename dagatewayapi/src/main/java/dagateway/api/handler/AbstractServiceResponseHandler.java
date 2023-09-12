@@ -29,16 +29,17 @@ public abstract class AbstractServiceResponseHandler<Sr, T, V> implements Servic
 	
 	@Override
 	public ServiceResult<Sr> resolve(ResponseEntity<Flux<DataBuffer>> responseEntity, RouteContext.ServiceSpec serviceSpec) {
+		Sr body = this.resolveBody(responseEntity.getBody());
+
 		HttpStatus status = responseEntity.getStatusCode();
-		// TODO resolveHeader
 		HttpHeaders headers = responseEntity.getHeaders();
-		Sr body = this.resolveBody(headers, responseEntity.getBody());
 		HttpHeaders newHttpHeaders = new HttpHeaders();
+		newHttpHeaders.putAll(headers);
 		newHttpHeaders.setContentType(this.clientContentType);
 		
 		return new ServiceResult<Sr>(serviceSpec, status, newHttpHeaders, body, this);
 	}
 	
-	protected abstract Sr resolveBody(HttpHeaders headers, Flux<DataBuffer> responseBody);
+	protected abstract Sr resolveBody(Flux<DataBuffer> responseBody);
 
 }

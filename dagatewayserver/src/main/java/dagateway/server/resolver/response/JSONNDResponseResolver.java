@@ -56,6 +56,29 @@ public class JSONNDResponseResolver extends MultiBackendResponseResolver<Mono<JS
 		});
 		
 	}
+	
+	public Flux<DataBuffer> resolveBody(RouteContext routeContext, Flux<ServiceResult<Mono<JSONObject>>> serviceResults) {
+		this.log.debug("resolve");
+		
+		ServerResponse.BodyBuilder bodyBuilder = ServerResponse.ok();
+		
+		this.buildHeader(bodyBuilder, routeContext, MediaType.APPLICATION_NDJSON);
+		
+		Flux<JSONObject> jsonBodies = serviceResults.flatMap(result -> {
+			return result.getBody();
+		});
+		
+		ParameterizedTypeReference<JSONObject> jsonReference = new ParameterizedTypeReference<>() {};
+		ResolvableType resolvableType = ResolvableType.forType(jsonReference.getType());
+		
+		Jackson2JsonEncoder encoder = new Jackson2JsonEncoder();
+		encoder.setStreamingMediaTypes(Arrays.asList(MediaType.APPLICATION_NDJSON));
+		
+		Flux<DataBuffer> dataBody = encoder.encode(jsonBodies, DefaultDataBufferFactory.sharedInstance, resolvableType, MediaType.APPLICATION_NDJSON, null);
+		
+		return dataBody;
+		
+	}
 
 
 }

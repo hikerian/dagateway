@@ -1,7 +1,6 @@
 package dagateway.server.handler.response;
 
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.function.server.ServerResponse.BodyBuilder;
 
@@ -18,7 +17,7 @@ public class MultiDataBufferResponseHandler extends AbstractServiceResponseHandl
 	}
 
 	@Override
-	protected Flux<DataBuffer> resolveBody(HttpHeaders headers, Flux<DataBuffer> responseBody) {
+	protected Flux<DataBuffer> resolveBody(Flux<DataBuffer> responseBody) {
 		Flux<DataBuffer> transformed = responseBody.handle((buffer, sink) -> {
 			DataBuffer newBuffer = this.transformer.transform(buffer);
 			if(newBuffer != null) {

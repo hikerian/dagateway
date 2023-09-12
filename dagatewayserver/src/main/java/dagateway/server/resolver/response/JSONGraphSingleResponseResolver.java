@@ -83,5 +83,41 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 		return serverResponse;
 	}
 	
+	public Flux<DataBuffer> resolveBody(RouteContext routeContext, ServiceResult<Flux<DataBuffer>> serviceResult) {
+		this.log.debug("resolve");
+		
+		MessageSchema messageStructure = routeContext.getMessageStructure();
+		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
+			return new JsonStreamBuilder(new LinkedByteBuffer());
+		});
+		
+		ServiceSpec serviceSpec = serviceResult.getServiceSpec();
+		DataProxy dataProxy = serviceSpec.getDataProxy();
+		
+		Flux<DataBuffer> bodyBuffers = serviceResult.getBody();
+		// last marking
+		bodyBuffers = bodyBuffers.concatWith(Flux.just(DefaultDataBufferFactory.sharedInstance.wrap(new byte[0])));
+		
+		Flux<DataBuffer> resBuffers = bodyBuffers.handle((bodyBuffer, sink) -> {
+			if(bodyBuffer.readableByteCount() == 0) { // close
+				this.log.debug("BodyBuffer readableByteCount Zero.");
+				dataProxy.finish();
+				DataBufferUtils.release(bodyBuffer);
+			} else {
+				this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
+				dataProxy.push(bodyBuffer.asByteBuffer());
+			}
+			
+			// cannot emi more than one data
+			byte[] resBuffer = serializer.buildNext();
+			DataBufferUtils.release(bodyBuffer);
+			if(resBuffer != null) {
+				sink.next(bodyBuffer.factory().wrap(resBuffer));
+			}
+		});
+
+		return resBuffers;
+	}
+	
 
 }

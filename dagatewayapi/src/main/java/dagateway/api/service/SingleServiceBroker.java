@@ -35,7 +35,7 @@ public class SingleServiceBroker<P extends Publisher<Cq>, Cq, Sr> implements Ser
 		this.log.debug("run");
 		
 		HttpHeaders requestHeaders = this.routeContext.getRequestHeaders();
-		P aggregateBody = this.requestResolver.resolve(this.routeContext, serverRequest);
+		P aggregateBody = this.requestResolver.resolve(serverRequest);
 		
 		Mono<ServiceResult<Sr>> serviceResult = this.serviceDelegator.run(requestHeaders, aggregateBody);
 		Mono<ServerResponse> serverResponse = this.responseResolver.resolve(this.routeContext, serviceResult);

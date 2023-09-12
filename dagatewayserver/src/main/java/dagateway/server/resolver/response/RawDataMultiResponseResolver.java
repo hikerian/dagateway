@@ -41,6 +41,16 @@ public class RawDataMultiResponseResolver extends MultiBackendResponseResolver<F
 			return outputMessage.writeAndFlushWith(Mono.just(bodyBuffers));
 		});
 	}
+	
+	public Flux<DataBuffer> resolveBody(RouteContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
+		this.log.debug("resolve");
+		
+		Flux<DataBuffer> bodyBuffers = serviceResults.flatMap(result -> {
+			return result.getBody();
+		});
+		
+		return bodyBuffers;
+	}
 
 
 }

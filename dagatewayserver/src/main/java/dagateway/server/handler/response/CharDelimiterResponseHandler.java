@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.function.server.ServerResponse.BodyBuilder;
@@ -72,7 +71,7 @@ public class CharDelimiterResponseHandler extends AbstractServiceResponseHandler
 	}
 
 	@Override
-	protected Flux<DataBuffer> resolveBody(HttpHeaders headers, Flux<DataBuffer> responseBody) {
+	protected Flux<DataBuffer> resolveBody(Flux<DataBuffer> responseBody) {
 		Flux<DataBuffer> transformedBody = responseBody.handle(this::handle);
 		return transformedBody;
 	}
@@ -82,9 +81,7 @@ public class CharDelimiterResponseHandler extends AbstractServiceResponseHandler
 		return builder.body((outputMessage, context) -> outputMessage.writeAndFlushWith(Mono.just(body)));
 	}
 	
-	private void handle(Object source, SynchronousSink<DataBuffer> sink) {
-		DataBuffer dataBuffer = (DataBuffer) source;
-		
+	private void handle(DataBuffer dataBuffer, SynchronousSink<DataBuffer> sink) {
 		int readableCount = dataBuffer.readableByteCount();
 		byte[] data = null;
 		int offset = 0;

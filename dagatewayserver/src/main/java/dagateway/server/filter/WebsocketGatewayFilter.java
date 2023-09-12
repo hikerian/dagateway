@@ -10,15 +10,19 @@ import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.server.WebSocketService;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
+import dagateway.api.context.EndpointType;
 import dagateway.api.context.RouteContext;
+import dagateway.api.handler.ServiceHandlerFactory;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.resolver.ws.WebSocketMessageResolverFactory;
 import dagateway.api.utils.ServerWebExchangeUtils;
+import dagateway.server.controller.WebSocketHTTPRouteHandler;
 import dagateway.server.controller.WebSocketRequestRouteHandler;
 import reactor.core.publisher.Mono;
 
@@ -41,6 +45,9 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 	
 	@Autowired
 	private WebSocketMessageResolverFactory webSocketMessageResolverFactory;
+	
+	@Autowired
+	private ServiceHandlerFactory serviceHandlerFactory;
 	
 	
 	public WebsocketGatewayFilter() {
@@ -67,15 +74,22 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 			List<RouteContext.ServiceSpec> serviceSpecs = routeContext.getServiceSpecList();
 			RouteContext.ServiceSpec serviceSpec = serviceSpecs.get(0);
 			
-			WebSocketMessageResolver<?> requestResolver =
-					this.webSocketMessageResolverFactory.buildResolver(serviceSpec.getServiceRequestType()
-					, serviceSpec.getServiceRequestTransformSpec());
-			WebSocketMessageResolver<?> responseResolver =
-					this.webSocketMessageResolverFactory.buildResolver(serviceSpec.getServiceResponseType()
-					, serviceSpec.getServiceResponseTransformSpec(MediaType.TEXT_PLAIN));
+			WebSocketHandler websocketHandler = null;
+			if(serviceSpec.getEndpointType() == EndpointType.WEBSOCKET) {
+				WebSocketMessageResolver<?> requestResolver =
+						this.webSocketMessageResolverFactory.buildResolver(serviceSpec.getServiceRequestType()
+						, serviceSpec.getServiceRequestTransformSpec());
+				WebSocketMessageResolver<?> responseResolver =
+						this.webSocketMessageResolverFactory.buildResolver(serviceSpec.getServiceResponseType()
+						, serviceSpec.getServiceResponseTransformSpec(MediaType.TEXT_PLAIN));
+				
+				websocketHandler = new WebSocketRequestRouteHandler(serviceSpec, requestResolver, responseResolver);
+			} else if(serviceSpec.getEndpointType() == EndpointType.HTTP) {
+				websocketHandler = new WebSocketHTTPRouteHandler(serviceSpec, this.serviceHandlerFactory);
+			}
 			
 			return this.webSocketService.handleRequest(exchange
-					, new WebSocketRequestRouteHandler(serviceSpec, requestResolver, responseResolver));
+					, websocketHandler);
 		}
 
 		return chain.filter(exchange);

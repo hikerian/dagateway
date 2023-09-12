@@ -30,18 +30,20 @@ public class TextEventStreamResponseHandler extends AbstractServiceResponseHandl
 	}
 
 	@Override
-	protected Flux<ServerSentEvent<String>> resolveBody(HttpHeaders headers, Flux<DataBuffer> responseBody) {
-		this.log.debug("resolveBody");
+	protected Flux<ServerSentEvent<String>> resolveBody(Flux<DataBuffer> responseBody) {
+		this.log.debug("resolveBody======>>");
 		
 		ParameterizedTypeReference<ServerSentEvent<String>> sseType = new ParameterizedTypeReference<>() {};
 		ResolvableType resolvableType = ResolvableType.forType(sseType.getType());
+		
+		HttpHeaders dummy = new HttpHeaders();
 		
 		Jackson2JsonDecoder decoder = new Jackson2JsonDecoder();
 		ServerSentEventHttpMessageReader reader = new ServerSentEventHttpMessageReader(decoder);
 		Flux<Object> sse = reader.read(resolvableType, new ReactiveHttpInputMessage() {
 			@Override
 			public HttpHeaders getHeaders() {
-				return headers;
+				return dummy;
 			}
 			@Override
 			public Flux<DataBuffer> getBody() {

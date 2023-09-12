@@ -48,5 +48,13 @@ public class RawDataSingleResponseResolver extends SingleBackendResponseResolver
 			});
 		});
 	}
+	
+	public Flux<DataBuffer> resolveBody(RouteContext routeContext, ServiceResult<Flux<DataBuffer>> serviceResult) {
+		this.log.debug("resolve");
+		
+		Flux<DataBuffer> dataBuffers = serviceResult.getBody();
+		
+		return dataBuffers;
+	}
 
 }

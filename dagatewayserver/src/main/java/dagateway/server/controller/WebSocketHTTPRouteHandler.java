@@ -2,14 +2,16 @@ package dagateway.server.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
+import org.springframework.web.reactive.socket.HandshakeInfo;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
 import dagateway.api.context.RouteContext.ServiceSpec;
-import dagateway.api.resolver.ws.WebSocketMessageResolver;
+import dagateway.api.handler.ServiceHandlerFactory;
 import dagateway.api.service.ServiceDelegator;
 import dagateway.api.service.ServiceDelegatorImpl;
 import dagateway.api.service.ServiceResult;
@@ -22,16 +24,13 @@ public class WebSocketHTTPRouteHandler implements WebSocketHandler {
 	private final Logger log = LoggerFactory.getLogger(WebSocketHTTPRouteHandler.class);
 	
 	private ServiceSpec serviceSpec;
-	private WebSocketMessageResolver<?> requestResolver;
-	private WebSocketMessageResolver<?> responseResolver;
+	private ServiceHandlerFactory serviceHandlerFactory;
 	
 	
 	public WebSocketHTTPRouteHandler(ServiceSpec serviceSpec
-			, WebSocketMessageResolver<?> requestResolver
-			, WebSocketMessageResolver<?> responseResolver) {
+			, ServiceHandlerFactory serviceHandlerFactory) {
 		this.serviceSpec = serviceSpec;
-		this.requestResolver = requestResolver;
-		this.responseResolver = responseResolver;
+		this.serviceHandlerFactory = serviceHandlerFactory;
 	}
 
 	@Override
@@ -39,6 +38,8 @@ public class WebSocketHTTPRouteHandler implements WebSocketHandler {
 		this.log.debug("handle");
 		
 		// TODO complete below codes
+		HandshakeInfo handShakeInfo = session.getHandshakeInfo();
+		HttpHeaders headers = handShakeInfo.getHeaders();
 		
 		Flux<ServiceResult<Mono<String>>> serviceResults = session.receive().flatMap(message -> {
 			// TODO add WebSocketMessageResolver
@@ -49,10 +50,11 @@ public class WebSocketHTTPRouteHandler implements WebSocketHandler {
 			RequestBodyUriSpec requestBodyUriSpec = webClient.method(this.serviceSpec.getMethod());
 			requestBodyUriSpec.uri(this.serviceSpec.createBackendURI());
 			ServiceDelegator<Mono<String>, String, Mono<String>> serviceDelegator = new ServiceDelegatorImpl<>(requestBodyUriSpec
-					, null
+					, this.serviceHandlerFactory
 					, this.serviceSpec
 					, "reactor.core.publisher.Mono<java.lang.String>");
-			Mono<ServiceResult<Mono<String>>> serviceResult = serviceDelegator.run(null, null);
+
+			Mono<ServiceResult<Mono<String>>> serviceResult = serviceDelegator.run(headers, Mono.just(payload));
 			
 			return serviceResult;
 		});
