@@ -26,5 +26,7 @@ public class JSONObjectRequestResolver extends SingleRequestDataResolver<JSONObj
 	public JSONObject emptyValue() {
 		return new JSONObject();
 	}
+	
+
 
 }

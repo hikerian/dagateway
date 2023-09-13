@@ -342,7 +342,7 @@ public class RouteContext {
 			return null;
 		}
 		
-		public HeaderSpec getServiceRequestHeaders() {
+		public HeaderSpec getServiceRequestHeaderSpec() {
 			ServiceRequest serviceRequest = this.target.getRequest();
 			if(serviceRequest != null) {
 				HeaderProperties serviceHeader = serviceRequest.getHeader();

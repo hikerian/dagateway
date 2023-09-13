@@ -32,7 +32,9 @@ public class JSONNDStreamResponseResolver extends MultiBackendResponseResolver<F
 		
 		Flux<DataBuffer> responseBodies = serviceResults.flatMap(serviceResult -> {
 			Flux<DataBuffer> bodyBuffers = serviceResult.getBody();
-			bodyBuffers = bodyBuffers.concatWith(Flux.just(newlineBuffer));
+			if(bodyBuffers != null) {
+				bodyBuffers = bodyBuffers.concatWith(Flux.just(newlineBuffer));
+			}
 			return bodyBuffers;
 		});
 		

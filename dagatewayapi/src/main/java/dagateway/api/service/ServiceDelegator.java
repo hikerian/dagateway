@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 
 
 public interface ServiceDelegator<P extends Publisher<Cq>, Cq, Sr> {
-	public Mono<ServiceResult<Sr>> run(HttpHeaders clientHeaders, P clientBody);
+	public <R> Mono<ServiceResult<Sr>> run(HttpHeaders clientHeaders, P clientBody);
 }

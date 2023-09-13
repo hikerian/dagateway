@@ -6,7 +6,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import dagateway.api.context.RouteContext;
 import dagateway.api.context.RouteContext.ServiceSpec;
-import dagateway.api.handler.ServiceResponseHandler;
 
 
 /**
@@ -23,7 +22,7 @@ public class ServiceResult<Sr> {
 	
 	private HttpHeaders headers;
 	private Sr body;
-	private ServiceResponseHandler<Sr, ?, ?> responseHandler;
+	private String bodyTypeName;
 	
 
 	public ServiceResult(ServiceSpec serviceSpec, WebClientResponseException exception) {
@@ -32,15 +31,15 @@ public class ServiceResult<Sr> {
 		this.status = exception.getStatusCode();
 		this.headers = exception.getHeaders();
 		this.body = null;
-		this.responseHandler = null;
+		this.bodyTypeName = null;
 	}
 	
-	public ServiceResult(ServiceSpec serviceSpec, HttpStatus status, HttpHeaders headers, Sr body, ServiceResponseHandler<Sr, ?, ?> responseHandler) {
+	public ServiceResult(ServiceSpec serviceSpec, HttpStatus status, HttpHeaders headers, Sr body, String bodyTypeName) {
 		this.serviceSpec = serviceSpec;
 		this.status = status;
 		this.headers = headers;
 		this.body = body;
-		this.responseHandler = responseHandler;
+		this.bodyTypeName = bodyTypeName;
 	}
 	
 	public ServiceSpec getServiceSpec() {
@@ -63,8 +62,8 @@ public class ServiceResult<Sr> {
 		return this.exception;
 	}
 	
-	public ServiceResponseHandler<Sr, ?, ?> getResponseHandler() {
-		return this.responseHandler;
+	public String getBodyTypeName() {
+		return this.bodyTypeName;
 	}
 
 

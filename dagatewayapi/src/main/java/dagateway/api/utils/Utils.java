@@ -133,16 +133,15 @@ public class Utils {
 		}
 	}
 	
-	public static void filterHeader(HttpHeaders sourceHeaders, HttpHeaders targetHeaders, HeaderSpec headerMap, Map<String, String> variables) {
-		if(headerMap == null) {
-			targetHeaders.putAll(sourceHeaders);
+	public static void filterHeader(HttpHeaders sourceHeaders, HttpHeaders targetHeaders, HeaderSpec headerSpec, Map<String, String> variables) {
+		if(headerSpec == null) {
 			return;
 		}
 		
 		List<String> renamedHeaderNames = new ArrayList<String>();
 		
 		// rename
-		List<HeaderProperties.HeaderEntry> renameHeaders = headerMap.getRename();
+		List<HeaderProperties.HeaderEntry> renameHeaders = headerSpec.getRename();
 		if(renameHeaders != null) {
 			for(HeaderProperties.HeaderEntry entry : renameHeaders) {
 				List<String> headerValues = sourceHeaders.get(entry.getName());
@@ -159,26 +158,29 @@ public class Utils {
 		}
 		
 		// retain
-		List<String> retainKeys = headerMap.getRetain();
-		if(retainKeys == null || retainKeys.contains("*")) {
-			Set<String> sourceHeaderNames = sourceHeaders.keySet();
-			
-			for(String sourceHeaderName : sourceHeaderNames) {
-				if(renamedHeaderNames.indexOf(sourceHeaderName.trim().toUpperCase()) == -1) {
-					targetHeaders.addAll(sourceHeaderName, sourceHeaders.get(sourceHeaderName));
+		List<String> retainKeys = headerSpec.getRetain();
+		System.out.println("retainKeys: " + retainKeys);
+		if(retainKeys != null) {
+			if(retainKeys.contains("*")) {
+				Set<String> sourceHeaderNames = sourceHeaders.keySet();
+				
+				for(String sourceHeaderName : sourceHeaderNames) {
+					if(renamedHeaderNames.indexOf(sourceHeaderName.trim().toUpperCase()) == -1) {
+						targetHeaders.addAll(sourceHeaderName, sourceHeaders.get(sourceHeaderName));
+					}
 				}
-			}
-		} else if(retainKeys.size() > 0) {
-			for(String retainHeader : retainKeys) {
-				List<String> sourceHeader = sourceHeaders.get(retainHeader);
-				if(sourceHeader != null && sourceHeader.size() > 0) {
-					targetHeaders.addAll(retainHeader, sourceHeader);
+			} else if(retainKeys.size() > 0) {
+				for(String retainHeader : retainKeys) {
+					List<String> sourceHeader = sourceHeaders.get(retainHeader);
+					if(sourceHeader != null && sourceHeader.size() > 0) {
+						targetHeaders.addAll(retainHeader, sourceHeader);
+					}
 				}
 			}
 		}
 		
 		// add and set
-		Utils.filterHeader(targetHeaders, headerMap, variables);
+		Utils.filterHeader(targetHeaders, headerSpec, variables);
 	}
 	
 	public static WebClient newWebClient() {
@@ -208,5 +210,6 @@ public class Utils {
 		
 		return builder.build();
 	}
+	
 
 }

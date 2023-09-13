@@ -18,7 +18,8 @@ import org.springframework.web.server.WebFilterChain;
 
 import dagateway.api.context.EndpointType;
 import dagateway.api.context.RouteContext;
-import dagateway.api.handler.ServiceHandlerFactory;
+import dagateway.api.handler.ContentHandlerFactory;
+import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.resolver.ws.WebSocketMessageResolverFactory;
 import dagateway.api.utils.ServerWebExchangeUtils;
@@ -47,7 +48,10 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 	private WebSocketMessageResolverFactory webSocketMessageResolverFactory;
 	
 	@Autowired
-	private ServiceHandlerFactory serviceHandlerFactory;
+	private ContentHandlerFactory contentHandlerFactory;
+	
+	@Autowired
+	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
 	
 	
 	public WebsocketGatewayFilter() {
@@ -85,7 +89,9 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 				
 				websocketHandler = new WebSocketRequestRouteHandler(serviceSpec, requestResolver, responseResolver);
 			} else if(serviceSpec.getEndpointType() == EndpointType.HTTP) {
-				websocketHandler = new WebSocketHTTPRouteHandler(serviceSpec, this.serviceHandlerFactory);
+				websocketHandler = new WebSocketHTTPRouteHandler(serviceSpec
+						, this.contentHandlerFactory
+						, this.bodyInserterBuilderFactory);
 			}
 			
 			return this.webSocketService.handleRequest(exchange

@@ -16,7 +16,8 @@ import dagateway.api.context.EndpointType;
 import dagateway.api.context.RouteContext;
 import dagateway.api.context.RouteContext.ResponseSpec;
 import dagateway.api.context.RouteContext.ServiceSpec;
-import dagateway.api.handler.ServiceHandlerFactory;
+import dagateway.api.handler.ContentHandlerFactory;
+import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ClientRequestResolver;
 import dagateway.api.resolver.ClientResolverFactory;
 import dagateway.api.resolver.ClientResponseResolver;
@@ -32,19 +33,21 @@ import reactor.core.publisher.Mono;
 public class ServiceBrokerBuilder {
 	private final Logger log = LoggerFactory.getLogger(ServiceBrokerBuilder.class);
 	
-	private ServiceHandlerFactory serviceHandlerFactory;
+	private ContentHandlerFactory contentHandlerFactory;
 	private ClientResolverFactory clientResolverFactory;
+	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
 	
 	
 	public ServiceBrokerBuilder() {
 	}
 	
-	public void setServiceHandlerFactory(ServiceHandlerFactory serviceHandlerFactory) {
-		this.serviceHandlerFactory = serviceHandlerFactory;
-	}
-	
-	public void setClientResolverFactory(ClientResolverFactory clientResolverFactory) {
+	public void init(ContentHandlerFactory contentHandlerFactory
+			, ClientResolverFactory clientResolverFactory
+			, BodyInserterBuilderFactory bodyInserterBuilderFactory) {
+
+		this.contentHandlerFactory = contentHandlerFactory;
 		this.clientResolverFactory = clientResolverFactory;
+		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
 	}
 	
 	public <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> build(RouteContext routeContext) {
@@ -69,6 +72,8 @@ public class ServiceBrokerBuilder {
 	private <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> buildMultiBackend(RouteContext routeContext, ResponseSpec responseSpec, List<ServiceSpec> serviceSpecList) {
 		ClientRequestResolver<Mono<Cq>, Cq> requestResolver = this.clientResolverFactory.getClientRequestResolver(routeContext.getClientRequestType(), routeContext.getRequestAggregateType(), false);
 		ClientResponseResolver<Flux<ServiceResult<Sr>>, Sr> responseResolver = this.clientResolverFactory.getClientResponseResolver(responseSpec.getContentHandling(), routeContext.getResponseType(), true);
+		
+		String requestResolverTypeName = requestResolver.getReturnTypeName();
 		String resolverArgTypeName = responseResolver.getTypeArgument();
 		
 		this.log.debug("resolverArgTypeName: " + resolverArgTypeName);
@@ -76,7 +81,7 @@ public class ServiceBrokerBuilder {
 		MultiServiceBroker<Cq, Sr> serviceBroker = new MultiServiceBroker<>(routeContext, requestResolver, responseResolver);
 		
 		for(ServiceSpec serviceSpec : serviceSpecList) {
-			ServiceDelegator<Mono<Cq>, Cq, Sr> serviceDelegator = this.createServiceDelegator(resolverArgTypeName, serviceSpec);
+			ServiceDelegator<Mono<Cq>, Cq, Sr> serviceDelegator = this.createServiceDelegator(requestResolverTypeName, resolverArgTypeName, serviceSpec);
 			serviceBroker.addServiceDelegator(serviceDelegator);
 		}
 		
@@ -85,6 +90,7 @@ public class ServiceBrokerBuilder {
 	
 	private <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> buildSingleBackend(RouteContext routeContext, ResponseSpec responseSpec, ServiceSpec serviceSpec) {
 		ClientRequestResolver<P, Cq> requestResolver = this.clientResolverFactory.getClientRequestResolver(routeContext.getClientRequestType(), routeContext.getRequestAggregateType());
+		String requestResolverTypeName = requestResolver.getReturnTypeName();
 		ClientResponseResolver<Mono<ServiceResult<Sr>>, Sr> responseResolver = this.clientResolverFactory.getClientResponseResolver(responseSpec.getContentHandling(), routeContext.getResponseType(), false);
 		String resolverArgTypeName = responseResolver.getTypeArgument();
 		
@@ -92,13 +98,13 @@ public class ServiceBrokerBuilder {
 		
 		SingleServiceBroker<P, Cq, Sr> serviceBroker = new SingleServiceBroker<>(routeContext, requestResolver, responseResolver);
 		
-		ServiceDelegator<P, Cq, Sr> serviceDelegator = this.createServiceDelegator(resolverArgTypeName, serviceSpec);
+		ServiceDelegator<P, Cq, Sr> serviceDelegator = this.createServiceDelegator(requestResolverTypeName, resolverArgTypeName, serviceSpec);
 		serviceBroker.setServiceDelegator(serviceDelegator);
 		
 		return serviceBroker;
 	}
 	
-	private <P extends Publisher<Cq>, Cq, Sr> ServiceDelegator<P, Cq, Sr> createServiceDelegator(String resolverArgTypeName, ServiceSpec serviceSpec) {
+	private <P extends Publisher<Cq>, Cq, Sr> ServiceDelegator<P, Cq, Sr> createServiceDelegator(String requestResolverTypeName, String resolverArgTypeName, ServiceSpec serviceSpec) {
 		HttpMethod method = serviceSpec.getMethod();
 		
 		WebClient webClient = Utils.newWebClient();
@@ -110,8 +116,10 @@ public class ServiceBrokerBuilder {
 		switch(endpointType) {
 		case HTTP: {
 			serviceDelegator = new ServiceDelegatorImpl<>(requestBodyUriSpec
-					, this.serviceHandlerFactory
+					, this.contentHandlerFactory
+					, this.bodyInserterBuilderFactory
 					, serviceSpec
+					, requestResolverTypeName
 					, resolverArgTypeName);
 			break;
 		}

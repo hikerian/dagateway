@@ -37,7 +37,7 @@ import dagateway.api.context.RouteContext;
 import dagateway.api.context.RoutePredicate;
 import dagateway.api.context.predicate.RoutePredicateBuilder;
 import dagateway.api.extracter.BodyExtractorBuilderFactory;
-import dagateway.api.handler.ServiceHandlerFactory;
+import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ClientRequestResolverId;
 import dagateway.api.resolver.ClientResolverFactory;
@@ -47,16 +47,15 @@ import dagateway.api.service.ServiceBrokerBuilder;
 import dagateway.api.transform.DataTransformerFactory;
 import dagateway.api.utils.ServerWebExchangeUtils;
 import dagateway.server.controller.HttpRequestRouteController;
-import dagateway.server.handler.request.FormDataRequestHandler;
-import dagateway.server.handler.request.JSONObjectRequestHandler;
-import dagateway.server.handler.request.MultiDataBufferRequestHandler;
-import dagateway.server.handler.request.MultipartRequestHandler;
-import dagateway.server.handler.request.TextPlainRequestHandler;
-import dagateway.server.handler.response.CharDelimiterResponseHandler;
-import dagateway.server.handler.response.JSONObjectResponseHandler;
-import dagateway.server.handler.response.MultiDataBufferResponseHandler;
-import dagateway.server.handler.response.TextEventStreamResponseHandler;
-import dagateway.server.handler.response.TextPlainResponseHandler;
+import dagateway.server.handler.CharDelimiterFluxDataBufferHandler;
+import dagateway.server.handler.DataBuffer2JSONObjectHandler;
+import dagateway.server.handler.DataBuffer2ServerSentEventHandler;
+import dagateway.server.handler.DataBuffer2TextPlainHandler;
+import dagateway.server.handler.FormDataHandler;
+import dagateway.server.handler.JSONObject2StringHandler;
+import dagateway.server.handler.MultiDataBufferHandler;
+import dagateway.server.handler.MultipartHandler;
+import dagateway.server.handler.TextPlainHandler;
 import dagateway.server.resolver.request.FormDataRequestResolver;
 import dagateway.server.resolver.request.JSONObjectRequestResolver;
 import dagateway.server.resolver.request.MultipartRequestResolver;
@@ -166,10 +165,12 @@ public class GatewayConfiguration {
 	}
 	
 	@Bean
-	ServiceBrokerBuilder serviceBrokerBuilder(ServiceHandlerFactory serviceHandlerFactory, ClientResolverFactory clientResolverFactory) {
+	ServiceBrokerBuilder serviceBrokerBuilder(ContentHandlerFactory contentHandlerFactory
+			, ClientResolverFactory clientResolverFactory
+			, BodyInserterBuilderFactory bodyInserterBuilderFactory) {
+
 		ServiceBrokerBuilder serviceBrokerBuilder = new ServiceBrokerBuilder();
-		serviceBrokerBuilder.setServiceHandlerFactory(serviceHandlerFactory);
-		serviceBrokerBuilder.setClientResolverFactory(clientResolverFactory);
+		serviceBrokerBuilder.init(contentHandlerFactory, clientResolverFactory, bodyInserterBuilderFactory);
 		
 		return serviceBrokerBuilder;
 	}
@@ -216,24 +217,21 @@ public class GatewayConfiguration {
 	}
 	
 	@Bean
-	ServiceHandlerFactory serviceHandlerFactory(AutowireCapableBeanFactory autowireCapableBeanFactory, DataTransformerFactory dataTransformerFactory) {
-		ServiceHandlerFactory serviceHandlerFactory = new ServiceHandlerFactory();
-		serviceHandlerFactory.setAutowireCapableBeanFactory(autowireCapableBeanFactory);
-		serviceHandlerFactory.setDataTransformerFactory(dataTransformerFactory);
+	ContentHandlerFactory contentHandlerFactory(AutowireCapableBeanFactory autowireCapableBeanFactory, DataTransformerFactory dataTransformerFactory) {
+		ContentHandlerFactory contentHandlerFactory = new ContentHandlerFactory();
+		contentHandlerFactory.init(autowireCapableBeanFactory, dataTransformerFactory);
 		
-		serviceHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_FORM_URLENCODED, FormDataRequestHandler.class);
-		serviceHandlerFactory.addServiceRequestHandler(MediaType.MULTIPART_FORM_DATA, MultipartRequestHandler.class);
-		serviceHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, JSONObjectRequestHandler.class);
-		serviceHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, TextPlainRequestHandler.class);
-		serviceHandlerFactory.addServiceRequestHandler(MediaType.ALL, MultiDataBufferRequestHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.valueOf("text/semi-colon-seperated-values"), CharDelimiterFluxDataBufferHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_FORM_URLENCODED, FormDataHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, JSONObject2StringHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, DataBuffer2JSONObjectHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.MULTIPART_FORM_DATA, MultipartHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_EVENT_STREAM, DataBuffer2ServerSentEventHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, TextPlainHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, DataBuffer2TextPlainHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.ALL, MultiDataBufferHandler.class);
 		
-		serviceHandlerFactory.addServiceResponseHandler(MediaType.APPLICATION_JSON, JSONObjectResponseHandler.class);
-		serviceHandlerFactory.addServiceResponseHandler(MediaType.TEXT_EVENT_STREAM, TextEventStreamResponseHandler.class);
-		serviceHandlerFactory.addServiceResponseHandler(MediaType.valueOf("text/semi-colon-seperated-values"), CharDelimiterResponseHandler.class);
-		serviceHandlerFactory.addServiceResponseHandler(MediaType.TEXT_PLAIN, TextPlainResponseHandler.class);
-		serviceHandlerFactory.addServiceResponseHandler(MediaType.ALL, MultiDataBufferResponseHandler.class);
-		
-		return serviceHandlerFactory;
+		return contentHandlerFactory;
 	}
 	
 	@Bean
@@ -262,6 +260,7 @@ public class GatewayConfiguration {
 	@Bean
 	WebSocketService webSocketService() {
 		ReactorNettyRequestUpgradeStrategy strategy = new ReactorNettyRequestUpgradeStrategy();
+
 		return new HandshakeWebSocketService(strategy);
 	}
 
