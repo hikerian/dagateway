@@ -54,12 +54,14 @@ public class ContentHandlerFactory {
 		this.contentHandlers.put(handlerId, handlerClass);
 	}
 	
-	public <P extends Publisher<Cq>, Cq, T, V, R> ContentHandler<P, Cq, T, V, R> getContentHandler(String argumentTypeName, MediaType fromType, MediaType toType, TransformSpec transformRule) {
+	public <P extends Publisher<Cq>, Cq, T, V, R> ContentHandler<P, Cq, T, V, R> getContentHandler(MediaType fromType, MediaType toType, String argumentTypeName, TransformSpec transformRule) {
 		// servicerequesthandler
 		@SuppressWarnings("unchecked")
 		Class<AbstractContentHandler<P, Cq, T, V, R>> handlerClass =
-				(Class<AbstractContentHandler<P, Cq, T, V, R>>) this.searchAcceptableContentHandler((id) -> id.getFrom().equalsTypeAndSubtype(fromType) && (id.getArgumentType().equals(argumentTypeName) || "*".equals(argumentTypeName))
-						, (id) -> id.getFrom().isCompatibleWith(fromType) && (id.getArgumentType().equals(argumentTypeName) || "*".equals(argumentTypeName)));
+				(Class<AbstractContentHandler<P, Cq, T, V, R>>) this.searchAcceptableContentHandler((id) -> id.getFrom().equalsTypeAndSubtype(fromType)
+						&& (id.getArgumentType().equals(argumentTypeName) || "*".equals(argumentTypeName))
+						, (id) -> id.getFrom().isCompatibleWith(fromType)
+						&& (id.getArgumentType().equals(argumentTypeName) || "*".equals(argumentTypeName)));
 
 		if(handlerClass == null) {
 			throw new UnsupportedOperationException("FROM: " + fromType);
@@ -70,11 +72,17 @@ public class ContentHandlerFactory {
 		return this.newInstance(handlerClass, fromType, toType, transformRule);
 	}
 	
-	public <P extends Publisher<Cq>, Cq, T, V, R> ContentHandler<P, Cq, T, V, R> getContentHandler(MediaType fromType, MediaType toType, String returnTypeName, TransformSpec transformRule) {
+	public <P extends Publisher<Cq>, Cq, T, V, R> ContentHandler<P, Cq, T, V, R> getContentHandler(MediaType fromType
+			, MediaType toType, String argumentTypeName, String returnTypeName, TransformSpec transformRule) {
+
 		@SuppressWarnings("unchecked")
 		Class<AbstractContentHandler<P, Cq, T, V, R>> handlerClass =
-		(Class<AbstractContentHandler<P, Cq, T, V, R>>) this.searchAcceptableContentHandler((id) -> id.getFrom().equalsTypeAndSubtype(fromType) && (id.getReturnTypeName().equals(returnTypeName) || "*".equals(returnTypeName))
-				, (id) -> id.getFrom().isCompatibleWith(fromType) && (id.getReturnTypeName().equals(returnTypeName) || "*".equals(returnTypeName)));
+		(Class<AbstractContentHandler<P, Cq, T, V, R>>) this.searchAcceptableContentHandler((id) -> id.getFrom().equalsTypeAndSubtype(fromType)
+				&& (id.getArgumentType().equals(argumentTypeName) || "*".equals(argumentTypeName))
+				&& (id.getReturnTypeName().equals(returnTypeName) || "*".equals(returnTypeName))
+				, (id) -> id.getFrom().isCompatibleWith(fromType)
+				&& (id.getArgumentType().equals(argumentTypeName) || "*".equals(argumentTypeName))
+				&& (id.getReturnTypeName().equals(returnTypeName) || "*".equals(returnTypeName)));
 		
 		if(handlerClass == null) {
 			throw new UnsupportedOperationException("FROM: " + fromType + ", ReturnTypeName: " + returnTypeName);

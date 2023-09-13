@@ -34,7 +34,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 	
 	private ServiceSpec serviceSpec;
 	private String requestResolverTypeName;
-	private String resolverTypeName;
+	private String responseResolverTypeName;
 
 	
 	public ServiceDelegatorImpl(RequestBodyUriSpec requestBodyUriSpec
@@ -42,7 +42,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory
 			, ServiceSpec serviceSpec
 			, String requestResolverTypeName
-			, String resolverTypeName) {
+			, String responseResolverTypeName) {
 		
 		this.requestBodyUriSpec = requestBodyUriSpec;
 		this.contentHandlerFactory = contentHandlerFactory;
@@ -50,7 +50,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 		
 		this.serviceSpec = serviceSpec;
 		this.requestResolverTypeName = requestResolverTypeName;
-		this.resolverTypeName = resolverTypeName;
+		this.responseResolverTypeName = responseResolverTypeName;
 	}
 	
 	public <R> Mono<ServiceResult<Sr>> run(HttpHeaders clientHeaders, P clientBody) {
@@ -66,18 +66,14 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 		});
 
 		// service request body
-		ContentHandler<P, Cq, ?, ?, R> requestHandler = this.contentHandlerFactory.getContentHandler(this.requestResolverTypeName
-				, aggregateType
+		ContentHandler<P, Cq, ?, ?, R> requestHandler = this.contentHandlerFactory.getContentHandler(aggregateType
 				, serviceRequestType
+				, this.requestResolverTypeName
 				, this.serviceSpec.getServiceRequestTransformSpec());
 
 		String returnTypeName = requestHandler.getReturnTypeName();
+		
 		R handledValue = requestHandler.handle(clientBody, this.serviceSpec);
-		
-		System.out.println("returnTypeName: " + returnTypeName);
-		System.out.println("handledValue: " + handledValue);
-		System.out.println(this.bodyInserterBuilderFactory.getBodyInserter(returnTypeName, handledValue));
-		
 		RequestHeadersSpec<?> requestHeaderSpec = requestBodySpec.body(this.bodyInserterBuilderFactory.getBodyInserter(returnTypeName, handledValue));
 		
 		// service request exchange
@@ -97,7 +93,8 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 					
 					ContentHandler<Flux<DataBuffer>, DataBuffer, ?, ?, Sr> responseHandler = this.contentHandlerFactory.getContentHandler(backendContentType
 							, clientResponseType
-							, this.resolverTypeName
+							, "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>"
+							, this.responseResolverTypeName
 							, this.serviceSpec.getServiceResponseTransformSpec(backendContentType));
 					Sr body = responseHandler.handle(responseEntity.getBody(), this.serviceSpec);
 					
