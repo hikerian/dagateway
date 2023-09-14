@@ -30,14 +30,14 @@ public class WebSocketMessageResolverFactory {
 		this.messageResolvers.put(mediaType, resolverClass);
 	}
 	
-	public <T> MessageResolver<T> getMessageResolver(MediaType mediaType) {
+	public <T> WebSocketMessageResolver<T> getMessageResolver(MediaType mediaType) {
 		@SuppressWarnings("unchecked")
 		Class<? extends AbstractMessageResolver<T>> resolverClass = (Class<? extends AbstractMessageResolver<T>>) this.messageResolvers.get(mediaType);
 		if(resolverClass == null) {
 			return null;
 		}
 		
-		MessageResolver<T> messageResolver = Utils.newInstance(resolverClass);
+		WebSocketMessageResolver<T> messageResolver = Utils.newInstance(resolverClass);
 		
 		return messageResolver;
 	}

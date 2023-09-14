@@ -16,7 +16,7 @@ import org.springframework.web.reactive.socket.client.WebSocketClient;
 import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.ContentHandler;
 import dagateway.api.handler.ContentHandlerFactory;
-import dagateway.api.resolver.ws.MessageResolver;
+import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.utils.Utils;
 import reactor.core.publisher.Mono;
 
@@ -28,14 +28,14 @@ public class WebSocket2WebSocketHandler<T, V> implements WebSocketHandler {
 	private ContentHandlerFactory contentHandlerFactory;
 	
 	private ServiceSpec serviceSpec;
-	private MessageResolver<T> clientResolver;
-	private MessageResolver<V> backendResolver;
+	private WebSocketMessageResolver<T> clientResolver;
+	private WebSocketMessageResolver<V> backendResolver;
 	
 	
 	public WebSocket2WebSocketHandler(ContentHandlerFactory contentHandlerFactory
 			, ServiceSpec serviceSpec
-			, MessageResolver<T> clientResolver
-			, MessageResolver<V> backendResolver) {
+			, WebSocketMessageResolver<T> clientResolver
+			, WebSocketMessageResolver<V> backendResolver) {
 		
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.serviceSpec = serviceSpec;
@@ -78,15 +78,15 @@ public class WebSocket2WebSocketHandler<T, V> implements WebSocketHandler {
 
 	private static class ProxyHandler<T, V> implements WebSocketHandler {
 		private WebSocketSession clientSession;
-		private MessageResolver<T> clientResolver;
-		private MessageResolver<V> backendResolver;
+		private WebSocketMessageResolver<T> clientResolver;
+		private WebSocketMessageResolver<V> backendResolver;
 		private ContentHandler<Mono<T>, T, T, V, Mono<V>> requestHandler;
 		private ContentHandler<Mono<V>, V, V, T, Mono<T>> responseHandler;
 
 		
 		ProxyHandler(WebSocketSession clientSession
-				, MessageResolver<T> clientResolver
-				, MessageResolver<V> backendResolver
+				, WebSocketMessageResolver<T> clientResolver
+				, WebSocketMessageResolver<V> backendResolver
 				, ContentHandler<Mono<T>, T, T, V, Mono<V>> requestHandler
 				, ContentHandler<Mono<V>, V, V, T, Mono<T>> responseHandler) {
 

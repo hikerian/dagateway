@@ -21,7 +21,7 @@ import dagateway.api.context.RouteContext;
 import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
-import dagateway.api.resolver.ws.MessageResolver;
+import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.resolver.ws.WebSocketMessageResolverFactory;
 import dagateway.api.utils.ServerWebExchangeUtils;
 import dagateway.server.controller.WebSocket2HTTPHandler;
@@ -93,8 +93,8 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 			MediaType aggregateType = serviceSpec.getAggregateType();
 			MediaType backendType = serviceSpec.getServiceRequestType();
 			
-			MessageResolver<T> clientResolver = this.webSocketMessageResolverFactory.getMessageResolver(aggregateType);
-			MessageResolver<V> backendResolver = this.webSocketMessageResolverFactory.getMessageResolver(backendType);
+			WebSocketMessageResolver<T> clientResolver = this.webSocketMessageResolverFactory.getMessageResolver(aggregateType);
+			WebSocketMessageResolver<V> backendResolver = this.webSocketMessageResolverFactory.getMessageResolver(backendType);
 			
 			websocketHandler = new WebSocket2WebSocketHandler<T, V>(
 					this.contentHandlerFactory
@@ -106,7 +106,7 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 		} else if(serviceSpec.getEndpointType() == EndpointType.HTTP) {
 			MediaType aggregateType = serviceSpec.getAggregateType();
 			
-			MessageResolver<T> clientResolver = this.webSocketMessageResolverFactory.getMessageResolver(aggregateType);
+			WebSocketMessageResolver<T> clientResolver = this.webSocketMessageResolverFactory.getMessageResolver(aggregateType);
 			
 			websocketHandler = new WebSocket2HTTPHandler<T>(
 					this.contentHandlerFactory

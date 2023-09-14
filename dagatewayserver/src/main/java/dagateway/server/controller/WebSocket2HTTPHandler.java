@@ -13,7 +13,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
-import dagateway.api.resolver.ws.MessageResolver;
+import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.service.ServiceDelegator;
 import dagateway.api.service.ServiceDelegatorImpl;
 import dagateway.api.service.ServiceResult;
@@ -28,13 +28,13 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
 	
 	private ServiceSpec serviceSpec;
-	private MessageResolver<T> clientResolver;
+	private WebSocketMessageResolver<T> clientResolver;
 	
 	
 	public WebSocket2HTTPHandler(ContentHandlerFactory contentHandlerFactory
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory
 			, ServiceSpec serviceSpec
-			, MessageResolver<T> clientResolver) {
+			, WebSocketMessageResolver<T> clientResolver) {
 		
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;

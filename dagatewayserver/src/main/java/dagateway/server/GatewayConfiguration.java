@@ -36,7 +36,6 @@ import dagateway.api.context.GatewayRoutes;
 import dagateway.api.context.RouteContext;
 import dagateway.api.context.RoutePredicate;
 import dagateway.api.context.predicate.RoutePredicateBuilder;
-import dagateway.api.extracter.BodyExtractorBuilderFactory;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.http.ClientRequestResolverId;
@@ -148,12 +147,6 @@ public class GatewayConfiguration {
 		}
 		
 		return bffGatewayContext;
-	}
-	
-	@Bean
-	BodyExtractorBuilderFactory bodyExtractorBuilderFactory() {
-		BodyExtractorBuilderFactory factory = new BodyExtractorBuilderFactory();
-		return factory;
 	}
 	
 	@Bean

@@ -28,6 +28,8 @@ import reactor.core.publisher.Mono;
 public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements ServiceDelegator<P, Cq, Sr> {
 	private final Logger log = LoggerFactory.getLogger(ServiceDelegatorImpl.class);
 	
+	private static final String SERVICE_RESPONSE_TYPENAME = "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
+	
 	private RequestBodyUriSpec requestBodyUriSpec;
 	private ContentHandlerFactory contentHandlerFactory;
 	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
@@ -93,7 +95,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 					
 					ContentHandler<Flux<DataBuffer>, DataBuffer, ?, ?, Sr> responseHandler = this.contentHandlerFactory.getContentHandler(backendContentType
 							, clientResponseType
-							, "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>"
+							, ServiceDelegatorImpl.SERVICE_RESPONSE_TYPENAME
 							, this.responseResolverTypeName
 							, this.serviceSpec.getServiceResponseTransformSpec(backendContentType));
 					Sr body = responseHandler.handle(responseEntity.getBody());

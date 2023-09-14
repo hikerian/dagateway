@@ -8,7 +8,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 
 
 
-public abstract class AbstractMessageResolver<T> implements MessageResolver<T> {
+public abstract class AbstractMessageResolver<T> implements WebSocketMessageResolver<T> {
 	
 	
 	protected AbstractMessageResolver() {
