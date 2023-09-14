@@ -16,7 +16,7 @@ import dagateway.api.composer.builder.json.JsonStreamBuilder;
 import dagateway.api.composer.stream.LinkedByteBuffer;
 import dagateway.api.context.RouteContext;
 import dagateway.api.context.RouteContext.ServiceSpec;
-import dagateway.api.resolver.SingleBackendResponseResolver;
+import dagateway.api.resolver.http.SingleBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

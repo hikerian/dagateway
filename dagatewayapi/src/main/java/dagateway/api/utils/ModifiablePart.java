@@ -1,4 +1,4 @@
-package dagateway.api.resolver;
+package dagateway.api.utils;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;

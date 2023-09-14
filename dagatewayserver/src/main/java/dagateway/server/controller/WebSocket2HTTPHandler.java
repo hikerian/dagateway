@@ -13,6 +13,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
+import dagateway.api.resolver.ws.MessageResolver;
 import dagateway.api.service.ServiceDelegator;
 import dagateway.api.service.ServiceDelegatorImpl;
 import dagateway.api.service.ServiceResult;
@@ -20,26 +21,28 @@ import dagateway.api.utils.Utils;
 import reactor.core.publisher.Mono;
 
 
-/**
- * https://stackoverflow.com/questions/50757766/spring-boot-reactive-websoket-block-out-flux-until-received-all-information-fr
- */
-public class WebSocketHTTPRouteHandler implements WebSocketHandler {
-	private final Logger log = LoggerFactory.getLogger(WebSocketHTTPRouteHandler.class);
-	
-	private ServiceSpec serviceSpec;
+public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
+	private final Logger log = LoggerFactory.getLogger(WebSocket2HTTPHandler.class);
+
 	private ContentHandlerFactory contentHandlerFactory;
 	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
 	
+	private ServiceSpec serviceSpec;
+	private MessageResolver<T> clientResolver;
 	
-	public WebSocketHTTPRouteHandler(ServiceSpec serviceSpec
-			, ContentHandlerFactory contentHandlerFactory
-			, BodyInserterBuilderFactory bodyInserterBuilderFactory) {
-
-		this.serviceSpec = serviceSpec;
+	
+	public WebSocket2HTTPHandler(ContentHandlerFactory contentHandlerFactory
+			, BodyInserterBuilderFactory bodyInserterBuilderFactory
+			, ServiceSpec serviceSpec
+			, MessageResolver<T> clientResolver) {
+		
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
+		
+		this.serviceSpec = serviceSpec;
+		this.clientResolver = clientResolver;
 	}
-	
+
 	@Override
 	public Mono<Void> handle(WebSocketSession session) {
 		this.log.debug("handle");
@@ -50,34 +53,71 @@ public class WebSocketHTTPRouteHandler implements WebSocketHandler {
 		
 		return session.receive().flatMap(message -> {
 			// TODO add WebSocketMessageResolver
-			String payload = message.getPayloadAsText();
+			T payload = this.clientResolver.extract(message);
 			
 			// TODO ServiceDelegator
 			WebClient webClient = Utils.newWebClient();
 			RequestBodyUriSpec requestBodyUriSpec = webClient.method(this.serviceSpec.getMethod());
 			requestBodyUriSpec.uri(this.serviceSpec.createBackendURI());
 			
-			ServiceDelegator<Mono<String>, String, Mono<String>> serviceDelegator = new ServiceDelegatorImpl<>(requestBodyUriSpec
+			ServiceDelegator<Mono<T>, T, Mono<T>> serviceDelegator = new ServiceDelegatorImpl<>(requestBodyUriSpec
 					, this.contentHandlerFactory
 					, this.bodyInserterBuilderFactory
 					, this.serviceSpec
-					, "reactor.core.publisher.Mono<java.lang.String>"
-					, "reactor.core.publisher.Mono<java.lang.String>");
+					, this.clientResolver.getTypeName()
+					, this.clientResolver.getTypeName());
 
-			Mono<ServiceResult<Mono<String>>> serviceResult = serviceDelegator.run(headers, Mono.just(payload));
+			Mono<ServiceResult<Mono<T>>> serviceResult = serviceDelegator.run(headers, Mono.just(payload));
 			
 			return serviceResult.flatMap(result -> {
-				Mono<String> strBody = result.getBody();
-				
+				Mono<T> strBody = result.getBody();
 				Mono<WebSocketMessage> rtnMsg = strBody.map(stringBody -> {
-					// TODO add WebSocketMessageResolver
-					return session.textMessage(stringBody);
+					return this.clientResolver.build(session, stringBody);
 				});
 				
 				return session.send(rtnMsg);
 			});
 		}).then();
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

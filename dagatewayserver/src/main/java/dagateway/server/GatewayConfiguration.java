@@ -39,9 +39,9 @@ import dagateway.api.context.predicate.RoutePredicateBuilder;
 import dagateway.api.extracter.BodyExtractorBuilderFactory;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
-import dagateway.api.resolver.ClientRequestResolverId;
-import dagateway.api.resolver.ClientResolverFactory;
-import dagateway.api.resolver.ClientResponseResolverId;
+import dagateway.api.resolver.http.ClientRequestResolverId;
+import dagateway.api.resolver.http.ClientResolverFactory;
+import dagateway.api.resolver.http.ClientResponseResolverId;
 import dagateway.api.resolver.ws.WebSocketMessageResolverFactory;
 import dagateway.api.service.ServiceBrokerBuilder;
 import dagateway.api.transform.DataTransformerFactory;
@@ -69,8 +69,6 @@ import dagateway.server.resolver.response.RawDataMultiResponseResolver;
 import dagateway.server.resolver.response.RawDataSingleResponseResolver;
 import dagateway.server.resolver.response.TextEventMultiStreamResponseResolver;
 import dagateway.server.resolver.response.TextEventSingleStreamResponseResolver;
-import dagateway.server.resolver.ws.BinaryMessageResolver;
-import dagateway.server.resolver.ws.TextMessageResolver;
 import dagateway.server.transform.support.BinaryDataTransformer;
 import dagateway.server.transform.support.FormDataTransformer;
 import dagateway.server.transform.support.JSONGraphTransformer;
@@ -206,12 +204,8 @@ public class GatewayConfiguration {
 	@Bean
 	WebSocketMessageResolverFactory webSocketMessageResolverFactory(AutowireCapableBeanFactory autowireCapableBeanFactory
 			, DataTransformerFactory dataTransformerFactory) {
-		WebSocketMessageResolverFactory webSocketMessageResolverFactory = new WebSocketMessageResolverFactory();
-		webSocketMessageResolverFactory.setAutowireCapableBeanFactory(autowireCapableBeanFactory);
-		webSocketMessageResolverFactory.setDataTransformerFactory(dataTransformerFactory);
 		
-		webSocketMessageResolverFactory.addWsMessageResolver(MediaType.APPLICATION_OCTET_STREAM, BinaryMessageResolver.class);
-		webSocketMessageResolverFactory.addWsMessageResolver(MediaType.TEXT_PLAIN, TextMessageResolver.class);
+		WebSocketMessageResolverFactory webSocketMessageResolverFactory = new WebSocketMessageResolverFactory();
 		
 		return webSocketMessageResolverFactory;
 	}

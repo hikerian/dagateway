@@ -8,7 +8,6 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.AbstractContentHandler;
 import net.minidev.json.JSONObject;
 import reactor.core.publisher.Flux;
@@ -23,7 +22,7 @@ public class DataBuffer2JSONObjectHandler extends AbstractContentHandler<Flux<Da
 	}
 
 	@Override
-	public Mono<JSONObject> handle(Flux<DataBuffer> responseBody, ServiceSpec serviceSpec) {
+	public Mono<JSONObject> handle(Flux<DataBuffer> responseBody) {
 		this.log.debug("resolveBody");
 		
 		ParameterizedTypeReference<JSONObject> jsonType = new ParameterizedTypeReference<>() {};

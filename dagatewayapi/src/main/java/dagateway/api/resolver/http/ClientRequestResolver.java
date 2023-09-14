@@ -1,4 +1,4 @@
-package dagateway.api.resolver;
+package dagateway.api.resolver.http;
 
 import org.reactivestreams.Publisher;
 import org.springframework.web.reactive.function.server.ServerRequest;

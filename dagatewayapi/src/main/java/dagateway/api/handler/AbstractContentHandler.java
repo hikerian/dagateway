@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import org.reactivestreams.Publisher;
 import org.springframework.http.MediaType;
 
-import dagateway.api.context.RouteContext;
 import dagateway.api.transform.DataTransformer;
 
 
@@ -30,7 +29,7 @@ public abstract class AbstractContentHandler<P extends Publisher<Cq>, Cq, T, V, 
 	
 	
 	@Override
-	public abstract R handle(P requestBody, RouteContext.ServiceSpec serviceSpec);
+	public abstract R handle(P requestBody);
 	
 	
 	@Override
@@ -53,5 +52,7 @@ public abstract class AbstractContentHandler<P extends Publisher<Cq>, Cq, T, V, 
 		
 		return argTypes;
 	}
+
+
 
 }

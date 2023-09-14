@@ -5,7 +5,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-import dagateway.api.resolver.SingleRequestDataResolver;
+import dagateway.api.resolver.http.SingleRequestDataResolver;
 import reactor.core.publisher.Mono;
 
 

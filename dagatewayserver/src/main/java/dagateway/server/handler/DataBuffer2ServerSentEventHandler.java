@@ -13,7 +13,6 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.http.codec.ServerSentEventHttpMessageReader;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.AbstractContentHandler;
 import reactor.core.publisher.Flux;
 
@@ -27,7 +26,7 @@ public class DataBuffer2ServerSentEventHandler extends AbstractContentHandler<Fl
 	}
 
 	@Override
-	public Flux<ServerSentEvent<String>> handle(Flux<DataBuffer> responseBody, ServiceSpec serviceSpec) {
+	public Flux<ServerSentEvent<String>> handle(Flux<DataBuffer> responseBody) {
 		this.log.debug("resolveBody======>>");
 		
 		ParameterizedTypeReference<ServerSentEvent<String>> sseType = new ParameterizedTypeReference<>() {};

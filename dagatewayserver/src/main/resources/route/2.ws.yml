@@ -1,6 +1,10 @@
 routes:
   - predicates:
     - path=/ws/chat
+    client-request:
+      aggregate-type: text/plain
+    client-response:
+      content-type: text/plain
     service-targets:
       - endpoint:
           type: WEBSOCKET

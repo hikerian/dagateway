@@ -18,13 +18,14 @@ import org.springframework.web.server.WebFilterChain;
 
 import dagateway.api.context.EndpointType;
 import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
-import dagateway.api.resolver.ws.WebSocketMessageResolver;
+import dagateway.api.resolver.ws.MessageResolver;
 import dagateway.api.resolver.ws.WebSocketMessageResolverFactory;
 import dagateway.api.utils.ServerWebExchangeUtils;
-import dagateway.server.controller.WebSocketHTTPRouteHandler;
-import dagateway.server.controller.WebSocketRequestRouteHandler;
+import dagateway.server.controller.WebSocket2HTTPHandler;
+import dagateway.server.controller.WebSocket2WebSocketHandler;
 import reactor.core.publisher.Mono;
 
 
@@ -56,7 +57,6 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 	
 	public WebsocketGatewayFilter() {
 	}
-
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 		this.log.debug("filter: " + exchange.getRequest().getURI());
@@ -76,31 +76,49 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 
 			// TODO Support Mutlple ServiceSpec;
 			List<RouteContext.ServiceSpec> serviceSpecs = routeContext.getServiceSpecList();
-			RouteContext.ServiceSpec serviceSpec = serviceSpecs.get(0);
+			ServiceSpec serviceSpec = serviceSpecs.get(0);
 			
-			WebSocketHandler websocketHandler = null;
-			if(serviceSpec.getEndpointType() == EndpointType.WEBSOCKET) {
-				WebSocketMessageResolver<?> requestResolver =
-						this.webSocketMessageResolverFactory.buildResolver(serviceSpec.getServiceRequestType()
-						, serviceSpec.getServiceRequestTransformSpec());
-				WebSocketMessageResolver<?> responseResolver =
-						this.webSocketMessageResolverFactory.buildResolver(serviceSpec.getServiceResponseType()
-						, serviceSpec.getServiceResponseTransformSpec(MediaType.TEXT_PLAIN));
-				
-				websocketHandler = new WebSocketRequestRouteHandler(serviceSpec, requestResolver, responseResolver);
-			} else if(serviceSpec.getEndpointType() == EndpointType.HTTP) {
-				websocketHandler = new WebSocketHTTPRouteHandler(serviceSpec
-						, this.contentHandlerFactory
-						, this.bodyInserterBuilderFactory);
-			}
+			WebSocketHandler websocketHandler = this.buildHandler(serviceSpec);
 			
-			return this.webSocketService.handleRequest(exchange
-					, websocketHandler);
+			return this.webSocketService.handleRequest(exchange, websocketHandler);
 		}
 
 		return chain.filter(exchange);
 	}
 	
+	private <T, V> WebSocketHandler buildHandler(ServiceSpec serviceSpec) {
+		WebSocketHandler websocketHandler = null;
+		
+		if(serviceSpec.getEndpointType() == EndpointType.WEBSOCKET) {
+			MediaType aggregateType = serviceSpec.getAggregateType();
+			MediaType backendType = serviceSpec.getServiceRequestType();
+			
+			MessageResolver<T> clientResolver = this.webSocketMessageResolverFactory.getMessageResolver(aggregateType);
+			MessageResolver<V> backendResolver = this.webSocketMessageResolverFactory.getMessageResolver(backendType);
+			
+			websocketHandler = new WebSocket2WebSocketHandler<T, V>(
+					this.contentHandlerFactory
+					, serviceSpec
+					, clientResolver
+					, backendResolver
+					);
+			
+		} else if(serviceSpec.getEndpointType() == EndpointType.HTTP) {
+			MediaType aggregateType = serviceSpec.getAggregateType();
+			
+			MessageResolver<T> clientResolver = this.webSocketMessageResolverFactory.getMessageResolver(aggregateType);
+			
+			websocketHandler = new WebSocket2HTTPHandler<T>(
+					this.contentHandlerFactory
+					, this.bodyInserterBuilderFactory
+					, serviceSpec
+					, clientResolver
+					);
+		}
+		
+		return websocketHandler;
+	}
+
 	@Override
 	public int getOrder() {
 		return WebsocketGatewayFilter.WEBSOCKET_GATEWAY_FILTER_ORDER;

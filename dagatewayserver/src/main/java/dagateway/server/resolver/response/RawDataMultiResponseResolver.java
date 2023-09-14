@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import dagateway.api.context.RouteContext;
 import dagateway.api.context.RouteContext.ResponseSpec;
-import dagateway.api.resolver.MultiBackendResponseResolver;
+import dagateway.api.resolver.http.MultiBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

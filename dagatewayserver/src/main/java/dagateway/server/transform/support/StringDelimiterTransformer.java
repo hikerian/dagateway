@@ -5,9 +5,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dagateway.api.resolver.StringDelimiterSupport;
 import dagateway.api.transform.AbstractDataTransformer;
 import dagateway.api.transform.DividedDataSupport;
+import dagateway.api.transform.StringDelimiterSupport;
 
 
 

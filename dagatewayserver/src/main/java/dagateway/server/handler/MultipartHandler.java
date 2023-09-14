@@ -10,9 +10,8 @@ import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.MultiValueMap;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.AbstractContentHandler;
-import dagateway.api.resolver.ModifiablePart;
+import dagateway.api.utils.ModifiablePart;
 import reactor.core.publisher.Mono;
 
 
@@ -23,8 +22,7 @@ public class MultipartHandler extends AbstractContentHandler<Mono<MultiValueMap<
 	}
 
 	@Override
-	public Mono<MultiValueMap<String, HttpEntity<?>>> handle(Mono<MultiValueMap<String, Part>> requestBody,
-			ServiceSpec serviceSpec) {
+	public Mono<MultiValueMap<String, HttpEntity<?>>> handle(Mono<MultiValueMap<String, Part>> requestBody) {
 		
 		// transform
 		Mono<MultiValueMap<String, HttpEntity<?>>> transformed = requestBody.map(multiValueMap -> {

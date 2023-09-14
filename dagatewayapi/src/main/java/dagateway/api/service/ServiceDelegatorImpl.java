@@ -73,7 +73,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 
 		String returnTypeName = requestHandler.getReturnTypeName();
 		
-		R handledValue = requestHandler.handle(clientBody, this.serviceSpec);
+		R handledValue = requestHandler.handle(clientBody);
 		RequestHeadersSpec<?> requestHeaderSpec = requestBodySpec.body(this.bodyInserterBuilderFactory.getBodyInserter(returnTypeName, handledValue));
 		
 		// service request exchange
@@ -96,7 +96,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 							, "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>"
 							, this.responseResolverTypeName
 							, this.serviceSpec.getServiceResponseTransformSpec(backendContentType));
-					Sr body = responseHandler.handle(responseEntity.getBody(), this.serviceSpec);
+					Sr body = responseHandler.handle(responseEntity.getBody());
 					
 					HttpStatus status = responseEntity.getStatusCode();
 					HttpHeaders headers = responseEntity.getHeaders();

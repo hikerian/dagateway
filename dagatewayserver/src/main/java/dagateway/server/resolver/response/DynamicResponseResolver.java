@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import dagateway.api.context.RouteContext;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
-import dagateway.api.resolver.SingleBackendResponseResolver;
+import dagateway.api.resolver.http.SingleBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Mono;
 

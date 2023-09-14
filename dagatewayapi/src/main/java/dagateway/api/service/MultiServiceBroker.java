@@ -10,8 +10,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import dagateway.api.context.RouteContext;
-import dagateway.api.resolver.ClientRequestResolver;
-import dagateway.api.resolver.ClientResponseResolver;
+import dagateway.api.resolver.http.ClientRequestResolver;
+import dagateway.api.resolver.http.ClientResponseResolver;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

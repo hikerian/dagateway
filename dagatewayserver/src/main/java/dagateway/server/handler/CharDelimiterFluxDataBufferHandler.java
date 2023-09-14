@@ -18,9 +18,8 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.MediaType;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.AbstractContentHandler;
-import dagateway.api.resolver.CharDelimiterSupport;
+import dagateway.api.resolver.http.CharDelimiterSupport;
 import dagateway.api.transform.DataTransformer;
 import dagateway.api.utils.CharStream;
 import reactor.core.publisher.Flux;
@@ -68,7 +67,7 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 	}
 
 	@Override
-	public Flux<DataBuffer> handle(Flux<DataBuffer> responseBody, ServiceSpec serviceSpec) {
+	public Flux<DataBuffer> handle(Flux<DataBuffer> responseBody) {
 		Flux<DataBuffer> transformedBody = responseBody.handle(this::handle);
 		return transformedBody;
 	}

@@ -5,7 +5,7 @@ import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-import dagateway.api.resolver.MultiRequestDataResolver;
+import dagateway.api.resolver.http.MultiRequestDataResolver;
 import reactor.core.publisher.Flux;
 
 

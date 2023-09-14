@@ -1,4 +1,4 @@
-package dagateway.api.resolver;
+package dagateway.api.resolver.http;
 
 import java.util.Objects;
 

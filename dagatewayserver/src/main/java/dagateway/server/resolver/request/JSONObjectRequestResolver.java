@@ -3,7 +3,7 @@ package dagateway.server.resolver.request;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-import dagateway.api.resolver.SingleRequestDataResolver;
+import dagateway.api.resolver.http.SingleRequestDataResolver;
 import net.minidev.json.JSONObject;
 import reactor.core.publisher.Mono;
 

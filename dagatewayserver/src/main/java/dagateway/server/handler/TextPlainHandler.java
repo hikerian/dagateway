@@ -1,6 +1,5 @@
 package dagateway.server.handler;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.AbstractContentHandler;
 import reactor.core.publisher.Mono;
 
@@ -12,7 +11,7 @@ public class TextPlainHandler extends AbstractContentHandler<Mono<String>, Strin
 	}
 
 	@Override
-	public Mono<String> handle(Mono<String> requestBody, ServiceSpec serviceSpec) {
+	public Mono<String> handle(Mono<String> requestBody) {
 		// transform
 		Mono<String> transformed = requestBody.map(strData -> this.transformer.transform(strData));
 

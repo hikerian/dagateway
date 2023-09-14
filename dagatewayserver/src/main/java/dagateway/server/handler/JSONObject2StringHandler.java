@@ -1,9 +1,9 @@
 package dagateway.server.handler;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.AbstractContentHandler;
 import net.minidev.json.JSONObject;
 import reactor.core.publisher.Mono;
+
 
 
 public class JSONObject2StringHandler extends AbstractContentHandler<Mono<JSONObject>, JSONObject, JSONObject, JSONObject, Mono<String>> {
@@ -13,7 +13,7 @@ public class JSONObject2StringHandler extends AbstractContentHandler<Mono<JSONOb
 	}
 
 	@Override
-	public Mono<String> handle(Mono<JSONObject> requestBody, ServiceSpec serviceSpec) {
+	public Mono<String> handle(Mono<JSONObject> requestBody) {
 		// transform
 		Mono<JSONObject> transformed = requestBody.map(jsonObject -> this.transformer.transform(jsonObject));
 

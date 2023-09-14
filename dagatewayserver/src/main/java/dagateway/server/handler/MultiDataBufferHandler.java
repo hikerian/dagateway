@@ -2,7 +2,6 @@ package dagateway.server.handler;
 
 import org.springframework.core.io.buffer.DataBuffer;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.AbstractContentHandler;
 import reactor.core.publisher.Flux;
 
@@ -15,7 +14,7 @@ public class MultiDataBufferHandler extends AbstractContentHandler<Flux<DataBuff
 	}
 	
 	@Override
-	public Flux<DataBuffer> handle(Flux<DataBuffer> requestBody, ServiceSpec serviceSpec) {
+	public Flux<DataBuffer> handle(Flux<DataBuffer> requestBody) {
 		// Transform
 		Flux<DataBuffer> transformed = requestBody.handle((buffer, sink) -> {
 			DataBuffer newBuffer = this.transformer.transform(buffer);

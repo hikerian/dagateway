@@ -54,7 +54,9 @@ public class ContentHandlerFactory {
 		this.contentHandlers.put(handlerId, handlerClass);
 	}
 	
-	public <P extends Publisher<Cq>, Cq, T, V, R> ContentHandler<P, Cq, T, V, R> getContentHandler(MediaType fromType, MediaType toType, String argumentTypeName, TransformSpec transformRule) {
+	public <P extends Publisher<Cq>, Cq, T, V, R> ContentHandler<P, Cq, T, V, R> getContentHandler(MediaType fromType
+			, MediaType toType, String argumentTypeName, TransformSpec transformRule) {
+
 		// servicerequesthandler
 		@SuppressWarnings("unchecked")
 		Class<AbstractContentHandler<P, Cq, T, V, R>> handlerClass =

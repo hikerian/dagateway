@@ -13,7 +13,7 @@ import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import dagateway.api.context.RouteContext;
-import dagateway.api.resolver.MultiBackendResponseResolver;
+import dagateway.api.resolver.http.MultiBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import net.minidev.json.JSONObject;
 import reactor.core.publisher.Flux;

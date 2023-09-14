@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
 import dagateway.api.handler.AbstractContentHandler;
 import dagateway.api.utils.CharStream;
 import reactor.core.publisher.Flux;
@@ -29,7 +28,7 @@ public class DataBuffer2TextPlainHandler extends AbstractContentHandler<Flux<Dat
 	}
 
 	@Override
-	public Mono<String> handle(Flux<DataBuffer> responseBody, ServiceSpec serviceSpec) {
+	public Mono<String> handle(Flux<DataBuffer> responseBody) {
 		this.log.debug("resolveBody");
 		
 		CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();

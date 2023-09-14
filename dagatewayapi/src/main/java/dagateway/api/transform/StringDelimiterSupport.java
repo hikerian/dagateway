@@ -1,4 +1,4 @@
-package dagateway.api.resolver;
+package dagateway.api.transform;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
