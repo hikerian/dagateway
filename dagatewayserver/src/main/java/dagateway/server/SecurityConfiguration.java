@@ -7,6 +7,10 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfiguration {
@@ -19,15 +23,13 @@ public class SecurityConfiguration {
 	 */
 	@Bean
 	SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-		return http.authorizeExchange()
-				.pathMatchers("/admin") // 관리 화면을 위해 권한 부여
-				.hasAuthority("Admin") // 관리 화면을 위해 권한 부여
-				.anyExchange()
-				.permitAll()
-				.and()
-				.csrf() // 기본적으로 post 등 body를 포함하는 요청에 대해 csrf가 활성화 되어있음.
-				.disable()
-				.build();
+		return http.authorizeExchange(exchange -> exchange
+	                .pathMatchers("/admin") // 관리 화면을 위해 권한 부여
+	                .hasAuthority("Admin") // 관리 화면을 위해 권한 부여
+	                .anyExchange()
+	                .permitAll()
+                ).csrf(csrf -> csrf.disable()) // 기본적으로 post 등 body를 포함하는 요청에 대해 csrf가 활성화 되어있음.
+                .build();
 	}
 
 }
