@@ -2,9 +2,8 @@ package dagateway.api.context.predicate;
 
 import java.util.Map;
 
-import org.springframework.util.LinkedCaseInsensitiveMap;
-
 import dagateway.api.context.RoutePredicate;
+import dagateway.api.utils.InsensitiveKeyMap;
 import dagateway.api.utils.Utils;
 
 
@@ -14,7 +13,7 @@ import dagateway.api.utils.Utils;
  *
  */
 public class RoutePredicateBuilder {
-	private final Map<String, Class<? extends RoutePredicate>> predicateMap = new LinkedCaseInsensitiveMap<>();
+	private final Map<String, Class<? extends RoutePredicate>> predicateMap = new InsensitiveKeyMap<>();
 	
 	
 	public RoutePredicateBuilder() {

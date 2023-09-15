@@ -6,6 +6,9 @@ import dagateway.api.composer.MessageNode;
 import dagateway.api.composer.stream.StreamBuffer;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public interface StreamBuilder {
 	public void init(MessageNode element, StreamBuilder parentBuilder);
 	public MessageNode element();

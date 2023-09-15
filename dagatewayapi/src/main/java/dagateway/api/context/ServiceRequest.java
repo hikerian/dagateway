@@ -3,6 +3,9 @@ package dagateway.api.context;
 import org.springframework.http.HttpMethod;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class ServiceRequest {
 	private HttpMethod method;
 	private HeaderProperties header;

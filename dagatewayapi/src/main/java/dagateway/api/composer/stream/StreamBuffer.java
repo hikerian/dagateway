@@ -1,6 +1,9 @@
 package dagateway.api.composer.stream;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public interface StreamBuffer {
 	public StreamBuffer write(char data);
 	public StreamBuffer write(byte data);

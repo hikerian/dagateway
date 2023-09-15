@@ -3,6 +3,9 @@ package dagateway.api.utils;
 import java.util.Arrays;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class CharStream {
 	private int increase = 32;
 	private char buf[];

@@ -10,6 +10,9 @@ import org.springframework.web.server.ServerWebExchange;
 import dagateway.api.context.RoutePredicate;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class CookieRoutePredicate implements RoutePredicate {
 	private String name;
 	private String regexp;

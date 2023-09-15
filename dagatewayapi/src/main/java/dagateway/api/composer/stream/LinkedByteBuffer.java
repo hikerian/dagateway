@@ -3,7 +3,7 @@ package dagateway.api.composer.stream;
 
 /**
  * LinkedList Style ByteStream
- * @author chodo
+ * @author Dong-il Cho
  *
  */
 public class LinkedByteBuffer implements StreamBuffer {

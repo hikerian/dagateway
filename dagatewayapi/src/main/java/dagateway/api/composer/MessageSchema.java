@@ -5,9 +5,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * 전체메시지문서
- * @author chodo
- *
+ * @author Dong-il Cho
  */
 public class MessageSchema extends MessageNode {
 	private final Logger log = LoggerFactory.getLogger(MessageSchema.class);

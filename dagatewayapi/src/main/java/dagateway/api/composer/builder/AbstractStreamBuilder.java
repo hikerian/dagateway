@@ -4,6 +4,10 @@ import dagateway.api.composer.MessageNode;
 import dagateway.api.composer.stream.StreamBuffer;
 
 
+/**
+ * @author Dong-il Cho
+ * 
+ */
 public abstract class AbstractStreamBuilder implements StreamBuilder {
 	private MessageNode element;
 	private StreamBuilder parentBuilder;

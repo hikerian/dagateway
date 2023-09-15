@@ -2,11 +2,11 @@ package dagateway.api.context;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-
+/**
+ * @author Dong-il Cho
+ */
 public class ServiceResponseBody {
-	@JsonProperty("transform")
 	private List<TransformRule> transform;
 	
 	

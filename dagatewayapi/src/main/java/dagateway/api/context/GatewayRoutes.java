@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class GatewayRoutes {
 	private List<GatewayRoute> routes = new ArrayList<>();
 	

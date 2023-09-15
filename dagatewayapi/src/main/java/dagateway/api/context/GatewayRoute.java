@@ -5,11 +5,7 @@ import java.util.List;
 
 /**
  * Filter Usage
- * @see org.springframework.cloud.gateway.config.GatewayAutoConfiguration#filteringWebHandler
- * @see org.springframework.cloud.gateway.handler.FilteringWebHandler
- * @see org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping#getHandlerInternal
- * @see org.springframework.web.reactive.handler.AbstractHandlerMapping
- * @author chodo
+ * @author Dong-il Cho
  *
  */
 public class GatewayRoute {

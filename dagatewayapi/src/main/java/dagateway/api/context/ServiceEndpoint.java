@@ -1,6 +1,9 @@
 package dagateway.api.context;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class ServiceEndpoint {
 	private EndpointType type;
 	private String uri;

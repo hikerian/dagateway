@@ -9,6 +9,9 @@ import dagateway.api.composer.builder.StreamBuilder;
 import dagateway.api.composer.stream.StreamBuffer;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class DataProxy {
 	private final Logger log = LoggerFactory.getLogger(DataProxy.class);
 	

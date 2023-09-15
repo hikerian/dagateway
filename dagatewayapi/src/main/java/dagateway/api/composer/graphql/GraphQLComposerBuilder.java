@@ -19,6 +19,9 @@ import graphql.language.Selection;
 import graphql.language.SelectionSet;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class GraphQLComposerBuilder {
 	
 	

@@ -12,8 +12,7 @@ import dagateway.api.composer.builder.StreamBuilder;
 
 /**
  * 매핑된 노드의 계층구조를 나타내는 Class.
- * @author chodo
- *
+ * @author Dong-il Cho
  */
 public class MessageNode {
 	private final Logger log = LoggerFactory.getLogger(MessageNode.class);

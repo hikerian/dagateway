@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Objects;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class HeaderProperties {
 	private List<HeaderEntry> add;
 	private List<HeaderEntry> set;

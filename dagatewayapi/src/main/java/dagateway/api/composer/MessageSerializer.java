@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import dagateway.api.composer.builder.StreamBuilder;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class MessageSerializer {
 	private final Logger log = LoggerFactory.getLogger(MessageSerializer.class);
 	

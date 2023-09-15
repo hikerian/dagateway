@@ -1,6 +1,9 @@
 package dagateway.api.context;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public enum ContentHandling {
 	PASSTHROUGH("passthrough"),
 	COMPOSE("compose");

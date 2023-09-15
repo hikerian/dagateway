@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ServerWebExchange;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class GatewayContext {
 	private final Logger log = LoggerFactory.getLogger(GatewayContext.class);
 	

@@ -17,6 +17,9 @@ import dagateway.api.composer.builder.AbstractStreamBuilder;
 import dagateway.api.composer.stream.StreamBuffer;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class JsonStreamBuilder extends AbstractStreamBuilder {
 	private final Logger log = LoggerFactory.getLogger(JsonStreamBuilder.class);
 	

@@ -3,6 +3,9 @@ package dagateway.api.context;
 import org.springframework.http.MediaType;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class TransformRule {
 	private MediaType contentType;
 	private String bodyGraph;

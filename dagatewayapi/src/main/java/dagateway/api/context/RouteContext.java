@@ -21,6 +21,10 @@ import dagateway.api.composer.MessageSchema;
 import dagateway.api.utils.ServerWebExchangeUtils;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class RouteContext {
 	private final Logger log = LoggerFactory.getLogger(RouteContext.class);
 	

@@ -24,6 +24,9 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.logging.AdvancedByteBufFormat;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class Utils {
 	/** Captures URI template variable names. */
 	private static final Pattern NAMES_PATTERN = Pattern.compile("\\{([^/]+?)\\}");

@@ -10,6 +10,14 @@ import dagateway.api.transform.DataTransformer;
 
 
 
+/**
+ * @author Dong-il Cho
+ * @param <P>
+ * @param <Cq>
+ * @param <T>
+ * @param <V>
+ * @param <R>
+ */
 public abstract class AbstractContentHandler<P extends Publisher<Cq>, Cq, T, V, R>
 	implements ContentHandler<P, Cq, T, V, R> {
 	

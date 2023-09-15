@@ -12,6 +12,9 @@ import com.fasterxml.jackson.core.JsonToken;
 import dagateway.api.composer.MessageNode;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class JsonState {
 	private final Logger log = LoggerFactory.getLogger(JsonState.class);
 	
