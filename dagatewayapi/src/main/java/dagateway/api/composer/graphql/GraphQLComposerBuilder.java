@@ -8,7 +8,7 @@ import java.util.Optional;
 import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageNode;
 import dagateway.api.composer.MessageSchema;
-import dagateway.api.context.RouteContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import graphql.execution.instrumentation.DocumentAndVariables;
 import graphql.language.Argument;
 import graphql.language.Document;
@@ -23,6 +23,9 @@ import graphql.language.SelectionSet;
  * @author Dong-il Cho
  */
 public class GraphQLComposerBuilder {
+	public static final String CLIENT_RESPONSE_GRAPH_KEY = "CLIENT_RESPONSE_GRAPH";
+	public static final String CLIENT_REQUEST_GRAPH_KEY = "CLIENT_REQUEST_GRAPH";
+	public static final String TRANSFORM_GRAPH_KEY = "TRANSFORM_GRAPH";
 	
 	
 	private GraphQLComposerBuilder() {

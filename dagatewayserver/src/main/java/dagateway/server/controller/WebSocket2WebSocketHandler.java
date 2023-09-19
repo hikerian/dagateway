@@ -13,7 +13,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
-import dagateway.api.context.RouteContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.handler.ContentHandler;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
@@ -45,7 +45,7 @@ public class WebSocket2WebSocketHandler<T, V> implements WebSocketHandler {
 
 	@Override
 	public Mono<Void> handle(WebSocketSession session) {
-		this.log.debug("handle");
+//		this.log.debug("handle");
 		
 		// create websocket client
 		HandshakeInfo handshakeInfo = session.getHandshakeInfo();

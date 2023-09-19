@@ -1,6 +1,6 @@
 package dagateway.api.transform;
 
-import dagateway.api.context.RouteContext.TransformSpec;
+import dagateway.api.context.RouteRequestContext.TransformSpec;
 
 
 /**

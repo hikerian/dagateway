@@ -10,8 +10,9 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
 import dagateway.api.context.GatewayContext;
-import dagateway.api.context.GatewayRoute;
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.GatewayRouteContext;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.route.GatewayRoute;
 import dagateway.api.utils.ServerWebExchangeUtils;
 import reactor.core.publisher.Mono;
 
@@ -30,17 +31,17 @@ public class HttpGatewayFilter implements WebFilter, Ordered {
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-		this.log.debug("filter: " + exchange.getRequest().getURI());
+//		this.log.debug("filter: " + exchange.getRequest().getURI());
 		
-		GatewayRoute gatewayRoute = this.gatewayContext.getRoute(exchange);
+		GatewayRouteContext gatewayRoute = this.gatewayContext.getRoute(exchange);
 		if(gatewayRoute == null) {
 			return chain.filter(exchange);
 		}
 		
-		RouteContext routeContext = new RouteContext(exchange, gatewayRoute);
+		RouteRequestContext routeContext = new RouteRequestContext(exchange, gatewayRoute);
 		ServerWebExchangeUtils.putRouteContext(exchange, routeContext);
 		
-		this.log.debug("RouteContext putted: " + routeContext);
+//		this.log.debug("RouteContext putted: " + routeContext);
 		
 		return chain.filter(exchange);
 	}

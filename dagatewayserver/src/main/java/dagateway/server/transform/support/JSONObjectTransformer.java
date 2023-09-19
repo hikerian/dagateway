@@ -22,9 +22,9 @@ public class JSONObjectTransformer extends AbstractDataTransformer<JSONObject, J
 
 	@Override
 	public JSONObject transform(JSONObject source) {
-		this.log.debug("===================== JSONObjectTransformer.transform =====================");
-		this.log.debug(source.toJSONString(JSONStyle.NO_COMPRESS));
-		this.log.debug("===========================================================================");
+//		this.log.debug("===================== JSONObjectTransformer.transform =====================");
+//		this.log.debug(source.toJSONString(JSONStyle.NO_COMPRESS));
+//		this.log.debug("===========================================================================");
 
 		return source;
 	}

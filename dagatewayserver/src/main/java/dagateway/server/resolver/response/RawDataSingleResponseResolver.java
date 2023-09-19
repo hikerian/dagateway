@@ -7,7 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteRequestContext;
 import dagateway.api.resolver.http.SingleBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Flux;
@@ -23,8 +23,8 @@ public class RawDataSingleResponseResolver extends SingleBackendResponseResolver
 	}
 	
 	@Override
-	public Mono<ServerResponse> resolve(RouteContext routeContext, Mono<ServiceResult<Flux<DataBuffer>>> serviceResult) {
-		this.log.debug("resolve");
+	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Flux<DataBuffer>>> serviceResult) {
+//		this.log.debug("resolve");
 		
 		// Single
 		return serviceResult.flatMap(result -> {
@@ -49,8 +49,8 @@ public class RawDataSingleResponseResolver extends SingleBackendResponseResolver
 		});
 	}
 	
-	public Flux<DataBuffer> resolveBody(RouteContext routeContext, ServiceResult<Flux<DataBuffer>> serviceResult) {
-		this.log.debug("resolve");
+	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, ServiceResult<Flux<DataBuffer>> serviceResult) {
+//		this.log.debug("resolve");
 		
 		Flux<DataBuffer> dataBuffers = serviceResult.getBody();
 		

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.http.MediaType;
 
-import dagateway.api.context.ContentHandling;
+import dagateway.api.context.route.ContentHandling;
 import dagateway.api.service.ServiceResult;
 import dagateway.api.utils.Utils;
 
@@ -79,7 +79,7 @@ public class ClientResolverFactory {
 			throw new UnsupportedOperationException(aggregateType + " " + requestType);
 		}
 		
-		this.log.debug("ClientRequestResolver: " + resolverClass);
+//		this.log.debug("ClientRequestResolver: " + resolverClass);
 		
 		@SuppressWarnings("unchecked")
 		AbstractClientRequestResolver<Cq, P> resolver = (AbstractClientRequestResolver<Cq, P>) Utils.newInstance(resolverClass);
@@ -118,7 +118,7 @@ public class ClientResolverFactory {
 			throw new UnsupportedOperationException("Response MediaType " + responseType + " is not supported.");
 		}
 		
-		this.log.debug("ClientResponseResolver: " + resolverClass);
+//		this.log.debug("ClientResponseResolver: " + resolverClass);
 		
 		@SuppressWarnings("unchecked")
 		AbstractClientResponseResolver<Sr, P> resolver = (AbstractClientResponseResolver<Sr, P>) Utils.newInstance(resolverClass);

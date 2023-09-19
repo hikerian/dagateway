@@ -163,13 +163,13 @@ public class JsonState {
 		if(children != null) {
 			for(MessageNode child : children) {
 				if(fieldName.equals(child.getName())) {
-					this.log.debug("Field: " + fieldName + " is child of " + messageElement.getName());
+//					this.log.debug("Field: " + fieldName + " is child of " + messageElement.getName());
 					return child;
 				}
 			}
 		}
-		this.log.debug("Field: " + fieldName + " is not child of " + (messageElement == null ? null : messageElement.getName()));
-		this.log.debug(this.stageStack.toString());
+//		this.log.debug("Field: " + fieldName + " is not child of " + (messageElement == null ? null : messageElement.getName()));
+//		this.log.debug(this.stageStack.toString());
 		return null;
 	}
 	

@@ -1,6 +1,8 @@
-package dagateway.api.context;
+package dagateway.api.context.route;
 
 import java.util.List;
+
+import dagateway.api.context.predicate.RoutePredicate;
 
 
 /**

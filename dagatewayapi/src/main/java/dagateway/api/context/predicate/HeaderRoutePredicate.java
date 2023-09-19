@@ -6,8 +6,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
-import dagateway.api.context.RoutePredicate;
-
 
 public class HeaderRoutePredicate implements RoutePredicate {
 	private String name;

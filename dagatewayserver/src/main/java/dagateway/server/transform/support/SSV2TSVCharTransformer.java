@@ -45,7 +45,7 @@ public class SSV2TSVCharTransformer extends AbstractDataTransformer<String, Stri
 	
 	@Override
 	public String transform(String source) {
-		this.log.debug("transform");
+//		this.log.debug("transform");
 		
 		if(source.startsWith("SSV:")) {
 			// skip

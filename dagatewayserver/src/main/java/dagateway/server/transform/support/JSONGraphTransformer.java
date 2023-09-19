@@ -11,7 +11,7 @@ import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
 import dagateway.api.composer.graphql.GraphQLComposerBuilder;
 import dagateway.api.composer.stream.LinkedByteBuffer;
-import dagateway.api.context.RouteContext.TransformSpec;
+import dagateway.api.context.RouteRequestContext.TransformSpec;
 import dagateway.api.transform.AbstractDataTransformer;
 import graphql.ExecutionInput;
 import graphql.ParseAndValidate;
@@ -32,14 +32,19 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 	@Override
 	protected void doInit() {
 		TransformSpec transformSpec = this.getTransformSpec();
-		String query = transformSpec.getBodyGraph();
 		
-		ExecutionInput executionInput = ExecutionInput.newExecutionInput(query).build();
-		ParseAndValidateResult parseResult = ParseAndValidate.parse(executionInput);
-		if(parseResult.isFailure()) {
-			throw new IllegalArgumentException(parseResult.getSyntaxException());
+		DocumentAndVariables documentAndVariable = (DocumentAndVariables)transformSpec.getAttribute(GraphQLComposerBuilder.TRANSFORM_GRAPH_KEY);
+		if(documentAndVariable == null) {
+			String query = transformSpec.getBodyGraph();
+			
+			ExecutionInput executionInput = ExecutionInput.newExecutionInput(query).build();
+			ParseAndValidateResult parseResult = ParseAndValidate.parse(executionInput);
+			if(parseResult.isFailure()) {
+				throw new IllegalArgumentException(parseResult.getSyntaxException());
+			}
+			documentAndVariable = parseResult.getDocumentAndVariables();
+			transformSpec.setAttribute(GraphQLComposerBuilder.TRANSFORM_GRAPH_KEY, documentAndVariable);
 		}
-		DocumentAndVariables documentAndVariable = parseResult.getDocumentAndVariables();
 		
 		MessageSchema messageStructure = GraphQLComposerBuilder.build(documentAndVariable);
 		DataProxy dataProxy = new DataProxy();
@@ -54,7 +59,7 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 
 	@Override
 	public DataBuffer transform(DataBuffer source) {
-		this.log.debug("transform");
+//		this.log.debug("transform");
 		
 		this.dataProxy.push(source.asByteBuffer());
 		

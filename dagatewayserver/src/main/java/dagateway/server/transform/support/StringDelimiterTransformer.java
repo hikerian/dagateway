@@ -26,7 +26,7 @@ public class StringDelimiterTransformer extends AbstractDataTransformer<String, 
 
 	@Override
 	public String transform(String source) {
-		this.log.debug(source);
+//		this.log.debug(source);
 		
 		return source;
 	}

@@ -11,7 +11,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteRequestContext;
 
 
 public class ServerWebExchangeUtils {
@@ -41,7 +41,6 @@ public class ServerWebExchangeUtils {
 			newVariables.putAll(existingVariables);
 			newVariables.putAll(uriVars);
 			
-			System.out.println(newVariables);
 			attributes.put(ServerWebExchangeUtils.URI_TEMPLATE_VARIABLES_ATTRIBUTE, newVariables);
 		} else {
 			attributes.put(ServerWebExchangeUtils.URI_TEMPLATE_VARIABLES_ATTRIBUTE, uriVars);
@@ -54,23 +53,23 @@ public class ServerWebExchangeUtils {
 		return (Map<String, String>) attributes.getOrDefault(ServerWebExchangeUtils.URI_TEMPLATE_VARIABLES_ATTRIBUTE, Collections.emptyMap());
 	}
 	
-	public static void putRouteContext(ServerWebExchange serverWebExchange, RouteContext routeContext) {
+	public static void putRouteContext(ServerWebExchange serverWebExchange, RouteRequestContext routeContext) {
 		Map<String, Object> attributes = serverWebExchange.getAttributes();
 		attributes.put(ServerWebExchangeUtils.ROUTECONTEXT_ATTRIBUTE, routeContext);
 	}
 	
-	public static RouteContext getRouteContext(ServerWebExchange serverWebExchange) {
+	public static RouteRequestContext getRouteContext(ServerWebExchange serverWebExchange) {
 		Map<String, Object> attributes = serverWebExchange.getAttributes();
-		return (RouteContext) attributes.get(ServerWebExchangeUtils.ROUTECONTEXT_ATTRIBUTE);
+		return (RouteRequestContext) attributes.get(ServerWebExchangeUtils.ROUTECONTEXT_ATTRIBUTE);
 	}
 	
-	public static RouteContext getRouteContext(ServerRequest serverRequest) {
+	public static RouteRequestContext getRouteContext(ServerRequest serverRequest) {
 		Optional<Object> routeContextOptional = serverRequest.attribute(ServerWebExchangeUtils.ROUTECONTEXT_ATTRIBUTE);
 		if(routeContextOptional.isEmpty()) {
 			ServerWebExchangeUtils.log.debug("RouteContext is not found in ServerRequest");
 			return ServerWebExchangeUtils.getRouteContext(serverRequest.exchange());
 		}
-		return (RouteContext)routeContextOptional.get();
+		return (RouteRequestContext)routeContextOptional.get();
 	}
 	
 	private static String qualify(String attr) {

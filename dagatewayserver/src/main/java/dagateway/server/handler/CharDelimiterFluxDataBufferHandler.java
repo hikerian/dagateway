@@ -88,7 +88,7 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 		
 		try(InputStream in = dataBuffer.asInputStream(true)) {
 			int readCount = in.read(data, offset, readableCount);
-			this.log.debug("READABLECOUNT: " + readableCount + ", OFFSET: " + offset + ", READCOUNT: " + readCount);
+//			this.log.debug("READABLECOUNT: " + readableCount + ", OFFSET: " + offset + ", READCOUNT: " + readCount);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -104,7 +104,7 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 			CoderResult coderResult = this.decoder.decode(byteBuffer, this.decodeBuffer, false);
 			int position = this.decodeBuffer.position();
 			
-			this.log.debug(coderResult + ", BUFFER WRITTEN POSITION: " + position);
+//			this.log.debug(coderResult + ", BUFFER WRITTEN POSITION: " + position);
 			
 			this.stream.write(buf, 0, position); // <-- TODO encode
 			
@@ -112,7 +112,7 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 			if(coderResult.isOverflow() == false) {
 				loop = false;
 				
-				this.log.debug("readableCount: " + readableCount + ", byteBuffer.position(): " + byteBuffer.position());
+//				this.log.debug("readableCount: " + readableCount + ", byteBuffer.position(): " + byteBuffer.position());
 				
 				if(readableCount > byteBuffer.position()) {
 					byte[] remainData = new byte[readableCount - byteBuffer.position()];
@@ -124,9 +124,9 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 				}
 				
 				if(coderResult.isMalformed()) {
-					this.log.debug("+===================================+\n"
-							+ "|!!!!!!!!!!!! Malformed !!!!!!!!!!!!|\n"
-							+ "+===================================+");
+//					this.log.debug("+===================================+\n"
+//							+ "|!!!!!!!!!!!! Malformed !!!!!!!!!!!!|\n"
+//							+ "+===================================+");
 				}
 			}
 		}

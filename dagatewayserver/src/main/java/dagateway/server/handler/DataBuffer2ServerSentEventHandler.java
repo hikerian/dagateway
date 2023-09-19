@@ -27,7 +27,7 @@ public class DataBuffer2ServerSentEventHandler extends AbstractContentHandler<Fl
 
 	@Override
 	public Flux<ServerSentEvent<String>> handle(Flux<DataBuffer> responseBody) {
-		this.log.debug("resolveBody======>>");
+//		this.log.debug("resolveBody======>>");
 		
 		ParameterizedTypeReference<ServerSentEvent<String>> sseType = new ParameterizedTypeReference<>() {};
 		ResolvableType resolvableType = ResolvableType.forType(sseType.getType());

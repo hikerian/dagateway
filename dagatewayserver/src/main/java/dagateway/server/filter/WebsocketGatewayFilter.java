@@ -16,9 +16,9 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
-import dagateway.api.context.EndpointType;
-import dagateway.api.context.RouteContext;
-import dagateway.api.context.RouteContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.RouteRequestContext.ServiceSpec;
+import dagateway.api.context.route.EndpointType;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
@@ -59,14 +59,14 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 	}
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-		this.log.debug("filter: " + exchange.getRequest().getURI());
+//		this.log.debug("filter: " + exchange.getRequest().getURI());
 		
 		ServerHttpRequest req = exchange.getRequest();
 		URI reqURI = req.getURI();
 		String schema = reqURI.getScheme().toLowerCase();
 		String upgrade = req.getHeaders().getUpgrade();
 		
-		RouteContext routeContext = ServerWebExchangeUtils.getRouteContext(exchange);
+		RouteRequestContext routeContext = ServerWebExchangeUtils.getRouteContext(exchange);
 		
 		if(routeContext != null
 				&& "WebSocket".equalsIgnoreCase(upgrade)
@@ -75,7 +75,7 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 			this.setAlreadyRouted(exchange);
 
 			// TODO Support Mutlple ServiceSpec;
-			List<RouteContext.ServiceSpec> serviceSpecs = routeContext.getServiceSpecList();
+			List<RouteRequestContext.ServiceSpec> serviceSpecs = routeContext.getServiceSpecList();
 			ServiceSpec serviceSpec = serviceSpecs.get(0);
 			
 			WebSocketHandler websocketHandler = this.buildHandler(serviceSpec);

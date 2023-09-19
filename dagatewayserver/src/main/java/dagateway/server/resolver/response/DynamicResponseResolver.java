@@ -7,7 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteRequestContext;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.http.SingleBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
@@ -31,8 +31,8 @@ public class DynamicResponseResolver<Sr> extends SingleBackendResponseResolver<S
 	}
 	
 	@Override
-	public Mono<ServerResponse> resolve(RouteContext routeContext, Mono<ServiceResult<Sr>> serviceResult) {
-		this.log.debug("RESPONSE CONTENTTYPE: " + this.contentType);
+	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Sr>> serviceResult) {
+//		this.log.debug("RESPONSE CONTENTTYPE: " + this.contentType);
 		
 		return serviceResult.flatMap(result -> {
 			HttpHeaders backendHeaders = result.getHeaders();
@@ -54,8 +54,8 @@ public class DynamicResponseResolver<Sr> extends SingleBackendResponseResolver<S
 		});
 	}
 	
-	public Sr resolveBody(RouteContext routeContext, ServiceResult<Sr> serviceResult) {
-		this.log.debug("RESPONSE CONTENTTYPE: " + this.contentType);
+	public Sr resolveBody(RouteRequestContext routeContext, ServiceResult<Sr> serviceResult) {
+//		this.log.debug("RESPONSE CONTENTTYPE: " + this.contentType);
 		
 		return serviceResult.getBody();
 	}

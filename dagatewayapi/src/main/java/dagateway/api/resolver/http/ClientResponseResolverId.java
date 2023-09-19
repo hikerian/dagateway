@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import org.springframework.http.MediaType;
 
-import dagateway.api.context.ContentHandling;
+import dagateway.api.context.route.ContentHandling;
 
 
 

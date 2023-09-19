@@ -30,12 +30,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import dagateway.api.context.ContentHandling;
 import dagateway.api.context.GatewayContext;
-import dagateway.api.context.GatewayRoutes;
-import dagateway.api.context.RouteContext;
-import dagateway.api.context.RoutePredicate;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.predicate.RoutePredicate;
 import dagateway.api.context.predicate.RoutePredicateBuilder;
+import dagateway.api.context.route.ContentHandling;
+import dagateway.api.context.route.GatewayRoutes;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.http.ClientRequestResolverId;
@@ -94,9 +94,7 @@ public class GatewayConfiguration {
 
 		RouterFunctions.Builder routerFunctionBuilder = RouterFunctions.route();
 		routerFunctionBuilder.route(request -> {
-			RouteContext routeContext = ServerWebExchangeUtils.getRouteContext(request);
-			
-			this.log.debug("## RouteContext HIT!!!: " + routeContext);
+			RouteRequestContext routeContext = ServerWebExchangeUtils.getRouteContext(request);
 			
 			return routeContext != null;
 		}, httpRequestRouteController::service);
@@ -106,13 +104,15 @@ public class GatewayConfiguration {
 	
 	@Bean
 	RoutePredicateBuilder routePredicateBuilder() {
+		this.log.debug("routePredicateBuilder");
+		
 		RoutePredicateBuilder routePredicateBuilder = new RoutePredicateBuilder();
 		return routePredicateBuilder;
 	}
 	
 	@Bean
 	GatewayContext gatewayContext(ConfigurableApplicationContext configurableApplicationContext, RoutePredicateBuilder predicateFactory) throws Exception {
-		this.log.debug("bffGatewayContext");
+		this.log.debug("gatewayContext");
 		
 		SimpleModule deserializerModule = new SimpleModule();
 		deserializerModule.addDeserializer(RoutePredicate.class, new JsonDeserializer<RoutePredicate>() {
@@ -124,7 +124,7 @@ public class GatewayConfiguration {
 			}
 		});
 		
-		GatewayContext bffGatewayContext = new GatewayContext();
+		GatewayContext gatewayContext = new GatewayContext();
 		
 		Resource[] routeYamls = configurableApplicationContext.getResources("classpath:route/*.yml");
 		
@@ -142,15 +142,16 @@ public class GatewayConfiguration {
 		for(Resource routeYaml : routeYamls) {
 			Map<String, Object> yamlMap = yaml.load(routeYaml.getInputStream());
 			GatewayRoutes routes = mapper.convertValue(yamlMap, GatewayRoutes.class);
-			bffGatewayContext.addRoutes(routes);
-			this.log.debug(routes.toString());
+			gatewayContext.addRoutes(routes);
 		}
 		
-		return bffGatewayContext;
+		return gatewayContext;
 	}
 	
 	@Bean
 	BodyInserterBuilderFactory bodyInserterBuilderFactory() {
+		this.log.debug("bodyInserterBuilderFactory");
+		
 		BodyInserterBuilderFactory factory = new BodyInserterBuilderFactory();
 		return factory;
 	}
@@ -159,6 +160,7 @@ public class GatewayConfiguration {
 	ServiceBrokerBuilder serviceBrokerBuilder(ContentHandlerFactory contentHandlerFactory
 			, ClientResolverFactory clientResolverFactory
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory) {
+		this.log.debug("serviceBrokerBuilder");
 
 		ServiceBrokerBuilder serviceBrokerBuilder = new ServiceBrokerBuilder();
 		serviceBrokerBuilder.init(contentHandlerFactory, clientResolverFactory, bodyInserterBuilderFactory);
@@ -168,18 +170,20 @@ public class GatewayConfiguration {
 	
 	@Bean
 	ClientResolverFactory clientResolverFactory(AutowireCapableBeanFactory autowireCapableBeanFactory) {
+		this.log.debug("clientResolverFactory");
+		
 		ClientResolverFactory clientResolverFactory = new ClientResolverFactory();
 		clientResolverFactory.setAutowireCapableBeanFactory(autowireCapableBeanFactory);
 		
 		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_FORM_URLENCODED, false), FormDataRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteContext.NONE, MediaType.APPLICATION_FORM_URLENCODED, false), FormDataRequestResolver.class);
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.APPLICATION_FORM_URLENCODED, false), FormDataRequestResolver.class);
 		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.MULTIPART_FORM_DATA, MediaType.MULTIPART_FORM_DATA, false), MultipartRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteContext.NONE, MediaType.MULTIPART_FORM_DATA, false), MultipartRequestResolver.class);
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.MULTIPART_FORM_DATA, false), MultipartRequestResolver.class);
 		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, false), JSONObjectRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteContext.NONE, MediaType.APPLICATION_JSON, false), JSONObjectRequestResolver.class);
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.APPLICATION_JSON, false), JSONObjectRequestResolver.class);
 		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.ALL, MediaType.APPLICATION_OCTET_STREAM, true), RawDataRequestResolver.class);
 		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.ALL, MediaType.ALL, true), RawDataRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteContext.NONE, MediaType.ALL, true), RawDataRequestResolver.class);
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.ALL, true), RawDataRequestResolver.class);
 		
 		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true), JSONNDResponseResolver.class);
 		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true), JSONNDStreamResponseResolver.class);
@@ -197,6 +201,7 @@ public class GatewayConfiguration {
 	@Bean
 	WebSocketMessageResolverFactory webSocketMessageResolverFactory(AutowireCapableBeanFactory autowireCapableBeanFactory
 			, DataTransformerFactory dataTransformerFactory) {
+		this.log.debug("webSocketMessageResolverFactory");
 		
 		WebSocketMessageResolverFactory webSocketMessageResolverFactory = new WebSocketMessageResolverFactory();
 		
@@ -205,6 +210,8 @@ public class GatewayConfiguration {
 	
 	@Bean
 	ContentHandlerFactory contentHandlerFactory(AutowireCapableBeanFactory autowireCapableBeanFactory, DataTransformerFactory dataTransformerFactory) {
+		this.log.debug("contentHandlerFactory");
+		
 		ContentHandlerFactory contentHandlerFactory = new ContentHandlerFactory();
 		contentHandlerFactory.init(autowireCapableBeanFactory, dataTransformerFactory);
 		
@@ -223,6 +230,8 @@ public class GatewayConfiguration {
 	
 	@Bean
 	DataTransformerFactory dataTransformerFactory(AutowireCapableBeanFactory autowireCapableBeanFactory) {
+		this.log.debug("dataTransformerFactory");
+		
 		DataTransformerFactory dataTransformerFactory = new DataTransformerFactory();
 		dataTransformerFactory.setAutowireCapableBeanFactory(autowireCapableBeanFactory);
 		
@@ -246,6 +255,8 @@ public class GatewayConfiguration {
 
 	@Bean
 	WebSocketService webSocketService() {
+		this.log.debug("webSocketService");
+		
 		ReactorNettyRequestUpgradeStrategy strategy = new ReactorNettyRequestUpgradeStrategy();
 
 		return new HandshakeWebSocketService(strategy);

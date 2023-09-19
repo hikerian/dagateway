@@ -6,8 +6,8 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import dagateway.api.context.RouteContext;
-import dagateway.api.context.RouteContext.ResponseSpec;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.RouteRequestContext.ResponseSpec;
 import dagateway.api.resolver.http.MultiBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Flux;
@@ -23,8 +23,8 @@ public class RawDataMultiResponseResolver extends MultiBackendResponseResolver<F
 	}
 	
 	@Override
-	public Mono<ServerResponse> resolve(RouteContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-		this.log.debug("resolve");
+	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		ResponseSpec responseSpec = routeContext.getResponseSpec();
 		MediaType responseType = responseSpec.getContentType();
@@ -42,8 +42,8 @@ public class RawDataMultiResponseResolver extends MultiBackendResponseResolver<F
 		});
 	}
 	
-	public Flux<DataBuffer> resolveBody(RouteContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-		this.log.debug("resolve");
+	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		Flux<DataBuffer> bodyBuffers = serviceResults.flatMap(result -> {
 			return result.getBody();

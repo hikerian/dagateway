@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.http.MediaType;
 
-import dagateway.api.context.RouteContext.TransformSpec;
+import dagateway.api.context.RouteRequestContext.TransformSpec;
 import dagateway.api.transform.DataTransformer;
 import dagateway.api.transform.DataTransformerFactory;
 import dagateway.api.utils.Utils;
@@ -45,11 +45,11 @@ public class ContentHandlerFactory {
 		ContentHandlerId handlerId = new ContentHandlerId(from
 				, types[0].getTypeName()
 				, types[4].getTypeName());
-		this.log.warn("ContentHandler: " + handlerId);
+//		this.log.warn("ContentHandler: " + handlerId);
 		
 		Class<? extends AbstractContentHandler<?, ?, ?, ?, ?>> oldHandler = this.contentHandlers.get(handlerId);
 		if(oldHandler != null) {
-			this.log.warn("Handler: " + handlerId + " is already exists. It will be replaced." + oldHandler);
+//			this.log.warn("Handler: " + handlerId + " is already exists. It will be replaced." + oldHandler);
 		}
 		this.contentHandlers.put(handlerId, handlerClass);
 	}
@@ -69,7 +69,7 @@ public class ContentHandlerFactory {
 			throw new UnsupportedOperationException("FROM: " + fromType);
 		}
 		
-		this.log.debug("ContentHandler: " + handlerClass);
+//		this.log.debug("ContentHandler: " + handlerClass);
 		
 		return this.newInstance(handlerClass, fromType, toType, transformRule);
 	}
@@ -90,7 +90,7 @@ public class ContentHandlerFactory {
 			throw new UnsupportedOperationException("FROM: " + fromType + ", ReturnTypeName: " + returnTypeName);
 		}
 		
-		this.log.debug("ServiceResponseHandler: " + handlerClass);
+//		this.log.debug("ServiceResponseHandler: " + handlerClass);
 		
 		return this.newInstance(handlerClass, fromType, toType, transformRule);
 	}

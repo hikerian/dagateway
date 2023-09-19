@@ -1,4 +1,4 @@
-package dagateway.api.context;
+package dagateway.api.context.route;
 
 import org.springframework.http.MediaType;
 

@@ -14,8 +14,8 @@ import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import dagateway.api.context.HeaderProperties;
-import dagateway.api.context.RouteContext.HeaderSpec;
+import dagateway.api.context.RouteRequestContext.HeaderSpec;
+import dagateway.api.context.route.HeaderProperties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
@@ -162,7 +162,6 @@ public class Utils {
 		
 		// retain
 		List<String> retainKeys = headerSpec.getRetain();
-		System.out.println("retainKeys: " + retainKeys);
 		if(retainKeys != null) {
 			if(retainKeys.contains("*")) {
 				Set<String> sourceHeaderNames = sourceHeaders.keySet();

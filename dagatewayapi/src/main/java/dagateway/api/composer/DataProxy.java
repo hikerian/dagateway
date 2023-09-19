@@ -32,7 +32,7 @@ public class DataProxy {
 	}
 	
 	public void buildNext() {
-		this.log.debug("Proxy moveToParent");
+//		this.log.debug("Proxy moveToParent");
 
 		StreamBuffer buffer = (StreamBuffer)this.streamBuilder.buffer();
 		StreamBuilder parentBuilder = this.streamBuilder.getParentBuilder();
@@ -45,12 +45,12 @@ public class DataProxy {
 	}
 	
 	public void finish() {
-		this.log.debug("Finish Func Called");
+//		this.log.debug("Finish Func Called");
 		this.isFeedEnd = true;
 	}
 	
 	public boolean isDone() {
-		this.log.debug("## isFeedEnd: " + this.isFeedEnd + ", bufferedSize: " + this.streamBuilder.bufferedSize());
+//		this.log.debug("## isFeedEnd: " + this.isFeedEnd + ", bufferedSize: " + this.streamBuilder.bufferedSize());
 
 		// feed가 finished 되었고 buffer에 사이즈가 없으면 done
 		return this.isFeedEnd && this.streamBuilder.bufferedSize() == 0;

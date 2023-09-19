@@ -20,7 +20,7 @@ public class NoneDataTransformer extends AbstractDataTransformer<Void, Void> {
 
 	@Override
 	public Void transform(Void source) {
-		this.log.debug("transform");
+//		this.log.debug("transform");
 		return null;
 	}
 

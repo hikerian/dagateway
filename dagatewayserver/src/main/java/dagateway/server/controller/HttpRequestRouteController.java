@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteRequestContext;
 import dagateway.api.service.ServiceBroker;
 import dagateway.api.service.ServiceBrokerBuilder;
 import dagateway.api.utils.ServerWebExchangeUtils;
@@ -31,14 +31,14 @@ public class HttpRequestRouteController {
 	}
 	
 	public <P extends Publisher<Cq>, Cq, Sr> Mono<ServerResponse> service(ServerRequest serverRequest) {
-		this.log.debug("build ServiceTasks");
-		RouteContext routeContext = ServerWebExchangeUtils.getRouteContext(serverRequest);
+//		this.log.debug("build ServiceTasks");
+		RouteRequestContext routeContext = ServerWebExchangeUtils.getRouteContext(serverRequest);
 		ServiceBroker<P, Cq, Sr> serviceBroker = this.serviceBrokerBuilder.build(routeContext);
 		
-		this.log.debug("run ServiceTasks");
+//		this.log.debug("run ServiceTasks");
 		Mono<ServerResponse> serverResponse = serviceBroker.run(serverRequest);
 		
-		this.log.debug("return ServerResponse");
+//		this.log.debug("return ServerResponse");
 		return serverResponse;
 	}
 

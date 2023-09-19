@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.http.MediaType;
 
-import dagateway.api.context.RouteContext.TransformSpec;
+import dagateway.api.context.RouteRequestContext.TransformSpec;
 import dagateway.api.utils.Utils;
 
 
@@ -34,11 +34,11 @@ public class DataTransformerFactory {
 		Type[] supportType = handlerType.getActualTypeArguments();
 		
 		DataTransformerId handlerId = new DataTransformerId(from, to, supportType[0], supportType[1]);
-		this.log.warn("ServiceResponseHandler: " + handlerId);
+//		this.log.warn("ServiceResponseHandler: " + handlerId);
 		
 		Class<? extends DataTransformer<?, ?>> oldHandler = this.transformers.get(handlerId);
 		if(oldHandler != null) {
-			this.log.warn("Handler: " + handlerId + " is already exists. It will be replaced." + oldHandler);
+//			this.log.warn("Handler: " + handlerId + " is already exists. It will be replaced." + oldHandler);
 		}
 		this.transformers.put(handlerId, transformerClass);
 	}

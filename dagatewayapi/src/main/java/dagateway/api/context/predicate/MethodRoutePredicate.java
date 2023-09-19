@@ -7,8 +7,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
-import dagateway.api.context.RoutePredicate;
-
 
 public class MethodRoutePredicate implements RoutePredicate {
 	private List<HttpMethod> methods = new ArrayList<>();

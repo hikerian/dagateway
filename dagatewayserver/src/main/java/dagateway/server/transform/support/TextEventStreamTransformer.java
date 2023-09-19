@@ -22,7 +22,7 @@ public class TextEventStreamTransformer extends AbstractDataTransformer<ServerSe
 
 	@Override
 	public ServerSentEvent<String> transform(ServerSentEvent<String> source) {
-		this.log.debug(source.toString());
+//		this.log.debug(source.toString());
 		
 		return source;
 	}

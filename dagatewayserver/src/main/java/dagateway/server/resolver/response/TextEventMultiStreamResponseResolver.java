@@ -6,7 +6,7 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteRequestContext;
 import dagateway.api.resolver.http.MultiBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Flux;
@@ -23,8 +23,8 @@ public class TextEventMultiStreamResponseResolver extends MultiBackendResponseRe
 	}
 
 	@Override
-	public Mono<ServerResponse> resolve(RouteContext routeContext, Flux<ServiceResult<Flux<ServerSentEvent<String>>>> serviceResults) {
-		this.log.debug("resolve");
+	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Flux<ServiceResult<Flux<ServerSentEvent<String>>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		ServerResponse.BodyBuilder bodyBuilder = ServerResponse.ok();
 		
@@ -38,8 +38,8 @@ public class TextEventMultiStreamResponseResolver extends MultiBackendResponseRe
 		return bodyBuilder.body(BodyInserters.fromServerSentEvents(serverSentEvents));
 	}
 	
-	public Flux<ServerSentEvent<String>> resolveBody(RouteContext routeContext, Flux<ServiceResult<Flux<ServerSentEvent<String>>>> serviceResults) {
-		this.log.debug("resolve");
+	public Flux<ServerSentEvent<String>> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<ServerSentEvent<String>>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		Flux<ServerSentEvent<String>> serverSentEvents = serviceResults.flatMap(result -> {
 			Flux<ServerSentEvent<String>> backendEvents = result.getBody();

@@ -92,7 +92,6 @@ public class LinkedByteBuffer implements StreamBuffer {
 		
 		byte[] buffer = this.last.getBuffer();
 		if(lastRemain > 0) {
-			System.out.println("datas.length: " + datas.length + ", dataOffset: " + dataOffset + ", linkPos: " + linkPos + ", lastRemain: " + lastRemain);
 			System.arraycopy(datas, dataOffset, buffer, linkPos, lastRemain);
 		}
 		

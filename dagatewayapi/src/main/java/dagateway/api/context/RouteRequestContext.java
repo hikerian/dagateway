@@ -18,6 +18,18 @@ import org.springframework.web.util.UriTemplate;
 
 import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageSchema;
+import dagateway.api.context.route.ClientRequest;
+import dagateway.api.context.route.ClientResponse;
+import dagateway.api.context.route.ContentHandling;
+import dagateway.api.context.route.EndpointType;
+import dagateway.api.context.route.HeaderProperties;
+import dagateway.api.context.route.ServiceEndpoint;
+import dagateway.api.context.route.ServiceRequest;
+import dagateway.api.context.route.ServiceRequestBody;
+import dagateway.api.context.route.ServiceResponse;
+import dagateway.api.context.route.ServiceResponseBody;
+import dagateway.api.context.route.ServiceTarget;
+import dagateway.api.context.route.TransformRule;
 import dagateway.api.utils.ServerWebExchangeUtils;
 
 
@@ -25,8 +37,8 @@ import dagateway.api.utils.ServerWebExchangeUtils;
 /**
  * @author Dong-il Cho
  */
-public class RouteContext {
-	private final Logger log = LoggerFactory.getLogger(RouteContext.class);
+public class RouteRequestContext {
+	private final Logger log = LoggerFactory.getLogger(RouteRequestContext.class);
 	
 	public static final MediaType NONE = MediaType.valueOf("none/none");
 	
@@ -34,19 +46,19 @@ public class RouteContext {
 	private HttpMethod requestMethod = null;
 	private HttpHeaders requestHeaders = null;
 	private MediaType requestContentType = null;
-	private GatewayRoute gatewayRoute = null;
+	private GatewayRouteContext gatewayRoute = null;
 	private Map<String, String> uriTemplateVars = null;
 	private MessageSchema messageStructure = null;
 	
 	
-	public RouteContext(ServerWebExchange serverWebExchange, GatewayRoute gatewayRoute) {
+	public RouteRequestContext(ServerWebExchange serverWebExchange, GatewayRouteContext gatewayRoute) {
 		ServerHttpRequest request = serverWebExchange.getRequest();
 		this.requestURI = request.getURI();
 		this.requestMethod = request.getMethod();
 		this.requestHeaders = request.getHeaders();
 		this.requestContentType = request.getHeaders().getContentType();
 		if(this.requestContentType == null) {
-			this.requestContentType = RouteContext.NONE;
+			this.requestContentType = RouteRequestContext.NONE;
 		}
 		this.gatewayRoute = gatewayRoute;
 		
@@ -120,16 +132,24 @@ public class RouteContext {
 		return this.messageStructure;
 	}
 	
+	public Object getAttribute(String name) {
+		return this.gatewayRoute.getAttribute(name);
+	}
+	
+	public void setAttribute(String name, Object value) {
+		this.gatewayRoute.setAttribute(name, value);
+	}
+	
 	/*
 	 * SubClasses...
 	 */	
 	public static class ResponseSpec {
 		private ClientResponse clientResponse;
 		@SuppressWarnings("unused")
-		private RouteContext routeContext;
+		private RouteRequestContext routeContext;
 		
 		
-		ResponseSpec(ClientResponse clientResponse, RouteContext routeContext) {
+		ResponseSpec(ClientResponse clientResponse, RouteRequestContext routeContext) {
 			this.clientResponse = clientResponse;
 			this.routeContext = routeContext;
 		}
@@ -184,12 +204,14 @@ public class RouteContext {
 	}
 	
 	public static class ServiceSpec {
+		private String path;
 		private ServiceTarget target;
-		private RouteContext routeContext;
+		private RouteRequestContext routeContext;
 		private DataProxy dataProxy;
 		
 		
-		ServiceSpec(ServiceTarget target, RouteContext routeContext) {
+		ServiceSpec(ServiceTarget target, RouteRequestContext routeContext) {
+			this.path = "service(" + target.getName() + ")";
 			this.target = target;
 			this.routeContext = routeContext;
 		}
@@ -285,7 +307,7 @@ public class RouteContext {
 				ServiceRequestBody serviceRequestBody = serviceRequest.getBody();
 				if(serviceRequestBody != null) {
 					TransformRule transform = serviceRequestBody.getTransform();
-					return new TransformSpec(transform);
+					return new TransformSpec("request", this, transform);
 				}
 			}
 			
@@ -332,13 +354,13 @@ public class RouteContext {
 					for(TransformRule transform : transforms) {
 						MediaType transformContentType = transform.getContentType();
 						if(transformContentType.equalsTypeAndSubtype(contentType)) {
-							return new TransformSpec(transform);
+							return new TransformSpec("response", this, transform);
 						}
 					}
 					for(TransformRule transform : transforms) {
 						MediaType transformContentType = transform.getContentType();
 						if(transformContentType.isCompatibleWith(contentType)) {
-							return new TransformSpec(transform);
+							return new TransformSpec("response", this, transform);
 						}
 					}
 				}
@@ -358,12 +380,24 @@ public class RouteContext {
 			return null;
 		}
 		
+		public Object getAttribute(String name) {
+			return this.routeContext.getAttribute(this.path + "." + name);
+		}
+		
+		public void setAttribute(String name, Object value) {
+			this.routeContext.setAttribute(this.path + "." + name, value);
+		}
+		
 	}
 	
 	public static class TransformSpec {
+		private String path;
+		private ServiceSpec serviceSpec;
 		private TransformRule transformRule;
 		
-		public TransformSpec(TransformRule transformRule) {
+		public TransformSpec(String parentPath, ServiceSpec serviceSpec, TransformRule transformRule) {
+			this.path = parentPath + ".tranform";
+			this.serviceSpec = serviceSpec;
 			this.transformRule = transformRule;
 		}
 		
@@ -374,6 +408,16 @@ public class RouteContext {
 		public String getBodyGraph() {
 			return this.transformRule.getBodyGraph();
 		}
+		
+		public Object getAttribute(String name) {
+			return this.serviceSpec.getAttribute(this.path + "." + name);
+		}
+		
+		public void setAttribute(String name, Object value) {
+			this.serviceSpec.setAttribute(this.path + "." + name, value);
+		}
+
 	}
+
 
 }

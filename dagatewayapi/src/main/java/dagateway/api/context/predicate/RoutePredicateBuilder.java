@@ -2,7 +2,6 @@ package dagateway.api.context.predicate;
 
 import java.util.Map;
 
-import dagateway.api.context.RoutePredicate;
 import dagateway.api.utils.InsensitiveKeyMap;
 import dagateway.api.utils.Utils;
 

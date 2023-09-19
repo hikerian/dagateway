@@ -7,7 +7,7 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteRequestContext;
 import dagateway.api.resolver.http.SingleBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Flux;
@@ -24,8 +24,8 @@ public class TextEventSingleStreamResponseResolver extends SingleBackendResponse
 	}
 
 	@Override
-	public Mono<ServerResponse> resolve(RouteContext routeContext, Mono<ServiceResult<Flux<ServerSentEvent<String>>>> serviceResults) {
-		this.log.debug("resolve");
+	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Flux<ServerSentEvent<String>>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		HttpHeaders backendHeaders = new HttpHeaders();
 		Mono<ServerResponse> serverResponse = serviceResults.flatMap(result -> {
@@ -41,8 +41,8 @@ public class TextEventSingleStreamResponseResolver extends SingleBackendResponse
 		return serverResponse;
 	}
 	
-	public Flux<ServerSentEvent<String>> resolveBody(RouteContext routeContext, ServiceResult<Flux<ServerSentEvent<String>>> serviceResults) {
-		this.log.debug("resolve");
+	public Flux<ServerSentEvent<String>> resolveBody(RouteRequestContext routeContext, ServiceResult<Flux<ServerSentEvent<String>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		Flux<ServerSentEvent<String>> serverSentEvent = serviceResults.getBody();
 		

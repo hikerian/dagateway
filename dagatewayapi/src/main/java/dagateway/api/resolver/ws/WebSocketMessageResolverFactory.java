@@ -25,7 +25,7 @@ public class WebSocketMessageResolverFactory {
 	public void addMessageResolver(MediaType mediaType, Class<? extends AbstractMessageResolver<?>> resolverClass) {
 		Class<? extends AbstractMessageResolver<?>> oldResolver = this.messageResolvers.get(mediaType);
 		if(oldResolver != null) {
-			this.log.warn("Resolver: " + mediaType + " is already exists. It will be replaced." + oldResolver);
+//			this.log.warn("Resolver: " + mediaType + " is already exists. It will be replaced." + oldResolver);
 		}
 		this.messageResolvers.put(mediaType, resolverClass);
 	}

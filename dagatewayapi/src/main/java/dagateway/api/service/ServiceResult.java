@@ -4,8 +4,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import dagateway.api.context.RouteContext;
-import dagateway.api.context.RouteContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.RouteRequestContext.ServiceSpec;
 
 
 /**
@@ -15,7 +15,7 @@ import dagateway.api.context.RouteContext.ServiceSpec;
  * @param <Sr>
  */
 public class ServiceResult<Sr> {
-	private RouteContext.ServiceSpec serviceSpec;
+	private RouteRequestContext.ServiceSpec serviceSpec;
 	private HttpStatus status;
 	
 	private WebClientResponseException exception;

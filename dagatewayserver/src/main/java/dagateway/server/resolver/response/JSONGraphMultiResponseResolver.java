@@ -13,8 +13,8 @@ import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
 import dagateway.api.composer.stream.LinkedByteBuffer;
-import dagateway.api.context.RouteContext;
-import dagateway.api.context.RouteContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.resolver.http.MultiBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Flux;
@@ -34,8 +34,8 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 	}
 
 	@Override
-	public Mono<ServerResponse> resolve(RouteContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-		this.log.debug("resolve");
+	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		Flux<Flux<DataBuffer>> responseBody = this.resolveBody(routeContext, serviceResults);
 		
@@ -48,8 +48,8 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 		});
 	}
 	
-	public Flux<Flux<DataBuffer>> resolveBody(RouteContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-		this.log.debug("resolve");
+	public Flux<Flux<DataBuffer>> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
+//		this.log.debug("resolve");
 				
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
@@ -65,11 +65,11 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 			bodyBuffers = bodyBuffers.concatWith(Flux.just(DefaultDataBufferFactory.sharedInstance.wrap(new byte[0])));
 			Flux<DataBuffer> resBuffers = bodyBuffers.handle((bodyBuffer, sink) -> {
 				if(bodyBuffer.readableByteCount() == 0) { // close
-					this.log.debug("BodyBuffer readableByteCount Zero.");
+//					this.log.debug("BodyBuffer readableByteCount Zero.");
 					dataProxy.finish();
 					DataBufferUtils.release(bodyBuffer);
 				} else {
-					this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
+//					this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
 					dataProxy.push(bodyBuffer.asByteBuffer());
 				}
 				// Cannot emi more than one data

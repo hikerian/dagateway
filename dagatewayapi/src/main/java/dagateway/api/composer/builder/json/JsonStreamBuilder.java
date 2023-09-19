@@ -105,11 +105,11 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 			
 			switch(token) {
 			case NOT_AVAILABLE: {
-				this.log.debug("NOT_AVAILABLE: " + this.jsonState.currentDepth());
+//				this.log.debug("NOT_AVAILABLE: " + this.jsonState.currentDepth());
 				break checkLoop;
 			}
 			case START_OBJECT: {
-				this.log.debug("START_OBJECT: " + this.jsonState.currentDepth());
+//				this.log.debug("START_OBJECT: " + this.jsonState.currentDepth());
 				if(this.fieldSkipped) {
 					this.jsonParser.skipChildren();
 					this.fieldSkipped = false;
@@ -123,13 +123,13 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 				break;
 			}
 			case END_OBJECT: {
-				this.log.debug("END_OBJECT: " + this.jsonState.currentDepth());
+//				this.log.debug("END_OBJECT: " + this.jsonState.currentDepth());
 				this.write('}');
 				this.jsonState.endObject();
 				break;
 			}
 			case START_ARRAY: {
-				this.log.debug("START_ARRAY: " + this.jsonState.currentDepth());
+//				this.log.debug("START_ARRAY: " + this.jsonState.currentDepth());
 				if(this.fieldSkipped) {
 					this.jsonParser.skipChildren();
 					this.fieldSkipped = false;
@@ -143,13 +143,13 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 				break;
 			}
 			case END_ARRAY: {
-				this.log.debug("END_ARRAY: " + this.jsonState.currentDepth());
+//				this.log.debug("END_ARRAY: " + this.jsonState.currentDepth());
 				this.write(']');
 				this.jsonState.endArray();
 				break;
 			}
 			case FIELD_NAME: {
-				this.log.debug("FIELD_NAME: " + this.jsonState.currentDepth());
+//				this.log.debug("FIELD_NAME: " + this.jsonState.currentDepth());
 				String fieldName = this.jsonParser.getCurrentName();
 
 				// check acceptance
@@ -174,7 +174,7 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 					this.fieldSkipped = false;
 					break;
 				}
-				this.log.debug("VALUE_STRING: " + this.jsonState.currentDepth());
+//				this.log.debug("VALUE_STRING: " + this.jsonState.currentDepth());
 				if(this.jsonState.isFirstValue() == false) {
 					this.write(',');
 				}
@@ -186,7 +186,7 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 				break;
 			}
 			case VALUE_EMBEDDED_OBJECT: {
-				this.log.debug("VALUE_EMBEDDED_OBJECT: " + this.jsonState.currentDepth());
+//				this.log.debug("VALUE_EMBEDDED_OBJECT: " + this.jsonState.currentDepth());
 				throw new UnsupportedOperationException("VALUE_EMBEDDED_OBJECT: " + this.jsonState.currentDepth());
 			}
 			case VALUE_NULL:
@@ -198,7 +198,7 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 					this.fieldSkipped = false;
 					break;
 				}
-				this.log.debug("VALUE_ETC: " + this.jsonState.currentDepth());
+//				this.log.debug("VALUE_ETC: " + this.jsonState.currentDepth());
 				if(this.jsonState.isFirstValue() == false) {
 					this.write(',');
 				}

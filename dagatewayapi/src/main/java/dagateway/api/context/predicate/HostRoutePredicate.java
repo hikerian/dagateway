@@ -10,7 +10,6 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 
-import dagateway.api.context.RoutePredicate;
 import dagateway.api.utils.ServerWebExchangeUtils;
 
 

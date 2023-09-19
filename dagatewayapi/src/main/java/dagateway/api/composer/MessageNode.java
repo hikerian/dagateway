@@ -114,7 +114,7 @@ public class MessageNode {
 	}
 
 	public void buildNext() {
-		this.log.debug(this.name + " buildNext()");
+//		this.log.debug(this.name + " buildNext()");
 		this.buildFunc.run();
 	}
 
@@ -122,7 +122,7 @@ public class MessageNode {
 	 * helper methods
 	 */
 	protected void buildFirst() {
-		this.log.debug(this.name + " buildFirst()");
+//		this.log.debug(this.name + " buildFirst()");
 		
 		this.messageSerializer.nodeName(this, this.name);
 		if(this.provider != null) {
@@ -135,13 +135,13 @@ public class MessageNode {
 	}
 	
 	protected void buildDataProxy() {
-		this.log.debug(this.name + " buildDataProxy()");
+//		this.log.debug(this.name + " buildDataProxy()");
 		
 		this.provider.buildNext();
 	}
 	
 	protected void buildChildren() {
-		this.log.debug(this.name + " buildChildren()");
+//		this.log.debug(this.name + " buildChildren()");
 
 		if(this.children == null || this.children.size() == 0) {
 			this.isDone = true;

@@ -1,4 +1,4 @@
-package dagateway.api.context;
+package dagateway.api.context.route;
 
 import java.util.ArrayList;
 import java.util.List;

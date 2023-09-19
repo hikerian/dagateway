@@ -1,4 +1,4 @@
-package dagateway.api.context;
+package dagateway.api.context.predicate;
 
 import org.springframework.web.server.ServerWebExchange;
 

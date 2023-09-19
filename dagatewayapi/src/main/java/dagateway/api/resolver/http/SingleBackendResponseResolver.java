@@ -6,9 +6,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import dagateway.api.context.RouteContext;
-import dagateway.api.context.RouteContext.HeaderSpec;
-import dagateway.api.context.RouteContext.ResponseSpec;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.RouteRequestContext.HeaderSpec;
+import dagateway.api.context.RouteRequestContext.ResponseSpec;
 import dagateway.api.service.ServiceResult;
 import dagateway.api.utils.Utils;
 import reactor.core.publisher.Mono;
@@ -16,14 +16,14 @@ import reactor.core.publisher.Mono;
 
 
 public abstract class SingleBackendResponseResolver<Sr> extends AbstractClientResponseResolver<Sr, Mono<ServiceResult<Sr>>> {
-	public abstract Mono<ServerResponse> resolve(RouteContext routeContext, Mono<ServiceResult<Sr>> serviceResults);
+	public abstract Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Sr>> serviceResults);
 
 	/*
 	 * common methods
 	 */
 	protected void buildHeader(ServerResponse.BodyBuilder bodyBuilder
 			, HttpHeaders backendHeaders
-			, RouteContext routeContext
+			, RouteRequestContext routeContext
 			, MediaType responseContentType) {
 
 		Map<String, String> variables = routeContext.getVariables();

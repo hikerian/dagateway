@@ -11,11 +11,11 @@ import org.springframework.web.reactive.function.client.WebClient.RequestBodyUri
 
 import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.graphql.GraphQLComposerBuilder;
-import dagateway.api.context.ContentHandling;
-import dagateway.api.context.EndpointType;
-import dagateway.api.context.RouteContext;
-import dagateway.api.context.RouteContext.ResponseSpec;
-import dagateway.api.context.RouteContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.RouteRequestContext.ResponseSpec;
+import dagateway.api.context.RouteRequestContext.ServiceSpec;
+import dagateway.api.context.route.ContentHandling;
+import dagateway.api.context.route.EndpointType;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.http.ClientRequestResolver;
@@ -50,8 +50,8 @@ public class ServiceBrokerBuilder {
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
 	}
 	
-	public <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> build(RouteContext routeContext) {
-		this.log.debug("build");
+	public <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> build(RouteRequestContext routeContext) {
+//		this.log.debug("build");
 		
 		ResponseSpec responseSpec = routeContext.getResponseSpec();
 		List<ServiceSpec> serviceSpecList = routeContext.getServiceSpecList();
@@ -69,14 +69,14 @@ public class ServiceBrokerBuilder {
 		return serviceBroker;
 	}
 	
-	private <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> buildMultiBackend(RouteContext routeContext, ResponseSpec responseSpec, List<ServiceSpec> serviceSpecList) {
+	private <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> buildMultiBackend(RouteRequestContext routeContext, ResponseSpec responseSpec, List<ServiceSpec> serviceSpecList) {
 		ClientRequestResolver<Mono<Cq>, Cq> requestResolver = this.clientResolverFactory.getClientRequestResolver(routeContext.getClientRequestType(), routeContext.getRequestAggregateType(), false);
 		ClientResponseResolver<Flux<ServiceResult<Sr>>, Sr> responseResolver = this.clientResolverFactory.getClientResponseResolver(responseSpec.getContentHandling(), routeContext.getResponseType(), true);
 		
 		String requestResolverTypeName = requestResolver.getReturnTypeName();
 		String resolverArgTypeName = responseResolver.getTypeArgument();
 		
-		this.log.debug("resolverArgTypeName: " + resolverArgTypeName);
+//		this.log.debug("resolverArgTypeName: " + resolverArgTypeName);
 		
 		MultiServiceBroker<Cq, Sr> serviceBroker = new MultiServiceBroker<>(routeContext, requestResolver, responseResolver);
 		
@@ -88,13 +88,13 @@ public class ServiceBrokerBuilder {
 		return (ServiceBroker<P, Cq, Sr>) serviceBroker;
 	}
 	
-	private <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> buildSingleBackend(RouteContext routeContext, ResponseSpec responseSpec, ServiceSpec serviceSpec) {
+	private <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> buildSingleBackend(RouteRequestContext routeContext, ResponseSpec responseSpec, ServiceSpec serviceSpec) {
 		ClientRequestResolver<P, Cq> requestResolver = this.clientResolverFactory.getClientRequestResolver(routeContext.getClientRequestType(), routeContext.getRequestAggregateType());
 		String requestResolverTypeName = requestResolver.getReturnTypeName();
 		ClientResponseResolver<Mono<ServiceResult<Sr>>, Sr> responseResolver = this.clientResolverFactory.getClientResponseResolver(responseSpec.getContentHandling(), routeContext.getResponseType(), false);
 		String resolverArgTypeName = responseResolver.getTypeArgument();
 		
-		this.log.debug("resolverArgTypeName: " + resolverArgTypeName);
+//		this.log.debug("resolverArgTypeName: " + resolverArgTypeName);
 		
 		SingleServiceBroker<P, Cq, Sr> serviceBroker = new SingleServiceBroker<>(routeContext, requestResolver, responseResolver);
 		
@@ -132,21 +132,29 @@ public class ServiceBrokerBuilder {
 		return serviceDelegator;
 	}
 	
-	private void buildMessageStructure(RouteContext routeContext, ResponseSpec responseSpec, List<ServiceSpec> serviceSpecList) {
+	private void buildMessageStructure(RouteRequestContext routeContext, ResponseSpec responseSpec, List<ServiceSpec> serviceSpecList) {
 		// TODO additional context setting
 		ContentHandling contentHandling = responseSpec.getContentHandling();
 		if(contentHandling != ContentHandling.COMPOSE) {
 			return;
 		}
 		
-		String query = responseSpec.getBodyGraph();
-		ExecutionInput executionInput = ExecutionInput.newExecutionInput(query).build();
-		
-		ParseAndValidateResult parseResult = ParseAndValidate.parse(executionInput);
-		if(parseResult.isFailure()) {
-			throw new IllegalArgumentException(parseResult.getSyntaxException());
+		DocumentAndVariables documentAndVariable = (DocumentAndVariables)routeContext.getAttribute(GraphQLComposerBuilder.CLIENT_RESPONSE_GRAPH_KEY);
+		if(documentAndVariable == null) {
+			String query = responseSpec.getBodyGraph();
+			if(query == null) {
+				return;
+			}
+			ExecutionInput executionInput = ExecutionInput.newExecutionInput(query).build();
+			
+			ParseAndValidateResult parseResult = ParseAndValidate.parse(executionInput);
+			if(parseResult.isFailure()) {
+				throw new IllegalArgumentException(parseResult.getSyntaxException());
+			}
+			documentAndVariable = parseResult.getDocumentAndVariables();
+			
+			routeContext.setAttribute(GraphQLComposerBuilder.CLIENT_RESPONSE_GRAPH_KEY, documentAndVariable);
 		}
-		DocumentAndVariables documentAndVariable = parseResult.getDocumentAndVariables();
 		
 		MessageSchema messageStructure = GraphQLComposerBuilder.buildAndMap(documentAndVariable, serviceSpecList);
 		routeContext.setMessageStructure(messageStructure);

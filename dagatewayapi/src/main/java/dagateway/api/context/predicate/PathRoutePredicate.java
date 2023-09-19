@@ -10,7 +10,6 @@ import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPattern.PathMatchInfo;
 import org.springframework.web.util.pattern.PathPatternParser;
 
-import dagateway.api.context.RoutePredicate;
 import dagateway.api.utils.ServerWebExchangeUtils;
 
 

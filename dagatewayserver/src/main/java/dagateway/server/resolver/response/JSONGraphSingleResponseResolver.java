@@ -14,8 +14,8 @@ import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
 import dagateway.api.composer.stream.LinkedByteBuffer;
-import dagateway.api.context.RouteContext;
-import dagateway.api.context.RouteContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext;
+import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.resolver.http.SingleBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Flux;
@@ -35,8 +35,8 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 	}
 
 	@Override
-	public Mono<ServerResponse> resolve(RouteContext routeContext, Mono<ServiceResult<Flux<DataBuffer>>> serviceResult) {
-		this.log.debug("resolve");
+	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Flux<DataBuffer>>> serviceResult) {
+//		this.log.debug("resolve");
 		
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
@@ -53,11 +53,11 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 			
 			Flux<DataBuffer> resBuffers = bodyBuffers.handle((bodyBuffer, sink) -> {
 				if(bodyBuffer.readableByteCount() == 0) { // close
-					this.log.debug("BodyBuffer readableByteCount Zero.");
+//					this.log.debug("BodyBuffer readableByteCount Zero.");
 					dataProxy.finish();
 					DataBufferUtils.release(bodyBuffer);
 				} else {
-					this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
+//					this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
 					dataProxy.push(bodyBuffer.asByteBuffer());
 				}
 				
@@ -83,8 +83,8 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 		return serverResponse;
 	}
 	
-	public Flux<DataBuffer> resolveBody(RouteContext routeContext, ServiceResult<Flux<DataBuffer>> serviceResult) {
-		this.log.debug("resolve");
+	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, ServiceResult<Flux<DataBuffer>> serviceResult) {
+//		this.log.debug("resolve");
 		
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
@@ -100,11 +100,11 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 		
 		Flux<DataBuffer> resBuffers = bodyBuffers.handle((bodyBuffer, sink) -> {
 			if(bodyBuffer.readableByteCount() == 0) { // close
-				this.log.debug("BodyBuffer readableByteCount Zero.");
+//				this.log.debug("BodyBuffer readableByteCount Zero.");
 				dataProxy.finish();
 				DataBufferUtils.release(bodyBuffer);
 			} else {
-				this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
+//				this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
 				dataProxy.push(bodyBuffer.asByteBuffer());
 			}
 			

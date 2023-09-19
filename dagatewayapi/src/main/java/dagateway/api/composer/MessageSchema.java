@@ -20,7 +20,7 @@ public class MessageSchema extends MessageNode {
 	}
 
 	protected void buildFirst() {
-		this.log.debug("buildFirst()");
+//		this.log.debug("buildFirst()");
 
 		if(this.provider != null) {
 			this.buildFunc = () -> this.buildDataProxy();
@@ -40,7 +40,7 @@ public class MessageSchema extends MessageNode {
 	}
 	
 	protected void buildDataProxy() {
-		this.log.debug("buildDataProxy()");
+//		this.log.debug("buildDataProxy()");
 
 		this.provider.buildNext();
 
@@ -51,7 +51,7 @@ public class MessageSchema extends MessageNode {
 	}
 	
 	protected void buildChildren() {
-		this.log.debug("buildChildren()");
+//		this.log.debug("buildChildren()");
 		
 		MessageNode offset = this.children.get(this.childIdx);
 		if(offset.isDone()) {

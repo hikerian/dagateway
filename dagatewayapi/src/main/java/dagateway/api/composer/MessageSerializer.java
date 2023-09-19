@@ -69,7 +69,7 @@ public class MessageSerializer {
 	}
 	
 	public void nodeName(MessageNode node, String name) {
-		this.log.debug("nodeName: " + name);
+//		this.log.debug("nodeName: " + name);
 		
 		this.messageBuilder.nodeName(node, name);
 	}
@@ -97,7 +97,7 @@ public class MessageSerializer {
 	}
 
 	private void build() {
-		this.log.debug("build");
+//		this.log.debug("build");
 		if(this.schema.isDone()) {
 			this.isDone = true;
 			return;

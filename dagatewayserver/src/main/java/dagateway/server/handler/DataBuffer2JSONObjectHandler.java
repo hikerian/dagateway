@@ -23,7 +23,7 @@ public class DataBuffer2JSONObjectHandler extends AbstractContentHandler<Flux<Da
 
 	@Override
 	public Mono<JSONObject> handle(Flux<DataBuffer> responseBody) {
-		this.log.debug("resolveBody");
+//		this.log.debug("resolveBody");
 		
 		ParameterizedTypeReference<JSONObject> jsonType = new ParameterizedTypeReference<>() {};
 		ResolvableType resolvableType = ResolvableType.forType(jsonType.getType());

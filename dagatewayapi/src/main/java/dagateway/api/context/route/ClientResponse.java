@@ -1,6 +1,10 @@
-package dagateway.api.context;
+package dagateway.api.context.route;
 
 import org.springframework.http.MediaType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import graphql.execution.instrumentation.DocumentAndVariables;
 
 
 /**
@@ -49,7 +53,6 @@ public class ClientResponse {
 	}
 
 	public void setBodyGraph(String bodyGraph) {
-		System.out.println(bodyGraph);
 		this.bodyGraph = bodyGraph;
 	}
 

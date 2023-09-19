@@ -15,8 +15,8 @@ import org.springframework.web.reactive.function.client.WebClient.RequestHeaders
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import dagateway.api.context.RouteContext.HeaderSpec;
-import dagateway.api.context.RouteContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext.HeaderSpec;
+import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.handler.ContentHandler;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
@@ -83,7 +83,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 		Mono<ServiceResult<Sr>> serviceResult = responseSpec
 				.toEntityFlux((backendMessage, context) -> backendMessage.getBody())
 				.map(responseEntity -> {
-					this.log.debug("BACKEND SERVICE RESPONSE STATUS: " + responseEntity.getStatusCode());
+//					this.log.debug("BACKEND SERVICE RESPONSE STATUS: " + responseEntity.getStatusCode());
 					
 					HttpHeaders backendHeaders = responseEntity.getHeaders();
 					MediaType backendContentType = backendHeaders.getContentType();
@@ -109,7 +109,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 					return new ServiceResult<Sr>(this.serviceSpec, status, newHttpHeaders, body, responseHandler.getReturnTypeName());
 				})
 				.onErrorResume(WebClientResponseException.class, ex -> {
-					this.log.debug("BACKEND SERVICE ERROR RESPONSE STATUS: " + this.serviceSpec.createBackendURI() + "(" + ex.getRawStatusCode() + ")");
+//					this.log.debug("BACKEND SERVICE ERROR RESPONSE STATUS: " + this.serviceSpec.createBackendURI() + "(" + ex.getRawStatusCode() + ")");
 					
 					return Mono.just(new ServiceResult<Sr>(this.serviceSpec, ex));
 				});

@@ -21,7 +21,7 @@ public class MultipartDataTransformer extends AbstractDataTransformer<Part, Part
 
 	@Override
 	public Part transform(Part source) {
-		this.log.debug("transform:" + source.name() + "=" + source.headers());
+//		this.log.debug("transform:" + source.name() + "=" + source.headers());
 
 		return source;
 	}

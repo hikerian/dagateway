@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import dagateway.api.context.RouteContext;
+import dagateway.api.context.RouteRequestContext;
 import dagateway.api.resolver.http.MultiBackendResponseResolver;
 import dagateway.api.service.ServiceResult;
 import net.minidev.json.JSONObject;
@@ -32,8 +32,8 @@ public class JSONNDResponseResolver extends MultiBackendResponseResolver<Mono<JS
 	}
 
 	@Override
-	public Mono<ServerResponse> resolve(RouteContext routeContext, Flux<ServiceResult<Mono<JSONObject>>> serviceResults) {
-		this.log.debug("resolve");
+	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Flux<ServiceResult<Mono<JSONObject>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		ServerResponse.BodyBuilder bodyBuilder = ServerResponse.ok();
 		
@@ -57,8 +57,8 @@ public class JSONNDResponseResolver extends MultiBackendResponseResolver<Mono<JS
 		
 	}
 	
-	public Flux<DataBuffer> resolveBody(RouteContext routeContext, Flux<ServiceResult<Mono<JSONObject>>> serviceResults) {
-		this.log.debug("resolve");
+	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Mono<JSONObject>>> serviceResults) {
+//		this.log.debug("resolve");
 		
 		ServerResponse.BodyBuilder bodyBuilder = ServerResponse.ok();
 		
