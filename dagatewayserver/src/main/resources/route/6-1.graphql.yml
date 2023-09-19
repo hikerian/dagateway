@@ -1,0 +1,81 @@
+routes:
+  - predicates:
+    - path=/composite/graphql
+    client-request:
+      aggregate-type: application/json
+    client-response:
+      content-type: application/json
+      content-handling: compose
+      body-graph: "query jsoncomp {
+  data {
+    influencersInfo: influencerList(name: $name) {
+      influencers {
+        name
+        age
+        worksAt
+      }
+    }
+    comparison {
+      leftComparison {
+        name
+        appearsIn
+        friends {
+          name
+        }
+      }
+      rightComparison {
+        name
+        appearsIn
+        friends {
+          name
+        }
+      }
+    }
+    comCodes: comCodeList(divCode: $divCode) {
+      div_code
+      code
+      name
+      desc
+    }
+  }
+}"
+    service-targets:
+      - name: influencerList
+        endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /json/influencers
+        request:
+          body:
+            transform:
+              content-type: application/json
+        response:
+          body:
+            transform:
+            - content-type: application/json
+      - name: comCodeList
+        endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /json/comcode
+        request:
+          body:
+            transform:
+              content-type: application/json
+        response:
+          body:
+            transform:
+            - content-type: application/json
+      - name: comparison
+        endpoint:
+          type: HTTP
+          uri: http://localhost:8888
+          path: /json/comparison
+        request:
+          body:
+            transform:
+              content-type: application/json
+        response:
+          body:
+            transform:
+            - content-type: application/json
