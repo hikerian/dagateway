@@ -83,7 +83,6 @@ public class LinkedByteBlockBuffer implements StreamBuffer {
 		}
 	}
 	
-	private int blockSize;
 	private int writePos;
 
 	private ByteBufferNode first;
@@ -95,15 +94,10 @@ public class LinkedByteBlockBuffer implements StreamBuffer {
 	}
 	
 	public LinkedByteBlockBuffer(int blockSize) {
-		this.blockSize = blockSize;
-		this.first = new ByteBufferNode(this.blockSize);
+		this.first = new ByteBufferNode(blockSize);
 		this.last = this.first;
 		
 		this.writePos = 0;
-	}
-	
-	public int blockSize() {
-		return this.blockSize;
 	}
 	
 	public StreamBuffer write(char data) {
