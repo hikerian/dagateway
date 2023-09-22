@@ -16,11 +16,11 @@ import reactor.core.publisher.Mono;
 
 
 
-public class JSONNDStreamResponseResolver extends MultiBackendResponseResolver<Flux<DataBuffer>> {
-	private final Logger log = LoggerFactory.getLogger(JSONNDStreamResponseResolver.class);
+public class NDJSONStreamResponseResolver extends MultiBackendResponseResolver<Flux<DataBuffer>> {
+	private final Logger log = LoggerFactory.getLogger(NDJSONStreamResponseResolver.class);
 	
 	
-	public JSONNDStreamResponseResolver() {
+	public NDJSONStreamResponseResolver() {
 	}
 
 	@Override

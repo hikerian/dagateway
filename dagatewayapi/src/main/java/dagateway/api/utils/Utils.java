@@ -200,7 +200,7 @@ public class Utils {
 					err.printStackTrace();
 				})
 				.doAfterResponseSuccess((res, conn) -> {
-					System.out.println("# - RESPONSE SUCCESS!!!");
+//					System.out.println("# - RESPONSE SUCCESS!!!");
 				})
 				.wiretap("reactor.netty", LogLevel.DEBUG, AdvancedByteBufFormat.SIMPLE)
 				.compress(true);

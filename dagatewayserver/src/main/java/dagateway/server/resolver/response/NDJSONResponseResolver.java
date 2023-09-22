@@ -24,11 +24,11 @@ import reactor.core.publisher.Mono;
 /**
  * @deprecated... 실제로는 사용할 수 없을 듯....
  */
-public class JSONNDResponseResolver extends MultiBackendResponseResolver<Mono<JSONObject>> {
-	private final Logger log = LoggerFactory.getLogger(JSONNDResponseResolver.class);
+public class NDJSONResponseResolver extends MultiBackendResponseResolver<Mono<JSONObject>> {
+	private final Logger log = LoggerFactory.getLogger(NDJSONResponseResolver.class);
 	
 	
-	public JSONNDResponseResolver() {
+	public NDJSONResponseResolver() {
 	}
 
 	@Override

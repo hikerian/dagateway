@@ -62,8 +62,8 @@ import dagateway.server.resolver.request.RawDataRequestResolver;
 import dagateway.server.resolver.response.DynamicResponseResolver;
 import dagateway.server.resolver.response.JSONGraphMultiResponseResolver;
 import dagateway.server.resolver.response.JSONGraphSingleResponseResolver;
-import dagateway.server.resolver.response.JSONNDResponseResolver;
-import dagateway.server.resolver.response.JSONNDStreamResponseResolver;
+import dagateway.server.resolver.response.NDJSONResponseResolver;
+import dagateway.server.resolver.response.NDJSONStreamResponseResolver;
 import dagateway.server.resolver.response.RawDataMultiResponseResolver;
 import dagateway.server.resolver.response.RawDataSingleResponseResolver;
 import dagateway.server.resolver.response.TextEventMultiStreamResponseResolver;
@@ -185,8 +185,8 @@ public class GatewayConfiguration {
 		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.ALL, MediaType.ALL, true), RawDataRequestResolver.class);
 		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.ALL, true), RawDataRequestResolver.class);
 		
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true), JSONNDResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true), JSONNDStreamResponseResolver.class);
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true), NDJSONResponseResolver.class);
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true), NDJSONStreamResponseResolver.class);
 		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.TEXT_EVENT_STREAM, ContentHandling.PASSTHROUGH, false), TextEventSingleStreamResponseResolver.class);
 		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.TEXT_EVENT_STREAM, ContentHandling.PASSTHROUGH, true), TextEventMultiStreamResponseResolver.class);
 		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.ALL, ContentHandling.PASSTHROUGH, false), DynamicResponseResolver.class);
