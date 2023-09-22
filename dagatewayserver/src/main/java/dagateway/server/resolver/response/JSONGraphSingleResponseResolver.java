@@ -13,7 +13,7 @@ import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
-import dagateway.api.composer.stream.LinkedByteBuffer;
+import dagateway.api.composer.stream.LinkedByteBlockBuffer;
 import dagateway.api.context.RouteRequestContext;
 import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.resolver.http.SingleBackendResponseResolver;
@@ -40,7 +40,7 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 		
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
-			return new JsonStreamBuilder(new LinkedByteBuffer());
+			return new JsonStreamBuilder(new LinkedByteBlockBuffer());
 		});
 		
 		Mono<ServerResponse> serverResponse = serviceResult.flatMap(result -> {
@@ -88,7 +88,7 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 		
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
-			return new JsonStreamBuilder(new LinkedByteBuffer());
+			return new JsonStreamBuilder(new LinkedByteBlockBuffer());
 		});
 		
 		ServiceSpec serviceSpec = serviceResult.getServiceSpec();

@@ -10,7 +10,7 @@ import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
 import dagateway.api.composer.graphql.GraphQLComposerBuilder;
-import dagateway.api.composer.stream.LinkedByteBuffer;
+import dagateway.api.composer.stream.LinkedByteBlockBuffer;
 import dagateway.api.context.RouteRequestContext.TransformSpec;
 import dagateway.api.transform.AbstractDataTransformer;
 import graphql.ExecutionInput;
@@ -52,7 +52,7 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 		this.dataProxy = dataProxy;
 		
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
-			return new JsonStreamBuilder(new LinkedByteBuffer());
+			return new JsonStreamBuilder(new LinkedByteBlockBuffer());
 		});
 		this.serializer = serializer;
 	}

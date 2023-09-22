@@ -32,7 +32,7 @@ routes:
       }
     }
     comCodes: comCodeList(divCode: $divCode) {
-      div_code
+      div
       code
       name
       desc
@@ -44,8 +44,9 @@ routes:
         endpoint:
           type: HTTP
           uri: http://localhost:8888
-          path: /json/influencers
+          path: /composite/influencers
         request:
+          method: POST
           body:
             transform:
               content-type: application/json
@@ -57,8 +58,9 @@ routes:
         endpoint:
           type: HTTP
           uri: http://localhost:8888
-          path: /json/comcode
+          path: /composite/comcode
         request:
+          method: POST
           body:
             transform:
               content-type: application/json
@@ -70,8 +72,9 @@ routes:
         endpoint:
           type: HTTP
           uri: http://localhost:8888
-          path: /json/comparison
+          path: /composite/comparison
         request:
+          method: POST
           body:
             transform:
               content-type: application/json

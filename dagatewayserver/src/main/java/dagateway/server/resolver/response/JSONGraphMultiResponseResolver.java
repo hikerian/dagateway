@@ -12,7 +12,7 @@ import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
-import dagateway.api.composer.stream.LinkedByteBuffer;
+import dagateway.api.composer.stream.LinkedByteBlockBuffer;
 import dagateway.api.context.RouteRequestContext;
 import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.resolver.http.MultiBackendResponseResolver;
@@ -53,7 +53,7 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 				
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
-			return new JsonStreamBuilder(new LinkedByteBuffer());
+			return new JsonStreamBuilder(new LinkedByteBlockBuffer());
 		});
 		
 		Flux<Flux<DataBuffer>> responseBody = serviceResults.map(serviceResult -> {
