@@ -1,7 +1,6 @@
 package dagateway.api.service;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -29,7 +28,7 @@ public class ServiceResult<Sr> {
 	public ServiceResult(ServiceSpec serviceSpec, WebClientResponseException exception) {
 		this.serviceSpec = serviceSpec;
 		this.exception = exception;
-		this.status = (HttpStatus)exception.getStatusCode();
+		this.status = exception.getStatusCode();
 		this.headers = exception.getHeaders();
 		this.body = null;
 		this.bodyTypeName = null;
