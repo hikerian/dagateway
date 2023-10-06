@@ -2,6 +2,7 @@ package dagateway.api.service;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import dagateway.api.context.RouteRequestContext;
@@ -16,7 +17,7 @@ import dagateway.api.context.RouteRequestContext.ServiceSpec;
  */
 public class ServiceResult<Sr> {
 	private RouteRequestContext.ServiceSpec serviceSpec;
-	private HttpStatus status;
+	private HttpStatusCode status;
 	
 	private WebClientResponseException exception;
 	
@@ -28,13 +29,13 @@ public class ServiceResult<Sr> {
 	public ServiceResult(ServiceSpec serviceSpec, WebClientResponseException exception) {
 		this.serviceSpec = serviceSpec;
 		this.exception = exception;
-		this.status = exception.getStatusCode();
+		this.status = (HttpStatus)exception.getStatusCode();
 		this.headers = exception.getHeaders();
 		this.body = null;
 		this.bodyTypeName = null;
 	}
 	
-	public ServiceResult(ServiceSpec serviceSpec, HttpStatus status, HttpHeaders headers, Sr body, String bodyTypeName) {
+	public ServiceResult(ServiceSpec serviceSpec, HttpStatusCode status, HttpHeaders headers, Sr body, String bodyTypeName) {
 		this.serviceSpec = serviceSpec;
 		this.status = status;
 		this.headers = headers;
@@ -46,7 +47,7 @@ public class ServiceResult<Sr> {
 		return this.serviceSpec;
 	}
 	
-	public HttpStatus getStatus() {
+	public HttpStatusCode getStatus() {
 		return this.status;
 	}
 

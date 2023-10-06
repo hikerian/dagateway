@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
@@ -100,7 +101,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 							, this.serviceSpec.getServiceResponseTransformSpec(backendContentType));
 					Sr body = responseHandler.handle(responseEntity.getBody());
 					
-					HttpStatus status = responseEntity.getStatusCode();
+					HttpStatusCode status = responseEntity.getStatusCode();
 					HttpHeaders headers = responseEntity.getHeaders();
 					HttpHeaders newHttpHeaders = new HttpHeaders();
 					newHttpHeaders.putAll(headers);

@@ -9,8 +9,8 @@
 plugins {
 	id 'java'
 	id 'eclipse'
-	id 'org.springframework.boot' version '2.7.15' apply false
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'org.springframework.boot' version '3.1.4' apply false
+	id 'io.spring.dependency-management' version '1.1.3'
 }
 
 eclipse {
@@ -22,8 +22,8 @@ eclipse {
 
 group = 'dagateway'
 version = '0.0.1'
-sourceCompatibility = '11'
-targetCompatibility = '11'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 /**
  * Setting encoding during compilation in Java and Test classes
