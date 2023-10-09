@@ -44,6 +44,10 @@ public class DataProxy {
 		stream.write(data);
 	}
 	
+	public boolean isBuffered() {
+		return this.streamBuilder.bufferedSize() > 0;
+	}
+	
 	public void finish() {
 //		this.log.debug("Finish Func Called");
 		this.isFeedEnd = true;

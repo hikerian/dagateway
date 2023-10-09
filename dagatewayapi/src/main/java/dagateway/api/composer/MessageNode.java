@@ -25,8 +25,9 @@ public class MessageNode {
 
 	protected Runnable buildFunc = () -> this.buildFirst();
 
+//	protected int childIdx = 0;
+	private MessageNode offset = null;
 	protected boolean isDone = false;
-	protected int childIdx = 0;
 	
 	protected MessageSerializer messageSerializer;
 	
@@ -106,6 +107,21 @@ public class MessageNode {
 		}
 	}
 	
+	public boolean isBuffered() {
+		if(this.provider != null) {
+			return this.provider.isBuffered();
+		} else if(this.children != null && this.children.size() > 0) {
+			// all children is buffered -> true
+			for(MessageNode child : this.children) {
+				if(child.isBuffered() == false) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return true;
+	}
+	
 	public boolean isDone() {
 		if(this.provider != null) {
 			return this.provider.isDone();
@@ -148,16 +164,23 @@ public class MessageNode {
 			this.messageSerializer.endObject();
 			return;
 		}
+
+//		MessageNode offset = this.children.get(this.childIdx);
+//		if(offset.isDone()) {
+//			if(this.childIdx + 1 < this.children.size()) {
+//				offset = this.children.get(++this.childIdx);
+//			} else {
+//				this.isDone = true;
+//				this.messageSerializer.endObject();
+//				return;
+//			}
+//		}
 		
-		MessageNode offset = this.children.get(this.childIdx);
-		if(offset.isDone()) {
-			if(this.childIdx + 1 < this.children.size()) {
-				offset = this.children.get(++this.childIdx);
-			} else {
-				this.isDone = true;
-				this.messageSerializer.endObject();
-				return;
-			}
+		MessageNode offset = this.getOffsetNode();
+		if(offset == null) {
+			this.isDone = true;
+			this.messageSerializer.endObject();
+			return;
 		}
 		
 		offset.buildNext();
@@ -166,6 +189,40 @@ public class MessageNode {
 			this.buildChildren();
 		}
 	}
+	
+	protected MessageNode getOffsetNode() {
+		if(this.offset != null && this.offset.isDone() == false) {
+			return this.offset;
+		}
+		this.offset = null;
+		MessageNode nextOffset = null;
+		
+		for(MessageNode offset : this.children) {
+			if(offset.isDone() == false) {
+				if(nextOffset == null) {
+					nextOffset = offset;
+				}
+				if(offset.isBuffered()) {
+					this.offset = offset;
+					return offset;
+				}
+			}
+		}
+		this.offset = nextOffset;
+		
+		return nextOffset;
+	}
+//	protected MessageNode getOffsetNode() {
+//		MessageNode offset = this.children.get(this.childIdx); // TODO apply child choosing algorithm
+//		if(offset.isDone()) {
+//			offset = null;
+//			if(this.childIdx + 1 < this.children.size()) {
+//				offset = this.children.get(++this.childIdx);
+//			}
+//		}
+//		
+//		return offset;
+//	}
 
 
 }
