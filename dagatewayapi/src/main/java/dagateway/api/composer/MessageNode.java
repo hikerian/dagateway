@@ -197,6 +197,8 @@ public class MessageNode {
 		this.offset = null;
 		MessageNode nextOffset = null;
 		
+		// TODO children to temp storage
+		
 		for(MessageNode offset : this.children) {
 			if(offset.isDone() == false) {
 				if(nextOffset == null) {
