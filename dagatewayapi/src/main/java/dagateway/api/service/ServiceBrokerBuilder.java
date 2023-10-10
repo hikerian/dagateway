@@ -69,6 +69,7 @@ public class ServiceBrokerBuilder {
 		return serviceBroker;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> buildMultiBackend(RouteRequestContext routeContext, ResponseSpec responseSpec, List<ServiceSpec> serviceSpecList) {
 		ClientRequestResolver<Mono<Cq>, Cq> requestResolver = this.clientResolverFactory.getClientRequestResolver(routeContext.getClientRequestType(), routeContext.getRequestAggregateType(), false);
 		ClientResponseResolver<Flux<ServiceResult<Sr>>, Sr> responseResolver = this.clientResolverFactory.getClientResponseResolver(responseSpec.getContentHandling(), routeContext.getResponseType(), true);

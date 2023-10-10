@@ -53,16 +53,6 @@ public class MessageSchema extends MessageNode {
 	protected void buildChildren() {
 //		this.log.debug("buildChildren()");
 		
-//		MessageNode offset = this.children.get(this.childIdx);
-//		if(offset.isDone()) {
-//			if(this.childIdx + 1 < this.children.size()) {
-//				offset = this.children.get(++this.childIdx);
-//			} else {
-//				this.isDone = true;
-//				this.messageSerializer.endMessage();
-//				return;
-//			}
-//		}
 		MessageNode offset = this.getOffsetNode();
 		if(offset == null) {
 			this.isDone = true;

@@ -23,9 +23,12 @@ public class MessageNode {
 	
 	protected DataProxy provider;
 
-	protected Runnable buildFunc = () -> this.buildFirst();
+	protected Runnable buildFunc = () -> {
+		this.initBuild();
+		this.buildFirst();
+	};
 
-//	protected int childIdx = 0;
+	private List<MessageNode> buildableChildren = null;
 	private MessageNode offset = null;
 	protected boolean isDone = false;
 	
@@ -137,6 +140,14 @@ public class MessageNode {
 	/*
 	 * helper methods
 	 */
+	private void initBuild() {
+		if(this.children != null) {
+			this.buildableChildren = new ArrayList<>(this.children);
+		} else {
+			this.buildableChildren = Collections.emptyList();
+		}
+	}
+	
 	protected void buildFirst() {
 //		this.log.debug(this.name + " buildFirst()");
 		
@@ -158,24 +169,7 @@ public class MessageNode {
 	
 	protected void buildChildren() {
 //		this.log.debug(this.name + " buildChildren()");
-
-		if(this.children == null || this.children.size() == 0) {
-			this.isDone = true;
-			this.messageSerializer.endObject();
-			return;
-		}
-
-//		MessageNode offset = this.children.get(this.childIdx);
-//		if(offset.isDone()) {
-//			if(this.childIdx + 1 < this.children.size()) {
-//				offset = this.children.get(++this.childIdx);
-//			} else {
-//				this.isDone = true;
-//				this.messageSerializer.endObject();
-//				return;
-//			}
-//		}
-		
+	
 		MessageNode offset = this.getOffsetNode();
 		if(offset == null) {
 			this.isDone = true;
@@ -191,40 +185,30 @@ public class MessageNode {
 	}
 	
 	protected MessageNode getOffsetNode() {
-		if(this.offset != null && this.offset.isDone() == false) {
-			return this.offset;
+		if(this.offset != null) {
+			if(this.offset.isDone() == false) {
+				return this.offset;
+			} else {
+				this.buildableChildren.remove(this.offset);
+			}
 		}
 		this.offset = null;
 		MessageNode nextOffset = null;
-		
-		// TODO children to temp storage
-		
-		for(MessageNode offset : this.children) {
+		for(MessageNode offset : this.buildableChildren) {
 			if(offset.isDone() == false) {
-				if(nextOffset == null) {
-					nextOffset = offset;
-				}
 				if(offset.isBuffered()) {
 					this.offset = offset;
 					return offset;
 				}
+				if(nextOffset == null) {
+					nextOffset = offset;
+				}
 			}
 		}
 		this.offset = nextOffset;
-		
+
 		return nextOffset;
 	}
-//	protected MessageNode getOffsetNode() {
-//		MessageNode offset = this.children.get(this.childIdx); // TODO apply child choosing algorithm
-//		if(offset.isDone()) {
-//			offset = null;
-//			if(this.childIdx + 1 < this.children.size()) {
-//				offset = this.children.get(++this.childIdx);
-//			}
-//		}
-//		
-//		return offset;
-//	}
 
 
 }

@@ -1,7 +1,6 @@
 package dagateway.api.composer.builder.json;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,12 +50,10 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 	}
 
 	@Override
-	public void feed(ByteBuffer buffer) {
+	public void feed(byte[] buffer, int offset, int size) {
+		this.log.debug("MessageNode: " + this.element().getName() + " Feed: " + size);
 		try {
-			byte[] datas = new byte[buffer.remaining()];
-			buffer.get(datas);
-			
-			this.byteArrayFeeder.feedInput(datas, 0, datas.length);
+			this.byteArrayFeeder.feedInput(buffer, offset, size);
 			this.build();
 		} catch (IOException e) {
 			throw new IllegalStateException(e); // TODO Exception 정리

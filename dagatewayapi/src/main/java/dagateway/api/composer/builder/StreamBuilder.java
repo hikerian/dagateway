@@ -1,7 +1,5 @@
 package dagateway.api.composer.builder;
 
-import java.nio.ByteBuffer;
-
 import dagateway.api.composer.MessageNode;
 import dagateway.api.composer.stream.StreamBuffer;
 
@@ -14,7 +12,7 @@ public interface StreamBuilder {
 	public MessageNode element();
 	public StreamBuilder getParentBuilder();
 	
-	public void feed(ByteBuffer datas);
+	public void feed(byte[] buf, int offset, int size);
 	public StreamBuffer buffer();
 	public int bufferedSize();
 	

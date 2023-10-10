@@ -3,14 +3,13 @@ package dagateway.server.transform.support;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 
 import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
 import dagateway.api.composer.graphql.GraphQLComposerBuilder;
-import dagateway.api.composer.stream.LinkedByteBlockBuffer;
+import dagateway.api.composer.stream.StreamBuffer;
 import dagateway.api.context.RouteRequestContext.TransformSpec;
 import dagateway.api.transform.AbstractDataTransformer;
 import graphql.ExecutionInput;
@@ -52,7 +51,7 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 		this.dataProxy = dataProxy;
 		
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
-			return new JsonStreamBuilder(new LinkedByteBlockBuffer());
+			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		this.serializer = serializer;
 	}
@@ -61,11 +60,9 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 	public DataBuffer transform(DataBuffer source) {
 //		this.log.debug("transform");
 		
-		this.dataProxy.push(source.asByteBuffer());
+		this.dataProxy.push(source, true);
 		
 		byte[] resBuffer = this.serializer.buildNext();
-		DataBufferUtils.release(source);
-		
 		if(resBuffer != null && resBuffer.length > 0) {
 			return source.factory().wrap(resBuffer);
 		}

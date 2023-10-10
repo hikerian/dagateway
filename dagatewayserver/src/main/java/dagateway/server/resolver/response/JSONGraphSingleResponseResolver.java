@@ -13,7 +13,7 @@ import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
-import dagateway.api.composer.stream.LinkedByteBlockBuffer;
+import dagateway.api.composer.stream.StreamBuffer;
 import dagateway.api.context.RouteRequestContext;
 import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.resolver.http.SingleBackendResponseResolver;
@@ -40,7 +40,7 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 		
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
-			return new JsonStreamBuilder(new LinkedByteBlockBuffer());
+			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		
 		Mono<ServerResponse> serverResponse = serviceResult.flatMap(result -> {
@@ -58,13 +58,12 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 					DataBufferUtils.release(bodyBuffer);
 				} else {
 //					this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
-					dataProxy.push(bodyBuffer.asByteBuffer());
+					dataProxy.push(bodyBuffer, true);
 				}
 				
 				// cannot emi more than one data
 				byte[] resBuffer = serializer.buildNext();
-				DataBufferUtils.release(bodyBuffer);
-				if(resBuffer != null) {
+				if(resBuffer != null && resBuffer.length > 0) {
 					sink.next(bodyBuffer.factory().wrap(resBuffer));
 				}
 			});
@@ -88,7 +87,7 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 		
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
-			return new JsonStreamBuilder(new LinkedByteBlockBuffer());
+			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		
 		ServiceSpec serviceSpec = serviceResult.getServiceSpec();
@@ -105,13 +104,12 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 				DataBufferUtils.release(bodyBuffer);
 			} else {
 //				this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
-				dataProxy.push(bodyBuffer.asByteBuffer());
+				dataProxy.push(bodyBuffer, true);
 			}
 			
 			// cannot emi more than one data
 			byte[] resBuffer = serializer.buildNext();
-			DataBufferUtils.release(bodyBuffer);
-			if(resBuffer != null) {
+			if(resBuffer != null && resBuffer.length > 0) {
 				sink.next(bodyBuffer.factory().wrap(resBuffer));
 			}
 		});

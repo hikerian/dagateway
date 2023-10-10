@@ -82,7 +82,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 		ResponseSpec responseSpec = requestHeaderSpec.retrieve();
 		Mono<ServiceResult<Sr>> serviceResult = responseSpec
 				.toEntityFlux((backendMessage, context) -> backendMessage.getBody())
-				.map(responseEntity -> {
+				.flatMap(responseEntity -> {
 //					this.log.debug("BACKEND SERVICE RESPONSE STATUS: " + responseEntity.getStatusCode());
 					
 					HttpHeaders backendHeaders = responseEntity.getHeaders();
@@ -106,10 +106,10 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 					newHttpHeaders.putAll(headers);
 					newHttpHeaders.setContentType(clientResponseType);
 					
-					return new ServiceResult<Sr>(this.serviceSpec, status, newHttpHeaders, body, responseHandler.getReturnTypeName());
+					return Mono.just(new ServiceResult<Sr>(this.serviceSpec, status, newHttpHeaders, body, responseHandler.getReturnTypeName()));
 				})
 				.onErrorResume(WebClientResponseException.class, ex -> {
-//					this.log.debug("BACKEND SERVICE ERROR RESPONSE STATUS: " + this.serviceSpec.createBackendURI() + "(" + ex.getRawStatusCode() + ")");
+//					this.log.debug("BACKEND SERVICE ERROR RESPONSE STATUS: " + this.serviceSpec.createBackendURI() + "(" + ex.getStatusText() + ")");
 					
 					return Mono.just(new ServiceResult<Sr>(this.serviceSpec, ex));
 				});
@@ -117,5 +117,9 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 		return serviceResult;
 	}
 
+	@Override
+	public String toString() {
+		return "ServiceDelegatorImpl [serviceSpec=" + this.serviceSpec.getName() + "]";
+	}
 
 }

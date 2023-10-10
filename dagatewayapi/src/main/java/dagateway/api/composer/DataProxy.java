@@ -1,9 +1,11 @@
 package dagateway.api.composer;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 
 import dagateway.api.composer.builder.StreamBuilder;
 import dagateway.api.composer.stream.StreamBuffer;
@@ -27,8 +29,14 @@ public class DataProxy {
 		this.streamBuilder = streamBuilder;
 	}
 
-	public void push(ByteBuffer buffer) {
-		this.streamBuilder.feed(buffer);
+	public void push(DataBuffer data, boolean releaseOnClose) {
+		try (InputStream in = data.asInputStream(releaseOnClose)) {
+			byte[] buffer = new byte[in.available()];
+			in.read(buffer);
+			this.streamBuilder.feed(buffer, 0, buffer.length);
+		} catch(IOException ioe) {
+			throw new RuntimeException(ioe);
+		}
 	}
 	
 	public void buildNext() {

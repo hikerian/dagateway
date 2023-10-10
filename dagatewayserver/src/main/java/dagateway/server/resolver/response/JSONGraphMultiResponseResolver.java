@@ -12,7 +12,7 @@ import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageSchema;
 import dagateway.api.composer.MessageSerializer;
 import dagateway.api.composer.builder.json.JsonStreamBuilder;
-import dagateway.api.composer.stream.LinkedByteBlockBuffer;
+import dagateway.api.composer.stream.StreamBuffer;
 import dagateway.api.context.RouteRequestContext;
 import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.resolver.http.MultiBackendResponseResolver;
@@ -37,26 +37,26 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
 //		this.log.debug("resolve");
 		
-		Flux<Flux<DataBuffer>> responseBody = this.resolveBody(routeContext, serviceResults);
+		Flux<DataBuffer> responseBody = this.resolveBody(routeContext, serviceResults);
 		
 		ServerResponse.BodyBuilder bodyBuilder = ServerResponse.ok();
 		
 		this.buildHeader(bodyBuilder, routeContext, MediaType.APPLICATION_JSON);
 
 		return bodyBuilder.body((outputMessage, context) -> {
-			return outputMessage.writeAndFlushWith(responseBody);
+			return outputMessage.writeAndFlushWith(Mono.just(responseBody));
 		});
 	}
 	
-	public Flux<Flux<DataBuffer>> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
+	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
 //		this.log.debug("resolve");
 				
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
-			return new JsonStreamBuilder(new LinkedByteBlockBuffer());
+			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		
-		Flux<Flux<DataBuffer>> responseBody = serviceResults.map(serviceResult -> {
+		Flux<DataBuffer> responseBody = serviceResults.flatMap(serviceResult -> {
 			ServiceSpec serviceSpec = serviceResult.getServiceSpec();
 			DataProxy dataProxy = serviceSpec.getDataProxy();
 			
@@ -70,16 +70,16 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 					DataBufferUtils.release(bodyBuffer);
 				} else {
 //					this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
-					dataProxy.push(bodyBuffer.asByteBuffer());
+					dataProxy.push(bodyBuffer, true);
 				}
+
 				// Cannot emi more than one data
 				byte[] resBuffer = serializer.buildNext();
-
-				DataBufferUtils.release(bodyBuffer);
-				if(resBuffer != null) {
+				if(resBuffer != null && resBuffer.length > 0) {
 					sink.next(bodyBuffer.factory().wrap(resBuffer));
 				}
 			});
+
 			return resBuffers;
 		});
 		

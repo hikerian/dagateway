@@ -387,6 +387,11 @@ public class RouteRequestContext {
 		public void setAttribute(String name, Object value) {
 			this.routeContext.setAttribute(this.path + "." + name, value);
 		}
+
+		@Override
+		public String toString() {
+			return "ServiceSpec [path=" + this.path + "]";
+		}
 		
 	}
 	

@@ -54,11 +54,11 @@ routes:
           body:
             transform:
             - content-type: application/json
-      - name: comCodeList
+      - name: comparison
         endpoint:
           type: HTTP
           uri: http://localhost:8888
-          path: /composite/comcode
+          path: /composite/comparison
         request:
           method: POST
           body:
@@ -68,11 +68,11 @@ routes:
           body:
             transform:
             - content-type: application/json
-      - name: comparison
+      - name: comCodeList
         endpoint:
           type: HTTP
           uri: http://localhost:8888
-          path: /composite/comparison
+          path: /composite/comcode
         request:
           method: POST
           body:

@@ -14,6 +14,7 @@ import dagateway.api.resolver.http.ClientRequestResolver;
 import dagateway.api.resolver.http.ClientResponseResolver;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 
 
@@ -58,7 +59,7 @@ public class MultiServiceBroker<Cq, Sr> implements ServiceBroker<Mono<Cq>, Cq, S
 				serviceResultList.add(serviceResult);
 			}
 			
-			return Flux.concat(serviceResultList);
+			return Flux.concat(serviceResultList).publishOn(Schedulers.parallel());
 		});
 		
 		return serviceResults;
