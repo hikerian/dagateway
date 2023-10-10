@@ -49,7 +49,7 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 	}
 	
 	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-//		this.log.debug("resolve");
+		this.log.debug("flux flux resolve");
 				
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
@@ -57,6 +57,7 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 		});
 		
 		Flux<DataBuffer> responseBody = serviceResults.flatMap(serviceResult -> {
+			this.log.debug("flatMap");
 			ServiceSpec serviceSpec = serviceResult.getServiceSpec();
 			DataProxy dataProxy = serviceSpec.getDataProxy();
 			

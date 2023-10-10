@@ -43,24 +43,39 @@ public class MultiServiceBroker<Cq, Sr> implements ServiceBroker<Mono<Cq>, Cq, S
 		return serverResponse;
 	}
 	
-	private Flux<ServiceResult<Sr>> runServices(ServerRequest serverRequest) {
+//	private Flux<ServiceResult<Sr>> runServices(ServerRequest serverRequest) {
 //		this.log.debug("runServices");
+//		
+//		HttpHeaders requestHeaders = this.routeContext.getRequestHeaders();
+//		// Divided Data is not support
+//		Mono<Cq> monoBody = this.requestResolver.resolve(serverRequest);
+//
+//		Flux<ServiceResult<Sr>> serviceResults = monoBody.flatMapMany(body -> {
+//			List<Mono<ServiceResult<Sr>>> serviceResultList = new ArrayList<>();
+//			Mono<Cq> cqMono = Mono.just(body);
+//					
+//			for(ServiceDelegator<Mono<Cq>, Cq, Sr> serviceDelegator : this.serviceDelegatorList) {
+//				Mono<ServiceResult<Sr>> serviceResult = serviceDelegator.run(requestHeaders, cqMono);
+//				serviceResultList.add(serviceResult);
+//			}
+//			
+//			return Flux.concat(serviceResultList).publishOn(Schedulers.parallel());
+//		});
+//		
+//		return serviceResults;
+//	}
+	private Flux<ServiceResult<Sr>> runServices(ServerRequest serverRequest) {
+		this.log.debug("runServices");
 		
 		HttpHeaders requestHeaders = this.routeContext.getRequestHeaders();
 		// Divided Data is not support
 		Mono<Cq> monoBody = this.requestResolver.resolve(serverRequest);
-
-		Flux<ServiceResult<Sr>> serviceResults = monoBody
-				.flatMapMany(body -> {
-			List<Mono<ServiceResult<Sr>>> serviceResultList = new ArrayList<>();
-			Mono<Cq> cqMono = Mono.just(body);
-			for(ServiceDelegator<Mono<Cq>, Cq, Sr> serviceDelegator : this.serviceDelegatorList) {
-				Mono<ServiceResult<Sr>> serviceResult = serviceDelegator.run(requestHeaders, cqMono);
-				serviceResultList.add(serviceResult);
-			}
-			
-			return Flux.concat(serviceResultList).publishOn(Schedulers.parallel());
-		});
+		
+		Flux<ServiceResult<Sr>> serviceResults = Flux.fromIterable(this.serviceDelegatorList)
+				.flatMap((delegator) -> {
+					Mono<ServiceResult<Sr>> serviceResult = delegator.run(requestHeaders, monoBody);
+					return serviceResult;
+				}).subscribeOn(Schedulers.parallel());
 		
 		return serviceResults;
 	}
