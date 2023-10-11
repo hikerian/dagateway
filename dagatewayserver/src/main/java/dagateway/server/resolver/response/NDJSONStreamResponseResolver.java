@@ -33,7 +33,7 @@ public class NDJSONStreamResponseResolver extends MultiBackendResponseResolver<F
 		Flux<DataBuffer> responseBodies = serviceResults.flatMap(serviceResult -> {
 			Flux<DataBuffer> bodyBuffers = serviceResult.getBody();
 			if(bodyBuffers != null) {
-				bodyBuffers = bodyBuffers.concatWith(Flux.just(newlineBuffer));
+				bodyBuffers = bodyBuffers.concatWith(Mono.just(newlineBuffer));
 			}
 			return bodyBuffers;
 		});
@@ -48,14 +48,14 @@ public class NDJSONStreamResponseResolver extends MultiBackendResponseResolver<F
 	}
 	
 	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-//		this.log.debug("resolve");
+//		this.log.debug("resolveBody");
 		
 		DefaultDataBufferFactory databufferFactory = DefaultDataBufferFactory.sharedInstance;
 		DefaultDataBuffer newlineBuffer = databufferFactory.wrap(new byte[] {'\n'});
 		
 		Flux<DataBuffer> responseBodies = serviceResults.flatMap(serviceResult -> {
 			Flux<DataBuffer> bodyBuffers = serviceResult.getBody();
-			bodyBuffers = bodyBuffers.concatWith(Flux.just(newlineBuffer));
+			bodyBuffers = bodyBuffers.concatWith(Mono.just(newlineBuffer));
 			return bodyBuffers;
 		});
 		

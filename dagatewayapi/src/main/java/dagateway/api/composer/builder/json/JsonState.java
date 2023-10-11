@@ -169,7 +169,6 @@ public class JsonState {
 			}
 		}
 //		this.log.debug("Field: " + fieldName + " is not child of " + (messageElement == null ? null : messageElement.getName()));
-//		this.log.debug(this.stageStack.toString());
 		return null;
 	}
 	
@@ -185,10 +184,17 @@ public class JsonState {
 		return this.topology;
 	}
 	
+	public void sanitizeForNextField() {
+		Stage parent = this.stageStack.getFirst();
+		JsonToken parentToken = parent.getStage();
+		if(parentToken == JsonToken.FIELD_NAME) {
+			this.stageStack.removeFirst();
+		}
+	}
+	
 	/*
 	 * helper methods
 	 */
-
 	private boolean isFirstContainer() {
 		if(this.stageStack.size() == 0) {
 			return true;
@@ -222,11 +228,13 @@ public class JsonState {
 	}
 	
 	private void endContainer(JsonToken startToken) {
-		Stage stage = this.stageStack.removeFirst();
-		JsonToken token = stage.getStage();
-		if(token != startToken) {
-			throw new IllegalStateException("Illegal Current Token: " + token + " assumed: " + startToken);
+		// TODO StartToken 없이 바로 FIELD_NAME이 나오는 경우가 있어 확인이 필요.
+		Stage stage = this.stageStack.getFirst();
+		JsonToken jsonToken = stage.getStage();
+		if(jsonToken == startToken) {
+			this.stageStack.removeFirst();
 		}
+		
 		if(this.stageStack.size() > 0) {
 			Stage parent = this.stageStack.getFirst();
 			if(parent.getStage() == JsonToken.FIELD_NAME) {
@@ -234,11 +242,6 @@ public class JsonState {
 			}
 		}
 	}
-
-
-
-
-
 
 
 

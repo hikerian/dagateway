@@ -62,34 +62,48 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 
 	@Override
 	public void startMessage() {
-		this.write('{');
+		this.startObject();
 	}
 	
 	@Override
 	public void endMessage() {
-		this.write('}');
+		this.endObject();
 	}
 	
+	@Override
 	public void nodeName(MessageNode element, String name) {
-		if(element != null && element.hasPreviousSibling()) {
+		this.jsonState.sanitizeForNextField();
+		if(this.jsonState.isFirstField() == false) {
 			this.write(',');
 		}
 		this.write('"')
 			.write(this.encoder.encodeAsUTF8(name))
 			.write('"').write(':');
+		this.jsonState.newField(name, element);
 	}
 	
+	@Override
 	public void startObject() {
-		this.startMessage();
+		this.write('{');
+		this.jsonState.newObject();
 	}
+	
+	@Override
 	public void endObject() {
-		this.endMessage();
+		this.write('}');
+		this.jsonState.endObject();
 	}
+	
+	@Override
 	public void startArray() {
 		this.write('[');
+		this.jsonState.newArray();
 	}
+	
+	@Override
 	public void endArray() {
 		this.write(']');
+		this.jsonState.endArray();
 	}
 	
 	/*

@@ -30,6 +30,25 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 	private final Logger log = LoggerFactory.getLogger(JSONGraphMultiResponseResolver.class);
 	
 	
+	private static class BufferProxyMap {
+		private DataBuffer dataBuffer;
+		private DataProxy dataProxy;
+		
+		BufferProxyMap(DataBuffer dataBuffer, DataProxy dataProxy) {
+			this.dataBuffer = dataBuffer;
+			this.dataProxy = dataProxy;
+		}
+		
+		DataBuffer getDataBuffer() {
+			return this.dataBuffer;
+		}
+		
+		DataProxy getDataProxy() {
+			return this.dataProxy;
+		}
+	}
+	
+	
 	public JSONGraphMultiResponseResolver() {
 	}
 
@@ -49,39 +68,49 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 	}
 	
 	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-		this.log.debug("flux flux resolve");
+//		this.log.debug("flux flux resolve");
 				
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
 			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		
-		Flux<DataBuffer> responseBody = serviceResults.flatMap(serviceResult -> {
-			this.log.debug("flatMap");
+		// 1. parallel webclient call
+		Flux<BufferProxyMap> bufferProxyFlux = serviceResults.flatMap(serviceResult -> {
 			ServiceSpec serviceSpec = serviceResult.getServiceSpec();
 			DataProxy dataProxy = serviceSpec.getDataProxy();
 			
 			Flux<DataBuffer> bodyBuffers = serviceResult.getBody();
 			// last marking
 			bodyBuffers = bodyBuffers.concatWith(Flux.just(DefaultDataBufferFactory.sharedInstance.wrap(new byte[0])));
-			Flux<DataBuffer> resBuffers = bodyBuffers.handle((bodyBuffer, sink) -> {
-				if(bodyBuffer.readableByteCount() == 0) { // close
-//					this.log.debug("BodyBuffer readableByteCount Zero.");
-					dataProxy.finish();
-					DataBufferUtils.release(bodyBuffer);
-				} else {
-//					this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
-					dataProxy.push(bodyBuffer, true);
-				}
-
-				// Cannot emi more than one data
-				byte[] resBuffer = serializer.buildNext();
-				if(resBuffer != null && resBuffer.length > 0) {
-					sink.next(bodyBuffer.factory().wrap(resBuffer));
-				}
+			
+			Flux<BufferProxyMap> bufferProxies = bodyBuffers.map(bodyBuffer -> {
+				return new BufferProxyMap(bodyBuffer, dataProxy);
 			});
-
-			return resBuffers;
+			
+			return bufferProxies;
+		});
+		
+		// 2. sequential response parsing
+		Flux<DataBuffer> responseBody = bufferProxyFlux.handle((bufferProxy, sink)-> {
+			this.log.debug("Handle!!!");
+			
+			DataBuffer dataBuffer = bufferProxy.getDataBuffer();
+			DataProxy dataProxy = bufferProxy.getDataProxy();
+			if(dataBuffer.readableByteCount() == 0) { // close
+//				this.log.debug("BodyBuffer readableByteCount Zero.");
+				dataProxy.finish();
+				DataBufferUtils.release(dataBuffer);
+			} else {
+//				this.log.debug("BodyBuffer readableByteCount: " + bodyBuffer.readableByteCount());
+				dataProxy.push(dataBuffer, true);
+			}
+			
+			// Cannot emi more than one data
+			byte[] resBuffer = serializer.buildNext();
+			if(resBuffer != null && resBuffer.length > 0) {
+				sink.next(dataBuffer.factory().wrap(resBuffer));
+			}
 		});
 		
 		return responseBody;

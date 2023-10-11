@@ -34,6 +34,9 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 	public JSONGraphSingleResponseResolver() {
 	}
 
+	/*
+	 * TODO refactoring resolve and resolveBody
+	 */
 	@Override
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Flux<DataBuffer>>> serviceResult) {
 //		this.log.debug("resolve");
