@@ -1,0 +1,6 @@
+backends:
+  - name: testHttp
+    url: http://localhost:8888
+    api-docs: /v3/api-docs
+  - name: testWs
+    url: ws://localhost:8888

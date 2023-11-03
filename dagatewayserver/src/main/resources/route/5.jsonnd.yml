@@ -9,7 +9,7 @@ routes:
     service-targets:
       - endpoint:
           type: HTTP
-          uri: http://localhost:8888
+          backend-name: testHttp
           path: /json/influencers
         request:
           header:
@@ -34,7 +34,7 @@ routes:
             - content-type: application/json
       - endpoint:
           type: HTTP
-          uri: http://localhost:8888
+          backend-name: testHttp
           path: /json/comcode
         request:
           header:
@@ -59,7 +59,7 @@ routes:
             - content-type: application/json
       - endpoint:
           type: HTTP
-          uri: http://localhost:8888
+          backend-name: testHttp
           path: /json/comparison
         request:
           header:

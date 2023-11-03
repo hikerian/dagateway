@@ -6,7 +6,7 @@ package dagateway.api.context.route;
  */
 public class ServiceEndpoint {
 	private EndpointType type;
-	private String uri;
+	private String backendName;
 	private String path;
 	
 	
@@ -21,12 +21,12 @@ public class ServiceEndpoint {
 		this.type = type;
 	}
 
-	public String getUri() {
-		return this.uri;
+	public String getBackendName() {
+		return this.backendName;
 	}
 
-	public void setUri(String uri) {
-		this.uri = uri;
+	public void setBackendName(String backendName) {
+		this.backendName = backendName;
 	}
 
 	public String getPath() {
@@ -39,7 +39,9 @@ public class ServiceEndpoint {
 
 	@Override
 	public String toString() {
-		return "ServiceEndpoint [type=" + type + ", uri=" + uri + ", path=" + path + "]";
+		return "ServiceEndpoint [type=" + this.type
+				+ ", backendName=" + this.backendName
+				+ ", path=" + this.path + "]";
 	}
 
 

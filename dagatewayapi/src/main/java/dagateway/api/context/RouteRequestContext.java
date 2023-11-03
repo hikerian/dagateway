@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +48,12 @@ public class RouteRequestContext {
 	private HttpHeaders requestHeaders = null;
 	private MediaType requestContentType = null;
 	private GatewayRouteContext gatewayRoute = null;
+	private Map<String, BackendServer> backendServers = null;
 	private Map<String, String> uriTemplateVars = null;
 	private MessageSchema messageStructure = null;
 	
 	
-	public RouteRequestContext(ServerWebExchange serverWebExchange, GatewayRouteContext gatewayRoute) {
+	public RouteRequestContext(ServerWebExchange serverWebExchange, GatewayRouteContext gatewayRoute, Map<String, BackendServer> backendServers) {
 		ServerHttpRequest request = serverWebExchange.getRequest();
 		this.requestURI = request.getURI();
 		this.requestMethod = request.getMethod();
@@ -61,6 +63,7 @@ public class RouteRequestContext {
 			this.requestContentType = RouteRequestContext.NONE;
 		}
 		this.gatewayRoute = gatewayRoute;
+		this.backendServers = new ConcurrentHashMap<>(backendServers);
 		
 		this.uriTemplateVars = ServerWebExchangeUtils.getUriTemplateVariables(serverWebExchange);
 	}
@@ -118,7 +121,12 @@ public class RouteRequestContext {
 			return Collections.emptyList();
 		}
 		List<ServiceSpec> serviceSpecs = serviceTargetList.stream()
-				.map(target -> new ServiceSpec(target, this))
+				.map(target -> {
+					ServiceEndpoint endpoint = target.getEndpoint();
+					String backendName = endpoint.getBackendName();
+					BackendServer backendServer = this.backendServers.get(backendName);
+					return new ServiceSpec(target, backendServer, this);
+				})
 				.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 		
 		return serviceSpecs;
@@ -206,13 +214,15 @@ public class RouteRequestContext {
 	public static class ServiceSpec {
 		private String path;
 		private ServiceTarget target;
+		private BackendServer backendServer;
 		private RouteRequestContext routeContext;
 		private DataProxy dataProxy;
 		
 		
-		ServiceSpec(ServiceTarget target, RouteRequestContext routeContext) {
+		ServiceSpec(ServiceTarget target, BackendServer backendServer, RouteRequestContext routeContext) {
 			this.path = "service(" + target.getName() + ")";
 			this.target = target;
+			this.backendServer = backendServer;
 			this.routeContext = routeContext;
 		}
 		
@@ -241,7 +251,7 @@ public class RouteRequestContext {
 		}
 		
 		public String getEndpointUri() {
-			return this.target.getEndpoint().getUri();
+			return this.backendServer.getUrl();
 		}
 		
 		public String getEndpointPath() {
@@ -263,7 +273,7 @@ public class RouteRequestContext {
 
 		public URI createBackendURI() {
 			ServiceEndpoint endpoint = this.target.getEndpoint();
-			String backendUri = endpoint.getUri();
+			String backendUri = this.getEndpointUri();
 			String pathPattern = endpoint.getPath();
 			pathPattern = pathPattern.replaceAll("[$][{]", "{");
 			

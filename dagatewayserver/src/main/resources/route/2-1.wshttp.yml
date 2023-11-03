@@ -8,7 +8,7 @@ routes:
     service-targets:
       - endpoint:
           type: HTTP
-          uri: http://localhost:8888
+          backend-name: testHttp
           path: /httpchat
         request:
           method: PUT

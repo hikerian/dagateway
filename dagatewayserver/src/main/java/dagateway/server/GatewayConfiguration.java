@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import dagateway.api.context.BackendServers;
 import dagateway.api.context.GatewayContext;
 import dagateway.api.context.RouteRequestContext;
 import dagateway.api.context.predicate.RoutePredicate;
@@ -84,6 +86,9 @@ import dagateway.server.transform.support.TextPlainDataTransformer;
 public class GatewayConfiguration {
 	private final Logger log = LoggerFactory.getLogger(GatewayConfiguration.class);
 	
+	private final String DEFAULT_ROUTE_PATH = "classpath:route/*.yml";
+	private final String DEFAULT_BACKEND_PATH = "classpath:backend/*.yml";
+	
 	
 	public GatewayConfiguration() {
 	}
@@ -111,9 +116,63 @@ public class GatewayConfiguration {
 	}
 	
 	@Bean
-	GatewayContext gatewayContext(ConfigurableApplicationContext configurableApplicationContext, RoutePredicateBuilder predicateFactory) throws Exception {
-		this.log.debug("gatewayContext");
+	GatewayContext gatewayContext(ConfigurableApplicationContext configurableApplicationContext
+			, RoutePredicateBuilder predicateFactory
+			, @Value("${dagateway.server.route-path}") String routePath
+			, @Value("${dagateway.server.backend-path}") String backendPath) throws Exception {
+		this.log.debug("gatewayContext routePath: " + routePath + ", backendPath: " + backendPath);
 		
+		if(routePath == null) {
+			routePath = this.DEFAULT_ROUTE_PATH;
+		}
+		if(backendPath == null) {
+			backendPath = this.DEFAULT_BACKEND_PATH;
+		}
+		
+//		SimpleModule deserializerModule = new SimpleModule();
+//		deserializerModule.addDeserializer(RoutePredicate.class, new JsonDeserializer<RoutePredicate>() {
+//			@Override
+//			public RoutePredicate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+//				String predicateShortcut = p.getValueAsString();
+//				
+//				return predicateFactory.build(predicateShortcut);
+//			}
+//		});
+		
+		GatewayContext gatewayContext = new GatewayContext();
+		
+		// load routes
+		this.loadGatewayContext(gatewayContext, routePath, backendPath, configurableApplicationContext, predicateFactory);
+		
+////		Resource[] routeYamls = configurableApplicationContext.getResources("classpath:route/*.yml");
+//		Resource[] routeYamls = configurableApplicationContext.getResources(routePath);
+//		
+//		DumperOptions dumperOptions = new DumperOptions();
+//		dumperOptions.setPrettyFlow(true);
+//		dumperOptions.setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED);
+//		dumperOptions.setDefaultFlowStyle(FlowStyle.FLOW);
+//		
+//		Yaml yaml = new Yaml(dumperOptions);
+//		
+//		ObjectMapper mapper = new ObjectMapper();
+//		mapper.registerModule(deserializerModule);
+//		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
+//			
+//		for(Resource routeYaml : routeYamls) {
+//			Map<String, Object> yamlMap = yaml.load(routeYaml.getInputStream());
+//			GatewayRoutes routes = mapper.convertValue(yamlMap, GatewayRoutes.class);
+//			gatewayContext.addRoutes(routes);
+//		}
+		
+		return gatewayContext;
+	}
+	
+	private void loadGatewayContext(GatewayContext gatewayContext
+			, String routePath
+			, String backendPath
+			, ConfigurableApplicationContext configurableApplicationContext
+			, RoutePredicateBuilder predicateFactory) throws IOException {
+
 		SimpleModule deserializerModule = new SimpleModule();
 		deserializerModule.addDeserializer(RoutePredicate.class, new JsonDeserializer<RoutePredicate>() {
 			@Override
@@ -123,10 +182,6 @@ public class GatewayConfiguration {
 				return predicateFactory.build(predicateShortcut);
 			}
 		});
-		
-		GatewayContext gatewayContext = new GatewayContext();
-		
-		Resource[] routeYamls = configurableApplicationContext.getResources("classpath:route/*.yml");
 		
 		DumperOptions dumperOptions = new DumperOptions();
 		dumperOptions.setPrettyFlow(true);
@@ -138,14 +193,20 @@ public class GatewayConfiguration {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(deserializerModule);
 		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
-			
+
+		Resource[] routeYamls = configurableApplicationContext.getResources(routePath);
 		for(Resource routeYaml : routeYamls) {
 			Map<String, Object> yamlMap = yaml.load(routeYaml.getInputStream());
 			GatewayRoutes routes = mapper.convertValue(yamlMap, GatewayRoutes.class);
 			gatewayContext.addRoutes(routes);
 		}
 		
-		return gatewayContext;
+		Resource[] backendYamls = configurableApplicationContext.getResources(backendPath);
+		for(Resource backendYaml : backendYamls) {
+			Map<String, Object> yamlMap = yaml.load(backendYaml.getInputStream());
+			BackendServers backendServers = mapper.convertValue(yamlMap, BackendServers.class);
+			gatewayContext.addBackends(backendServers);
+		}
 	}
 	
 	@Bean

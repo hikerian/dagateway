@@ -43,7 +43,7 @@ routes:
       - name: influencerList
         endpoint:
           type: HTTP
-          uri: http://localhost:8888
+          backend-name: testHttp
           path: /composite/influencers
         request:
           method: POST
@@ -57,7 +57,7 @@ routes:
       - name: comparison
         endpoint:
           type: HTTP
-          uri: http://localhost:8888
+          backend-name: testHttp
           path: /composite/comparison
         request:
           method: POST
@@ -71,7 +71,7 @@ routes:
       - name: comCodeList
         endpoint:
           type: HTTP
-          uri: http://localhost:8888
+          backend-name: testHttp
           path: /composite/comcode
         request:
           method: POST

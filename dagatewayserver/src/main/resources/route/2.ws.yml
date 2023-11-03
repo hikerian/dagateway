@@ -8,7 +8,7 @@ routes:
     service-targets:
       - endpoint:
           type: WEBSOCKET
-          uri: ws://localhost:8888
+          backend-name: testWs
           path: /ws/chat
         request:
           body:

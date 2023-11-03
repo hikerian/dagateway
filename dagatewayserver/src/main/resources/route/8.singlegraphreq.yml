@@ -27,7 +27,7 @@ routes:
       - name: echo
         endpoint:
           type: HTTP
-          uri: http://localhost:8888
+          backend-name: testHttp
           path: /json/echo
         request:
           header:
