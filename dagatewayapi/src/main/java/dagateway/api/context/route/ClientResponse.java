@@ -2,10 +2,6 @@ package dagateway.api.context.route;
 
 import org.springframework.http.MediaType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import graphql.execution.instrumentation.DocumentAndVariables;
-
 
 /**
  * @author Dong-il Cho
