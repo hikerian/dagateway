@@ -16,7 +16,7 @@ public class MessageSchema extends MessageNode {
 	}
 	
 	public MessageSchema(String name) {
-		super(name);
+		super(name, name);
 	}
 
 	protected void buildFirst() {

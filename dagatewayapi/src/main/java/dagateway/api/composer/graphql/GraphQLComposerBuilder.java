@@ -107,7 +107,7 @@ public class GraphQLComposerBuilder {
 		List<Argument> arguments = field.getArguments();
 		// TODO support arguments?
 		
-		MessageNode element = new MessageNode(alias == null ? name : alias);
+		MessageNode element = new MessageNode(alias == null ? name : alias, name);
 		parent.addChild(element);
 		
 		SelectionSet selectionSet = field.getSelectionSet();

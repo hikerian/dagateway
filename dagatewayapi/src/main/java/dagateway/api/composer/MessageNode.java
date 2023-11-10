@@ -17,6 +17,7 @@ import dagateway.api.composer.builder.StreamBuilder;
 public class MessageNode {
 	private final Logger log = LoggerFactory.getLogger(MessageNode.class);
 	
+	private String alias;
 	private String name;
 	private MessageNode parent;
 	protected List<MessageNode> children;
@@ -35,8 +36,13 @@ public class MessageNode {
 	protected MessageSerializer messageSerializer;
 	
 	
-	public MessageNode(String name) {
+	public MessageNode(String alias, String name) {
+		this.alias = alias;
 		this.name = name;
+	}
+	
+	public String getAlias() {
+		return this.alias;
 	}
 	
 	public String getName() {

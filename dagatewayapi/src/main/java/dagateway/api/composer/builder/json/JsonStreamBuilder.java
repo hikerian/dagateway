@@ -77,7 +77,7 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 			this.write(',');
 		}
 		this.write('"')
-			.write(this.encoder.encodeAsUTF8(name))
+			.write(this.encoder.encodeAsUTF8(element.getAlias()))
 			.write('"').write(':');
 		this.jsonState.newField(name, element);
 	}
@@ -174,7 +174,7 @@ public class JsonStreamBuilder extends AbstractStreamBuilder {
 					this.write(',');
 				}
 				this.write('"')
-					.write(this.encoder.quoteAsUTF8(fieldName))
+					.write(this.encoder.quoteAsUTF8(element.getAlias()))
 					.write('"')
 					.write(':');
 				this.jsonState.newField(fieldName, element);
