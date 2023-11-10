@@ -51,5 +51,16 @@ public class MultipartHandler extends AbstractContentHandler<Mono<MultiValueMap<
 		return transformed;
 	}
 
+	@Override
+	protected Mono<MultiValueMap<String, HttpEntity<?>>> wrapSingle(Part value) {
+		MediaType partType = value.headers().getContentType();
+		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+		bodyBuilder.part(value.name(), value, partType);
+		
+		MultiValueMap<String, HttpEntity<?>> newBody = bodyBuilder.build();
+		
+		return Mono.just(newBody);
+	}
+
 
 }

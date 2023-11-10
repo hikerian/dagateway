@@ -1,8 +1,11 @@
 package dagateway.server.transform.support;
 
+import java.nio.charset.StandardCharsets;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 
 import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageSchema;
@@ -11,6 +14,7 @@ import dagateway.api.composer.builder.json.JsonStreamBuilder;
 import dagateway.api.composer.graphql.GraphQLComposerBuilder;
 import dagateway.api.composer.stream.StreamBuffer;
 import dagateway.api.context.RouteRequestContext.TransformSpec;
+import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 import graphql.ExecutionInput;
 import graphql.ParseAndValidate;
@@ -69,5 +73,12 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 		
 		return null;
 	}
+
+	@Override
+	public DataBuffer transform(ServiceFault fault) {
+		String json = fault.toString();
+		return DefaultDataBufferFactory.sharedInstance.wrap(json.getBytes(StandardCharsets.UTF_8));
+	}
+
 
 }

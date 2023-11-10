@@ -3,11 +3,14 @@ package dagateway.server.transform.support;
 import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dagateway.api.resolver.http.CharDelimiterSupport;
+import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 import dagateway.api.transform.DividedDataSupport;
 
@@ -154,6 +157,30 @@ public class SSV2TSVCharTransformer extends AbstractDataTransformer<String, Stri
 	}
 	
 	@Override
+	public String transform(ServiceFault fault) {
+		StringBuilder header = new StringBuilder();
+		StringBuilder data = new StringBuilder();
+		
+		Map<String, Object> faultMap = fault.toMap();
+		Set<Map.Entry<String, Object>> entrySet = faultMap.entrySet();
+		boolean first = true;
+		for(Map.Entry<String, Object> entry : entrySet) {
+			if(first) {
+				first = false;
+			} else {
+				header.append(SSV2TSVCharTransformer.TSV_COL_DLMTR);
+				data.append(SSV2TSVCharTransformer.TSV_COL_DLMTR);
+			}
+			
+			header.append(this.encode(entry.getKey()));
+			data.append(this.encode(entry.getValue()));
+		}
+		
+		return header.append(SSV2TSVCharTransformer.TSV_ROW_DLMTR)
+				.append(data.toString()).toString();
+	}
+	
+	@Override
 	public void encode(char ch, CharArrayWriter writer) {
 		switch(ch) {
 		case '\t':
@@ -181,6 +208,21 @@ public class SSV2TSVCharTransformer extends AbstractDataTransformer<String, Stri
 		}
 	}
 	
+	private String encode(Object data) {
+		if(data == null) {
+			return "";
+		}
+		String str = data.toString();
+		CharArrayWriter buffer = new CharArrayWriter();
+		
+		char[] chars = str.toCharArray();
+		for(char ch : chars) {
+			this.encode(ch, buffer);
+		}
+		
+		return buffer.toString();
+	}
+	
 	private static class Entry {
 		private String key;
 		private String value;
@@ -196,6 +238,6 @@ public class SSV2TSVCharTransformer extends AbstractDataTransformer<String, Stri
 			return this.value;
 		}
 	}
-
+	
 
 }

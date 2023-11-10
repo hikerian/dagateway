@@ -22,4 +22,9 @@ public class FormDataHandler extends AbstractContentHandler<Mono<MultiValueMap<S
 		return transformed;
 	}
 
+	@Override
+	protected Mono<MultiValueMap<String, String>> wrapSingle(MultiValueMap<String, String> value) {
+		return Mono.just(value);
+	}
+
 }

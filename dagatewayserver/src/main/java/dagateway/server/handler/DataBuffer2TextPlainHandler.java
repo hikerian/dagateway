@@ -84,5 +84,10 @@ public class DataBuffer2TextPlainHandler extends AbstractContentHandler<Flux<Dat
 		return strData;
 	}
 
+	@Override
+	protected Mono<String> wrapSingle(String value) {
+		return Mono.just(value);
+	}
+
 	
 }

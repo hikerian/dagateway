@@ -3,6 +3,7 @@ package dagateway.server.transform.support;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 
 
@@ -25,4 +26,11 @@ public class TextPlainDataTransformer extends AbstractDataTransformer<String, St
 		// TODO Auto-generated method stub
 		return payload;
 	}
+
+	@Override
+	public String transform(ServiceFault fault) {
+		return fault.toString();
+	}
+
+
 }

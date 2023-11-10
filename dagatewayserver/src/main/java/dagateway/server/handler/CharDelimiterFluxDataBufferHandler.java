@@ -171,4 +171,16 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 		}
 	}
 
+	@Override
+	protected Flux<DataBuffer> wrapSingle(String value) {
+		try {
+			ByteBuffer resultBuffer = this.encoder.encode(CharBuffer.wrap(value));
+			DataBuffer dataBuffer = DefaultDataBufferFactory.sharedInstance.wrap(resultBuffer);
+			
+			return Flux.just(dataBuffer);
+		} catch (CharacterCodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

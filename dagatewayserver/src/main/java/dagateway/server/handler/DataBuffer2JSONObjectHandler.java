@@ -35,5 +35,10 @@ public class DataBuffer2JSONObjectHandler extends AbstractContentHandler<Flux<Da
 		return jsonMono;
 	}
 
+	@Override
+	protected Mono<JSONObject> wrapSingle(JSONObject value) {
+		return Mono.just(value);
+	}
+
 
 }

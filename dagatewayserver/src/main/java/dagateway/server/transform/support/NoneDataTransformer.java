@@ -3,6 +3,7 @@ package dagateway.server.transform.support;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 
 
@@ -23,5 +24,11 @@ public class NoneDataTransformer extends AbstractDataTransformer<Void, Void> {
 //		this.log.debug("transform");
 		return null;
 	}
+
+	@Override
+	public Void transform(ServiceFault fault) {
+		return null;
+	}
+
 
 }

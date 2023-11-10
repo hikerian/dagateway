@@ -20,4 +20,9 @@ public class JSONObject2StringHandler extends AbstractContentHandler<Mono<JSONOb
 		return transformed.map(jsonObject -> jsonObject.toJSONString());
 	}
 
+	@Override
+	protected Mono<String> wrapSingle(JSONObject value) {
+		return Mono.just(value.toJSONString());
+	}
+
 }

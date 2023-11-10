@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import org.reactivestreams.Publisher;
 import org.springframework.http.MediaType;
 
+import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.DataTransformer;
 
 
@@ -39,6 +40,12 @@ public abstract class AbstractContentHandler<P extends Publisher<Cq>, Cq, T, V, 
 	@Override
 	public abstract R handle(P requestBody);
 	
+	@Override
+	public R handleFault(ServiceFault fault) {
+		V transformed = this.transformer.transform(fault);
+		return this.wrapSingle(transformed);
+	}
+	protected abstract R wrapSingle(V value);
 	
 	@Override
 	public String getArgumentTypeName() {

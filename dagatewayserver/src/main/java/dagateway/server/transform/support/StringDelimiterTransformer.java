@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 import dagateway.api.transform.DividedDataSupport;
 import dagateway.api.transform.StringDelimiterSupport;
@@ -39,6 +40,11 @@ public class StringDelimiterTransformer extends AbstractDataTransformer<String, 
 	@Override
 	public boolean stripDelimiter() {
 		return false;
+	}
+
+	@Override
+	public String transform(ServiceFault fault) {
+		return fault.toString();
 	}
 
 

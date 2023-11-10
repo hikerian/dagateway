@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
@@ -17,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import dagateway.api.context.RouteRequestContext.HeaderSpec;
 import dagateway.api.context.RouteRequestContext.ServiceSpec;
+import dagateway.api.context.RouteRequestContext.TransformSpec;
 import dagateway.api.handler.ContentHandler;
 import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
@@ -33,6 +35,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 	private RequestBodyUriSpec requestBodyUriSpec;
 	private ContentHandlerFactory contentHandlerFactory;
 	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
+	private ServiceExceptionResolver exceptionResolver;
 	
 	private ServiceSpec serviceSpec;
 	private String requestResolverTypeName;
@@ -42,6 +45,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 	public ServiceDelegatorImpl(RequestBodyUriSpec requestBodyUriSpec
 			, ContentHandlerFactory contentHandlerFactory
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory
+			, ServiceExceptionResolver exceptionResolver
 			, ServiceSpec serviceSpec
 			, String requestResolverTypeName
 			, String responseResolverTypeName) {
@@ -49,6 +53,7 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 		this.requestBodyUriSpec = requestBodyUriSpec;
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
+		this.exceptionResolver = exceptionResolver;
 		
 		this.serviceSpec = serviceSpec;
 		this.requestResolverTypeName = requestResolverTypeName;
@@ -83,13 +88,13 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 		Mono<ServiceResult<Sr>> serviceResult = responseSpec
 				.toEntityFlux((backendMessage, context) -> backendMessage.getBody())
 				.flatMap(responseEntity -> {
-//					this.log.debug("BACKEND SERVICE RESPONSE STATUS: " + responseEntity.getStatusCode());
+//						this.log.debug("BACKEND SERVICE RESPONSE STATUS: " + responseEntity.getStatusCode());
 					
 					HttpHeaders backendHeaders = responseEntity.getHeaders();
 					MediaType backendContentType = backendHeaders.getContentType();
 					MediaType clientResponseType = this.serviceSpec.getClientResponseType();
 					
-					if(clientResponseType == null || MediaType.ALL.equalsTypeAndSubtype(clientResponseType)) {
+					if(clientResponseType == null || clientResponseType.isWildcardType() || clientResponseType.isWildcardSubtype()) {
 						clientResponseType = backendContentType;
 					}
 					
@@ -108,10 +113,45 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 					
 					return Mono.just(new ServiceResult<Sr>(this.serviceSpec, status, newHttpHeaders, body, responseHandler.getReturnTypeName()));
 				})
-				.onErrorResume(WebClientResponseException.class, ex -> {
-//					this.log.debug("BACKEND SERVICE ERROR RESPONSE STATUS: " + this.serviceSpec.createBackendURI() + "(" + ex.getStatusText() + ")");
+				.onErrorResume((excep) -> {
+					this.log.error("exception", excep);
 					
-					return Mono.just(new ServiceResult<Sr>(this.serviceSpec, ex));
+					ServiceFault fault = this.exceptionResolver.resolve(excep);
+					
+					TransformSpec transformSpec = this.serviceSpec.getServiceResponseTransformSpec();
+					MediaType backendContentType = transformSpec.getContentType();
+					MediaType clientResponseType = this.serviceSpec.getClientResponseType();
+					
+					if(backendContentType.isWildcardType() || backendContentType.isWildcardSubtype()) {
+						backendContentType = MediaType.APPLICATION_JSON;
+					}
+					if(clientResponseType == null || clientResponseType.isWildcardType() || clientResponseType.isWildcardSubtype()) {
+						clientResponseType = backendContentType;
+					}
+					
+					ContentHandler<Flux<DataBuffer>, DataBuffer, ?, ?, Sr> responseHandler = this.contentHandlerFactory.getContentHandler(backendContentType
+							, clientResponseType
+							, ServiceDelegatorImpl.SERVICE_RESPONSE_TYPENAME
+							, this.responseResolverTypeName
+							, this.serviceSpec.getServiceResponseTransformSpec(backendContentType));
+					Sr body = responseHandler.handleFault(fault);
+
+					HttpStatusCode status = null;
+					HttpHeaders headers = null;
+					
+					if(excep instanceof WebClientResponseException) {
+						WebClientResponseException responseException = (WebClientResponseException)excep;
+						status = responseException.getStatusCode();
+						headers = responseException.getHeaders();
+					} else {
+						status = HttpStatus.INTERNAL_SERVER_ERROR;
+						headers = new HttpHeaders();
+					}
+					HttpHeaders newHttpHeaders = new HttpHeaders();
+					newHttpHeaders.putAll(headers);
+					newHttpHeaders.setContentType(clientResponseType);
+					
+					return Mono.just(new ServiceResult<Sr>(this.serviceSpec, status, newHttpHeaders, body, responseHandler.getReturnTypeName()));
 				});
 		
 		return serviceResult;

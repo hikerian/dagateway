@@ -45,9 +45,12 @@ import dagateway.api.resolver.http.ClientResolverFactory;
 import dagateway.api.resolver.http.ClientResponseResolverId;
 import dagateway.api.resolver.ws.WebSocketMessageResolverFactory;
 import dagateway.api.service.ServiceBrokerBuilder;
+import dagateway.api.service.ServiceExceptionResolver;
 import dagateway.api.transform.DataTransformerFactory;
 import dagateway.api.utils.ServerWebExchangeUtils;
+import dagateway.server.controller.ApiDocsController;
 import dagateway.server.controller.HttpRequestRouteController;
+import dagateway.server.exception.ServiceExceptionResolverImpl;
 import dagateway.server.handler.CharDelimiterFluxDataBufferHandler;
 import dagateway.server.handler.DataBuffer2JSONObjectHandler;
 import dagateway.server.handler.DataBuffer2ServerSentEventHandler;
@@ -86,6 +89,8 @@ import dagateway.server.transform.support.TextPlainDataTransformer;
 public class GatewayConfiguration {
 	private final Logger log = LoggerFactory.getLogger(GatewayConfiguration.class);
 	
+	private final String DEFAULT_APIDOCS_PATH = "/v3/api-docs";
+	
 	private final String DEFAULT_ROUTE_PATH = "classpath:route/*.yml";
 	private final String DEFAULT_BACKEND_PATH = "classpath:backend/*.yml";
 	
@@ -94,11 +99,20 @@ public class GatewayConfiguration {
 	}
 	
 	@Bean
-	RouterFunction<?> routerFunction(HttpRequestRouteController httpRequestRouteController) {
-		this.log.debug("routerFunction");
+	RouterFunction<?> routerFunction(HttpRequestRouteController httpRequestRouteController
+			, @Value("${dagateway.api-docs.path}") String apiDocsPath
+			, ApiDocsController apiDocsController) {
+		
+		this.log.debug("routerFunction, apiDocsPath: " + apiDocsPath);
+		
+		if(apiDocsPath == null) {
+			apiDocsPath = this.DEFAULT_APIDOCS_PATH;
+		}
 
 		RouterFunctions.Builder routerFunctionBuilder = RouterFunctions.route();
-		routerFunctionBuilder.route(request -> {
+		
+		routerFunctionBuilder.GET(apiDocsPath, apiDocsController::service)
+		.route(request -> {
 			RouteRequestContext routeContext = ServerWebExchangeUtils.getRouteContext(request);
 			
 			return routeContext != null;
@@ -128,41 +142,10 @@ public class GatewayConfiguration {
 		if(backendPath == null) {
 			backendPath = this.DEFAULT_BACKEND_PATH;
 		}
-		
-//		SimpleModule deserializerModule = new SimpleModule();
-//		deserializerModule.addDeserializer(RoutePredicate.class, new JsonDeserializer<RoutePredicate>() {
-//			@Override
-//			public RoutePredicate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
-//				String predicateShortcut = p.getValueAsString();
-//				
-//				return predicateFactory.build(predicateShortcut);
-//			}
-//		});
-		
-		GatewayContext gatewayContext = new GatewayContext();
-		
+
 		// load routes
+		GatewayContext gatewayContext = new GatewayContext();
 		this.loadGatewayContext(gatewayContext, routePath, backendPath, configurableApplicationContext, predicateFactory);
-		
-////		Resource[] routeYamls = configurableApplicationContext.getResources("classpath:route/*.yml");
-//		Resource[] routeYamls = configurableApplicationContext.getResources(routePath);
-//		
-//		DumperOptions dumperOptions = new DumperOptions();
-//		dumperOptions.setPrettyFlow(true);
-//		dumperOptions.setDefaultScalarStyle(ScalarStyle.DOUBLE_QUOTED);
-//		dumperOptions.setDefaultFlowStyle(FlowStyle.FLOW);
-//		
-//		Yaml yaml = new Yaml(dumperOptions);
-//		
-//		ObjectMapper mapper = new ObjectMapper();
-//		mapper.registerModule(deserializerModule);
-//		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
-//			
-//		for(Resource routeYaml : routeYamls) {
-//			Map<String, Object> yamlMap = yaml.load(routeYaml.getInputStream());
-//			GatewayRoutes routes = mapper.convertValue(yamlMap, GatewayRoutes.class);
-//			gatewayContext.addRoutes(routes);
-//		}
 		
 		return gatewayContext;
 	}
@@ -218,13 +201,22 @@ public class GatewayConfiguration {
 	}
 	
 	@Bean
+	ServiceExceptionResolver exceptionResolver() {
+		this.log.debug("exceptionResolver");
+		
+		ServiceExceptionResolver exceptionResolver = new ServiceExceptionResolverImpl();
+		return exceptionResolver;
+	}
+	
+	@Bean
 	ServiceBrokerBuilder serviceBrokerBuilder(ContentHandlerFactory contentHandlerFactory
 			, ClientResolverFactory clientResolverFactory
-			, BodyInserterBuilderFactory bodyInserterBuilderFactory) {
+			, BodyInserterBuilderFactory bodyInserterBuilderFactory
+			, ServiceExceptionResolver exceptionResolver) {
 		this.log.debug("serviceBrokerBuilder");
 
 		ServiceBrokerBuilder serviceBrokerBuilder = new ServiceBrokerBuilder();
-		serviceBrokerBuilder.init(contentHandlerFactory, clientResolverFactory, bodyInserterBuilderFactory);
+		serviceBrokerBuilder.init(contentHandlerFactory, clientResolverFactory, bodyInserterBuilderFactory, exceptionResolver);
 		
 		return serviceBrokerBuilder;
 	}

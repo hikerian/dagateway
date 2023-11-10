@@ -18,5 +18,10 @@ public class TextPlainHandler extends AbstractContentHandler<Mono<String>, Strin
 		return transformed;
 	}
 
+	@Override
+	protected Mono<String> wrapSingle(String value) {
+		return Mono.just(value);
+	}
+
 
 }

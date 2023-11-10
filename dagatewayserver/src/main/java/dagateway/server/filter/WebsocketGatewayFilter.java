@@ -23,6 +23,7 @@ import dagateway.api.handler.ContentHandlerFactory;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.resolver.ws.WebSocketMessageResolverFactory;
+import dagateway.api.service.ServiceExceptionResolver;
 import dagateway.api.utils.ServerWebExchangeUtils;
 import dagateway.server.controller.WebSocket2HTTPHandler;
 import dagateway.server.controller.WebSocket2WebSocketHandler;
@@ -53,6 +54,9 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 	
 	@Autowired
 	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
+	
+	@Autowired
+	private ServiceExceptionResolver exceptionResolver;
 	
 	
 	public WebsocketGatewayFilter() {
@@ -111,6 +115,7 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 			websocketHandler = new WebSocket2HTTPHandler<T>(
 					this.contentHandlerFactory
 					, this.bodyInserterBuilderFactory
+					, this.exceptionResolver
 					, serviceSpec
 					, clientResolver
 					);

@@ -308,7 +308,8 @@ public class RouteRequestContext {
 				}
 			}
 			
-			return serviceRequestType == null || MediaType.ALL.equalsTypeAndSubtype(serviceRequestType) ? this.getAggregateType() : serviceRequestType;
+			return serviceRequestType == null || MediaType.ALL.equalsTypeAndSubtype(serviceRequestType) 
+					? this.getAggregateType() : serviceRequestType;
 		}
 		
 		public TransformSpec getServiceRequestTransformSpec() {
@@ -344,6 +345,20 @@ public class RouteRequestContext {
 					List<TransformRule> transforms = serviceResponseBody.getTransform();
 					if(transforms != null && transforms.size() > 0) {
 						return transforms.get(0).getContentType();
+					}
+				}
+			}
+			return null;
+		}
+		
+		public TransformSpec getServiceResponseTransformSpec() {
+			ServiceResponse serviceResponse = this.target.getResponse();
+			if(serviceResponse != null) {
+				ServiceResponseBody serviceResponseBody = serviceResponse.getBody();
+				if(serviceResponseBody != null) {
+					List<TransformRule> transforms = serviceResponseBody.getTransform();
+					for(TransformRule transform : transforms) {
+						return new TransformSpec("response", this, transform);
 					}
 				}
 			}

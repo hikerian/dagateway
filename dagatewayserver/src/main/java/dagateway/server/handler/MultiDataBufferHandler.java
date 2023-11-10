@@ -26,5 +26,10 @@ public class MultiDataBufferHandler extends AbstractContentHandler<Flux<DataBuff
 		return transformed;
 	}
 
+	@Override
+	protected Flux<DataBuffer> wrapSingle(DataBuffer value) {
+		return Flux.just(value);
+	}
+
 
 }

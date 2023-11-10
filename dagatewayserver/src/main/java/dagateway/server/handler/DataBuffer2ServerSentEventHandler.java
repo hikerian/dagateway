@@ -55,5 +55,10 @@ public class DataBuffer2ServerSentEventHandler extends AbstractContentHandler<Fl
 		return sseMsg;
 	}
 
+	@Override
+	protected Flux<ServerSentEvent<String>> wrapSingle(ServerSentEvent<String> value) {
+		return Flux.just(value);
+	}
+
 
 }

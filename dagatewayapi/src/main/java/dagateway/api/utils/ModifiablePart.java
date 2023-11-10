@@ -22,6 +22,12 @@ public class ModifiablePart implements Part {
 		}
 		this.content = part.content();
 	}
+	
+	public ModifiablePart(String name, HttpHeaders httpHeaders, Flux<DataBuffer> content) {
+		this.name = name;
+		this.httpHeaders = httpHeaders;
+		this.content = content;
+	}
 
 	@Override
 	public String name() {

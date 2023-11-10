@@ -36,6 +36,7 @@ public class ServiceBrokerBuilder {
 	private ContentHandlerFactory contentHandlerFactory;
 	private ClientResolverFactory clientResolverFactory;
 	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
+	private ServiceExceptionResolver exceptionResolver;
 	
 	
 	public ServiceBrokerBuilder() {
@@ -43,11 +44,13 @@ public class ServiceBrokerBuilder {
 	
 	public void init(ContentHandlerFactory contentHandlerFactory
 			, ClientResolverFactory clientResolverFactory
-			, BodyInserterBuilderFactory bodyInserterBuilderFactory) {
+			, BodyInserterBuilderFactory bodyInserterBuilderFactory
+			, ServiceExceptionResolver exceptionResolver) {
 
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.clientResolverFactory = clientResolverFactory;
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
+		this.exceptionResolver = exceptionResolver;
 	}
 	
 	public <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> build(RouteRequestContext routeContext) {
@@ -119,6 +122,7 @@ public class ServiceBrokerBuilder {
 			serviceDelegator = new ServiceDelegatorImpl<>(requestBodyUriSpec
 					, this.contentHandlerFactory
 					, this.bodyInserterBuilderFactory
+					, this.exceptionResolver
 					, serviceSpec
 					, requestResolverTypeName
 					, resolverArgTypeName);

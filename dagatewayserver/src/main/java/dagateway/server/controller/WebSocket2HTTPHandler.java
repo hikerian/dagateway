@@ -16,6 +16,7 @@ import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.service.ServiceDelegator;
 import dagateway.api.service.ServiceDelegatorImpl;
+import dagateway.api.service.ServiceExceptionResolver;
 import dagateway.api.service.ServiceResult;
 import dagateway.api.utils.Utils;
 import reactor.core.publisher.Mono;
@@ -26,6 +27,7 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 
 	private ContentHandlerFactory contentHandlerFactory;
 	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
+	private ServiceExceptionResolver exceptionResolver;
 	
 	private ServiceSpec serviceSpec;
 	private WebSocketMessageResolver<T> clientResolver;
@@ -33,11 +35,13 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 	
 	public WebSocket2HTTPHandler(ContentHandlerFactory contentHandlerFactory
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory
+			, ServiceExceptionResolver exceptionResolver
 			, ServiceSpec serviceSpec
 			, WebSocketMessageResolver<T> clientResolver) {
 		
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
+		this.exceptionResolver = exceptionResolver;
 		
 		this.serviceSpec = serviceSpec;
 		this.clientResolver = clientResolver;
@@ -63,6 +67,7 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 			ServiceDelegator<Mono<T>, T, Mono<T>> serviceDelegator = new ServiceDelegatorImpl<>(requestBodyUriSpec
 					, this.contentHandlerFactory
 					, this.bodyInserterBuilderFactory
+					, this.exceptionResolver
 					, this.serviceSpec
 					, this.clientResolver.getTypeName()
 					, this.clientResolver.getTypeName());
@@ -79,45 +84,6 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 			});
 		}).then();
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

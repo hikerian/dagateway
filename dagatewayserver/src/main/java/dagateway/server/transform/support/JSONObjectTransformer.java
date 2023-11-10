@@ -3,6 +3,7 @@ package dagateway.server.transform.support;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -28,5 +29,12 @@ public class JSONObjectTransformer extends AbstractDataTransformer<JSONObject, J
 
 		return source;
 	}
+
+	@Override
+	public JSONObject transform(ServiceFault fault) {
+		JSONObject jsonObj = new JSONObject(fault.toMap());
+		return jsonObj;
+	}
+
 
 }
