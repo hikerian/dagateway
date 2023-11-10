@@ -1,18 +1,37 @@
 package dagateway.server.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
+import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.function.server.ServerResponse.BodyBuilder;
 
+import dagateway.api.context.BackendServer;
+import dagateway.api.context.GatewayContext;
+import dagateway.api.utils.Utils;
+import io.swagger.parser.OpenAPIParser;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.parser.core.models.SwaggerParseResult;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
 @Component
 public class ApiDocsController {
 	private final Logger log = LoggerFactory.getLogger(ApiDocsController.class);
+	
+	@Autowired
+	private GatewayContext gatewayContext;
 	
 	
 	public ApiDocsController() {
@@ -21,8 +40,81 @@ public class ApiDocsController {
 	public Mono<ServerResponse> service(ServerRequest serverRequest) {
 		this.log.debug("service");
 		
+		List<BackendServer> backendList = this.gatewayContext.getBackendList();
+		List<URI> apiDocUris = backendList.stream().map((backend) -> {
+			String apiDoc = backend.getApiDocs();
+			if(apiDoc != null && "".equals(apiDoc) == false) {
+				String uri = backend.getUrl() + apiDoc;
+				this.log.debug(uri);
+				
+				try {
+					return new URI(uri);
+				} catch (URISyntaxException e) {
+					throw new RuntimeException(e);
+				}
+			} else {
+				return null;
+			}
+		}).filter((url) -> url != null).toList();
+		
+		Flux<URI> apiDocUriFlux = Flux.fromIterable(apiDocUris);
+//		Flux<OpenAPI> openAPIFlux = apiDocUriFlux.flatMap((apiDocUri) -> {
+//			WebClient webClient = Utils.newWebClient();
+//			RequestBodyUriSpec requestBodyUriSpec = webClient.method(HttpMethod.GET);
+//			requestBodyUriSpec.uri(apiDocUri);
+//			ResponseSpec responseSpec = requestBodyUriSpec.retrieve();
+//			
+//			return responseSpec.bodyToMono(OpenAPI.class);
+//		});
+//		
+//		Mono<OpenAPI> resOpenAPI = openAPIFlux.collect(() -> new OpenAPI(), (openApiIns, backendApi) -> {
+//			openApiIns.components(backendApi.getComponents());
+//			openApiIns.extensions(backendApi.getExtensions());
+//			openApiIns.externalDocs(backendApi.getExternalDocs());
+//			openApiIns.info(backendApi.getInfo());
+//			openApiIns.jsonSchemaDialect(backendApi.getJsonSchemaDialect());
+//			openApiIns.paths(backendApi.getPaths());
+//			openApiIns.security(backendApi.getSecurity());
+//			openApiIns.servers(backendApi.getServers());
+//			openApiIns.tags(backendApi.getTags());
+//		});
+		Flux<String> openAPIFlux = apiDocUriFlux.flatMap((apiDocUri) -> {
+			WebClient webClient = Utils.newWebClient();
+			RequestBodyUriSpec requestBodyUriSpec = webClient.method(HttpMethod.GET);
+			requestBodyUriSpec.uri(apiDocUri);
+			ResponseSpec responseSpec = requestBodyUriSpec.retrieve();
+			
+			return responseSpec.bodyToMono(String.class);
+		});
+		
+		OpenAPIParser openAPIParser = new OpenAPIParser();
+		
+		Mono<OpenAPI> resOpenAPI = openAPIFlux.collect(() -> new OpenAPI(), (openApiIns, backendApiStr) -> {
+			this.log.debug(backendApiStr);
+			
+			SwaggerParseResult parseResult = openAPIParser.readContents(backendApiStr, null, null);
+			
+			if (parseResult.getMessages() != null) {
+				parseResult.getMessages().forEach(this.log::error);
+			}
+			
+			OpenAPI openApi = parseResult.getOpenAPI();
+			
+			openApiIns.components(openApi.getComponents());
+			openApiIns.extensions(openApi.getExtensions());
+			openApiIns.externalDocs(openApi.getExternalDocs());
+			openApiIns.info(openApi.getInfo());
+			openApiIns.jsonSchemaDialect(openApi.getJsonSchemaDialect());
+			openApiIns.paths(openApi.getPaths());
+			openApiIns.security(openApi.getSecurity());
+			openApiIns.servers(openApi.getServers());
+			openApiIns.tags(openApi.getTags());
+		});
+		
 		BodyBuilder bodyBuilder = ServerResponse.ok();
-		return bodyBuilder.build();
+
+		return bodyBuilder.body(resOpenAPI, OpenAPI.class);
 	}
+
 
 }

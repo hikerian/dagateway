@@ -49,5 +49,19 @@
   		<artifactId>spring-boot-starter-test</artifactId>
   		<scope>test</scope>
   	</dependency>
+  	<dependency>
+  		<groupId>io.swagger.core.v3</groupId>
+  		<artifactId>swagger-core</artifactId>
+  		<version>2.2.18</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.minidev</groupId>
+  		<artifactId>json-smart</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>io.swagger.parser.v3</groupId>
+  		<artifactId>swagger-parser</artifactId>
+  		<version>2.1.18</version>
+  	</dependency>
   </dependencies>
 </project>

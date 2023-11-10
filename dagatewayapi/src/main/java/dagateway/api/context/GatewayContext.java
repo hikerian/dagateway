@@ -1,5 +1,6 @@
 package dagateway.api.context;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,6 +62,10 @@ public class GatewayContext {
 	
 	public BackendServer getBackend(String serverName) {
 		return this.backends.get(serverName);
+	}
+	
+	public List<BackendServer> getBackendList() {
+		return new ArrayList<>(this.backends.values());
 	}
 
 
