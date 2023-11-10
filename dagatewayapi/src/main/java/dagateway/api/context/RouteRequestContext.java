@@ -38,7 +38,7 @@ import dagateway.api.utils.ServerWebExchangeUtils;
 /**
  * @author Dong-il Cho
  */
-public class RouteRequestContext {
+public class RouteRequestContext implements AttributeOwner {
 	private final Logger log = LoggerFactory.getLogger(RouteRequestContext.class);
 	
 	public static final MediaType NONE = MediaType.valueOf("none/none");
@@ -211,7 +211,7 @@ public class RouteRequestContext {
 		
 	}
 	
-	public static class ServiceSpec {
+	public static class ServiceSpec implements AttributeOwner {
 		private String path;
 		private ServiceTarget target;
 		private BackendServer backendServer;
@@ -420,7 +420,7 @@ public class RouteRequestContext {
 		
 	}
 	
-	public static class TransformSpec {
+	public static class TransformSpec implements AttributeOwner {
 		private String path;
 		private ServiceSpec serviceSpec;
 		private TransformRule transformRule;

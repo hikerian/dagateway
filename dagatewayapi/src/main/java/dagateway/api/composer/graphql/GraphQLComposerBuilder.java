@@ -8,7 +8,11 @@ import java.util.Optional;
 import dagateway.api.composer.DataProxy;
 import dagateway.api.composer.MessageNode;
 import dagateway.api.composer.MessageSchema;
+import dagateway.api.context.AttributeOwner;
 import dagateway.api.context.RouteRequestContext.ServiceSpec;
+import graphql.ExecutionInput;
+import graphql.ParseAndValidate;
+import graphql.ParseAndValidateResult;
 import graphql.execution.instrumentation.DocumentAndVariables;
 import graphql.language.Argument;
 import graphql.language.Document;
@@ -31,11 +35,35 @@ public class GraphQLComposerBuilder {
 	private GraphQLComposerBuilder() {
 	}
 	
-	public static MessageSchema build(DocumentAndVariables documentAndVariable) {
+	public static MessageSchema build(String query, AttributeOwner attributeOwner, String attrKey, List<ServiceSpec> serviceSpecList) {
+		MessageSchema messageStructure = null;
+		if(query == null) {
+			return messageStructure;
+		}
+		DocumentAndVariables documentAndVariable = (DocumentAndVariables)attributeOwner.getAttribute(attrKey);
+		if(documentAndVariable == null) {
+			ExecutionInput executionInput = ExecutionInput.newExecutionInput(query).build();
+			ParseAndValidateResult parseResult = ParseAndValidate.parse(executionInput);
+			if(parseResult.isFailure()) {
+				throw new IllegalArgumentException(parseResult.getSyntaxException());
+			}
+			documentAndVariable = parseResult.getDocumentAndVariables();
+			attributeOwner.setAttribute(attrKey, documentAndVariable);
+		}
+		if(serviceSpecList == null || serviceSpecList.isEmpty()) {
+			messageStructure = GraphQLComposerBuilder.build(documentAndVariable);
+		} else {
+			messageStructure = GraphQLComposerBuilder.buildAndMap(documentAndVariable, serviceSpecList);
+		}
+		
+		return messageStructure;
+	}
+	
+	private static MessageSchema build(DocumentAndVariables documentAndVariable) {
 		return GraphQLComposerBuilder.buildAndMap(documentAndVariable, Collections.emptyList());
 	}
 	
-	public static MessageSchema buildAndMap(DocumentAndVariables documentAndVariable, List<ServiceSpec> serviceSpecList) {
+	private static MessageSchema buildAndMap(DocumentAndVariables documentAndVariable, List<ServiceSpec> serviceSpecList) {
 		Document document = documentAndVariable.getDocument();
 		
 		// TODO Argument, Variable 처리

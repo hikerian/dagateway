@@ -22,10 +22,6 @@ import dagateway.api.resolver.http.ClientRequestResolver;
 import dagateway.api.resolver.http.ClientResolverFactory;
 import dagateway.api.resolver.http.ClientResponseResolver;
 import dagateway.api.utils.Utils;
-import graphql.ExecutionInput;
-import graphql.ParseAndValidate;
-import graphql.ParseAndValidateResult;
-import graphql.execution.instrumentation.DocumentAndVariables;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -144,24 +140,12 @@ public class ServiceBrokerBuilder {
 			return;
 		}
 		
-		DocumentAndVariables documentAndVariable = (DocumentAndVariables)routeContext.getAttribute(GraphQLComposerBuilder.CLIENT_RESPONSE_GRAPH_KEY);
-		if(documentAndVariable == null) {
-			String query = responseSpec.getBodyGraph();
-			if(query == null) {
-				return;
-			}
-			ExecutionInput executionInput = ExecutionInput.newExecutionInput(query).build();
-			
-			ParseAndValidateResult parseResult = ParseAndValidate.parse(executionInput);
-			if(parseResult.isFailure()) {
-				throw new IllegalArgumentException(parseResult.getSyntaxException());
-			}
-			documentAndVariable = parseResult.getDocumentAndVariables();
-			
-			routeContext.setAttribute(GraphQLComposerBuilder.CLIENT_RESPONSE_GRAPH_KEY, documentAndVariable);
+		String query = responseSpec.getBodyGraph();
+		MessageSchema messageStructure = GraphQLComposerBuilder.build(query, routeContext, GraphQLComposerBuilder.CLIENT_RESPONSE_GRAPH_KEY, serviceSpecList);
+		if(messageStructure == null) {
+			return;
 		}
 		
-		MessageSchema messageStructure = GraphQLComposerBuilder.buildAndMap(documentAndVariable, serviceSpecList);
 		routeContext.setMessageStructure(messageStructure);
 	}
 	

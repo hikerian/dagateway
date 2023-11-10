@@ -1,6 +1,7 @@
 package dagateway.server.transform.support;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,6 @@ import dagateway.api.composer.stream.StreamBuffer;
 import dagateway.api.context.RouteRequestContext.TransformSpec;
 import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
-import graphql.ExecutionInput;
-import graphql.ParseAndValidate;
-import graphql.ParseAndValidateResult;
-import graphql.execution.instrumentation.DocumentAndVariables;
 
 
 
@@ -35,21 +32,9 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 	@Override
 	protected void doInit() {
 		TransformSpec transformSpec = this.getTransformSpec();
+		String query = transformSpec.getBodyGraph();
 		
-		DocumentAndVariables documentAndVariable = (DocumentAndVariables)transformSpec.getAttribute(GraphQLComposerBuilder.TRANSFORM_GRAPH_KEY);
-		if(documentAndVariable == null) {
-			String query = transformSpec.getBodyGraph();
-			
-			ExecutionInput executionInput = ExecutionInput.newExecutionInput(query).build();
-			ParseAndValidateResult parseResult = ParseAndValidate.parse(executionInput);
-			if(parseResult.isFailure()) {
-				throw new IllegalArgumentException(parseResult.getSyntaxException());
-			}
-			documentAndVariable = parseResult.getDocumentAndVariables();
-			transformSpec.setAttribute(GraphQLComposerBuilder.TRANSFORM_GRAPH_KEY, documentAndVariable);
-		}
-		
-		MessageSchema messageStructure = GraphQLComposerBuilder.build(documentAndVariable);
+		MessageSchema messageStructure = GraphQLComposerBuilder.build(query, transformSpec, GraphQLComposerBuilder.TRANSFORM_GRAPH_KEY, Collections.emptyList());
 		DataProxy dataProxy = new DataProxy();
 		messageStructure.join(dataProxy);
 		this.dataProxy = dataProxy;
