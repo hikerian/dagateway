@@ -21,5 +21,10 @@ public class MultipartInserterBuilder
 	public BodyInserter<?, ReactiveHttpOutputMessage> getBodyInserter(Mono<MultiValueMap<String, HttpEntity<?>>> data) {
 		return BodyInserters.fromProducer(data, MultiValueMap.class);
 	}
+	
+	@Override
+	public String supportType() {
+		return "reactor.core.publisher.Mono<org.springframework.util.MultiValueMap<java.lang.String, org.springframework.http.HttpEntity<?>>>";
+	}
 
 }

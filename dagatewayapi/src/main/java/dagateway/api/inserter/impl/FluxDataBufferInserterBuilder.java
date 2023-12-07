@@ -21,5 +21,10 @@ public class FluxDataBufferInserterBuilder extends AbstractBodyInserterBuilder<F
 			return outputMessage.writeAndFlushWith(Mono.just(data));
 		};
 	}
+	
+	@Override
+	public String supportType() {
+		return "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
+	}
 
 }

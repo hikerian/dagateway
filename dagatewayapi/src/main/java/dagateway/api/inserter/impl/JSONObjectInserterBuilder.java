@@ -19,5 +19,10 @@ public class JSONObjectInserterBuilder extends AbstractBodyInserterBuilder<Mono<
 	public BodyInserter<?, ReactiveHttpOutputMessage> getBodyInserter(Mono<JSONObject> data) {
 		return BodyInserters.fromProducer(data.map(json -> json.toJSONString()), String.class);
 	}
+	
+	@Override
+	public String supportType() {
+		return "reactor.core.publisher.Mono<net.minidev.json.JSONObject>";
+	}
 
 }

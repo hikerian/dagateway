@@ -1,7 +1,5 @@
 package dagateway.api.inserter;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,7 +15,6 @@ import dagateway.api.inserter.impl.JSONObjectInserterBuilder;
 import dagateway.api.inserter.impl.MonoStringInserterBuilder;
 import dagateway.api.inserter.impl.MultiValueMapInserterBuilder;
 import dagateway.api.inserter.impl.MultipartInserterBuilder;
-import dagateway.api.utils.Utils;
 
 
 public class BodyInserterBuilderFactory {
@@ -27,21 +24,18 @@ public class BodyInserterBuilderFactory {
 	
 	public BodyInserterBuilderFactory() {
 		// initialize
-		this.addBodyInserterBuilder(DoubleFluxDataBufferInserterBuilder.class);
-		this.addBodyInserterBuilder(FluxDataBufferInserterBuilder.class);
-		this.addBodyInserterBuilder(FluxServerSentEventInserterBuilder.class);
-		this.addBodyInserterBuilder(JSONObjectInserterBuilder.class);
-		this.addBodyInserterBuilder(MultipartInserterBuilder.class);
-		this.addBodyInserterBuilder(MultiValueMapInserterBuilder.class);
-		this.addBodyInserterBuilder(MonoStringInserterBuilder.class);
+		this.addBodyInserterBuilder(new DoubleFluxDataBufferInserterBuilder());
+		this.addBodyInserterBuilder(new FluxDataBufferInserterBuilder());
+		this.addBodyInserterBuilder(new FluxServerSentEventInserterBuilder());
+		this.addBodyInserterBuilder(new JSONObjectInserterBuilder());
+		this.addBodyInserterBuilder(new MultipartInserterBuilder());
+		this.addBodyInserterBuilder(new MultiValueMapInserterBuilder());
+		this.addBodyInserterBuilder(new MonoStringInserterBuilder());
 	}
 	
-	public void addBodyInserterBuilder(Class<? extends BodyInserterBuilder<?, ?>> builderClass) {
-		ParameterizedType handlerType = (ParameterizedType)builderClass.getGenericSuperclass();
-		Type[] types = handlerType.getActualTypeArguments();
-		String inserterId = types[0].getTypeName();
-		
-		this.bodyInserterBuilders.put(inserterId, Utils.newInstance(builderClass));
+	public void addBodyInserterBuilder(BodyInserterBuilder<?, ?> builder) {
+		String inserterId = builder.supportType();
+		this.bodyInserterBuilders.put(inserterId, builder);
 	}
 	
 	public <P, M extends ReactiveHttpOutputMessage> BodyInserter<?, M> getBodyInserter(String typeName, P data) {
@@ -54,4 +48,5 @@ public class BodyInserterBuilderFactory {
 		return bodyInserter.getBodyInserter(data);
 	}
 	
+
 }

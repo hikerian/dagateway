@@ -19,4 +19,9 @@ public class MonoStringInserterBuilder extends AbstractBodyInserterBuilder<Mono<
 		return BodyInserters.fromProducer(data, String.class);
 	}
 
+	@Override
+	public String supportType() {
+		return "reactor.core.publisher.Mono<java.lang.String>";
+	}
+	
 }

@@ -20,5 +20,10 @@ public class DoubleFluxDataBufferInserterBuilder extends AbstractBodyInserterBui
 			return outputMessage.writeAndFlushWith(data);
 		};
 	}
+	
+	@Override
+	public String supportType() {
+		return "reactor.core.publisher.Flux<reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>>";
+	}
 
 }

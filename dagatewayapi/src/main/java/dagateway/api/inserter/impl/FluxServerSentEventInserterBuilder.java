@@ -19,5 +19,10 @@ public class FluxServerSentEventInserterBuilder extends AbstractBodyInserterBuil
 	public BodyInserter<?, ServerHttpResponse> getBodyInserter(Flux<ServerSentEvent<String>> data) {
 		return BodyInserters.fromServerSentEvents(data);
 	}
+	
+	@Override
+	public String supportType() {
+		return "reactor.core.publisher.Flux<org.springframework.http.codec.ServerSentEvent<java.lang.String>>";
+	}
 
 }

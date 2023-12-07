@@ -20,4 +20,8 @@ public class MultiValueMapInserterBuilder extends AbstractBodyInserterBuilder<Mo
 		return BodyInserters.fromProducer(data, MultiValueMap.class);
 	}
 
+	@Override
+	public String supportType() {
+		return "reactor.core.publisher.Mono<org.springframework.util.MultiValueMap<java.lang.String, java.lang.String>>";
+	}
 }
