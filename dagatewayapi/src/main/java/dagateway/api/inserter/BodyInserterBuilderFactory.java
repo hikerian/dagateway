@@ -10,6 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ReactiveHttpOutputMessage;
 import org.springframework.web.reactive.function.BodyInserter;
 
+import dagateway.api.inserter.impl.DoubleFluxDataBufferInserterBuilder;
+import dagateway.api.inserter.impl.FluxDataBufferInserterBuilder;
+import dagateway.api.inserter.impl.FluxServerSentEventInserterBuilder;
+import dagateway.api.inserter.impl.JSONObjectInserterBuilder;
+import dagateway.api.inserter.impl.MonoStringInserterBuilder;
+import dagateway.api.inserter.impl.MultiValueMapInserterBuilder;
+import dagateway.api.inserter.impl.MultipartInserterBuilder;
 import dagateway.api.utils.Utils;
 
 
@@ -41,7 +48,7 @@ public class BodyInserterBuilderFactory {
 		@SuppressWarnings("unchecked")
 		BodyInserterBuilder<P, M> bodyInserter = (BodyInserterBuilder<P, M>) this.bodyInserterBuilders.get(typeName);
 		if(bodyInserter == null) {
-//			this.log.warn("TypeName: " + typeName + " InserterBuilder is not found");
+			this.log.warn("TypeName: " + typeName + " InserterBuilder is not found");
 			return null;
 		}
 		return bodyInserter.getBodyInserter(data);

@@ -1,9 +1,10 @@
-package dagateway.api.inserter;
+package dagateway.api.inserter.impl;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.ReactiveHttpOutputMessage;
 import org.springframework.web.reactive.function.BodyInserter;
 
+import dagateway.api.inserter.AbstractBodyInserterBuilder;
 import reactor.core.publisher.Flux;
 
 

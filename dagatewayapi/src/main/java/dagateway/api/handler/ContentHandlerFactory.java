@@ -45,7 +45,7 @@ public class ContentHandlerFactory {
 		ContentHandlerId handlerId = new ContentHandlerId(from
 				, types[0].getTypeName()
 				, types[4].getTypeName());
-//		this.log.warn("ContentHandler: " + handlerId);
+		this.log.warn("ContentHandler: " + handlerId);
 		
 		Class<? extends AbstractContentHandler<?, ?, ?, ?, ?>> oldHandler = this.contentHandlers.get(handlerId);
 		if(oldHandler != null) {

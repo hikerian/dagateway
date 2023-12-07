@@ -68,6 +68,8 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 
 	@Override
 	public Flux<DataBuffer> handle(Flux<DataBuffer> responseBody) {
+		this.log.debug("handle");
+		
 		Flux<DataBuffer> transformedBody = responseBody.handle(this::handle);
 		return transformedBody;
 	}
