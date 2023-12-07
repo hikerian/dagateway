@@ -32,7 +32,7 @@ public class SingleServiceBroker<P extends Publisher<Cq>, Cq, Sr> implements Ser
 
 	@Override
 	public Mono<ServerResponse> run(ServerRequest serverRequest) {
-//		this.log.debug("run");
+		this.log.debug("run");
 		
 		HttpHeaders requestHeaders = this.routeContext.getRequestHeaders();
 		P aggregateBody = this.requestResolver.resolve(serverRequest);

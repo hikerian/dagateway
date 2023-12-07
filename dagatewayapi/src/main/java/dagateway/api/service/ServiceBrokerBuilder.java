@@ -50,7 +50,7 @@ public class ServiceBrokerBuilder {
 	}
 	
 	public <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> build(RouteRequestContext routeContext) {
-//		this.log.debug("build");
+		this.log.debug("build");
 		
 		ResponseSpec responseSpec = routeContext.getResponseSpec();
 		List<ServiceSpec> serviceSpecList = routeContext.getServiceSpecList();

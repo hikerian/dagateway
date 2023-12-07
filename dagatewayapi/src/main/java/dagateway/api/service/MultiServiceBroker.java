@@ -35,7 +35,7 @@ public class MultiServiceBroker<Cq, Sr> implements ServiceBroker<Mono<Cq>, Cq, S
 	}
 	
 	public Mono<ServerResponse> run(ServerRequest serverRequest) {
-//		this.log.debug("run");
+		this.log.debug("run");
 		
 		Flux<ServiceResult<Sr>> serviceResults = this.runServices(serverRequest);
 		Mono<ServerResponse> serverResponse = this.responseResolver.resolve(this.routeContext, serviceResults);
@@ -44,7 +44,7 @@ public class MultiServiceBroker<Cq, Sr> implements ServiceBroker<Mono<Cq>, Cq, S
 	}
 	
 	private Flux<ServiceResult<Sr>> runServices(ServerRequest serverRequest) {
-//		this.log.debug("runServices");
+		this.log.debug("runServices");
 		
 		HttpHeaders requestHeaders = this.routeContext.getRequestHeaders();
 		// Divided Data is not support

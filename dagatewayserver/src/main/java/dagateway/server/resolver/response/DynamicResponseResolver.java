@@ -2,7 +2,6 @@ package dagateway.server.resolver.response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -14,15 +13,14 @@ import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Mono;
 
 
-
 public class DynamicResponseResolver<Sr> extends SingleBackendResponseResolver<Sr> {
 	private final Logger log = LoggerFactory.getLogger(DynamicResponseResolver.class);
 	
-	@Autowired
-	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
+	private final BodyInserterBuilderFactory bodyInserterBuilderFactory;
 	
 	
-	public DynamicResponseResolver() {
+	public DynamicResponseResolver(BodyInserterBuilderFactory bodyInserterBuilderFactory) {
+		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
 	}
 	
 	@Override

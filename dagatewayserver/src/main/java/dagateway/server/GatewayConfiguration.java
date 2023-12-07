@@ -220,33 +220,50 @@ public class GatewayConfiguration {
 		
 		return serviceBrokerBuilder;
 	}
-	
+
 	@Bean
-	ClientResolverFactory clientResolverFactory(AutowireCapableBeanFactory autowireCapableBeanFactory) {
+	ClientResolverFactory clientResolverFactory(BodyInserterBuilderFactory bodyInserterBuilderFactory) {
 		this.log.debug("clientResolverFactory");
 		
 		ClientResolverFactory clientResolverFactory = new ClientResolverFactory();
-		clientResolverFactory.setAutowireCapableBeanFactory(autowireCapableBeanFactory);
 		
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_FORM_URLENCODED, false), FormDataRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.APPLICATION_FORM_URLENCODED, false), FormDataRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.MULTIPART_FORM_DATA, MediaType.MULTIPART_FORM_DATA, false), MultipartRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.MULTIPART_FORM_DATA, false), MultipartRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, false), JSONObjectRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.APPLICATION_JSON, false), JSONObjectRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.ALL, MediaType.APPLICATION_OCTET_STREAM, true), RawDataRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.ALL, MediaType.ALL, true), RawDataRequestResolver.class);
-		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.ALL, true), RawDataRequestResolver.class);
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_FORM_URLENCODED, false)
+				, () -> new FormDataRequestResolver());
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.APPLICATION_FORM_URLENCODED, false)
+				, () -> new FormDataRequestResolver());
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.MULTIPART_FORM_DATA, MediaType.MULTIPART_FORM_DATA, false)
+				, () -> new MultipartRequestResolver());
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.MULTIPART_FORM_DATA, false)
+				, () -> new MultipartRequestResolver());
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, false)
+				, () -> new JSONObjectRequestResolver());
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.APPLICATION_JSON, false)
+				, () -> new JSONObjectRequestResolver());
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.ALL, MediaType.APPLICATION_OCTET_STREAM, true)
+				, () -> new RawDataRequestResolver());
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(MediaType.ALL, MediaType.ALL, true)
+				, () -> new RawDataRequestResolver());
+		clientResolverFactory.addRequestResolver(new ClientRequestResolverId(RouteRequestContext.NONE, MediaType.ALL, true)
+				, () -> new RawDataRequestResolver());
 		
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true), NDJSONResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true), NDJSONStreamResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.TEXT_EVENT_STREAM, ContentHandling.PASSTHROUGH, false), TextEventSingleStreamResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.TEXT_EVENT_STREAM, ContentHandling.PASSTHROUGH, true), TextEventMultiStreamResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.ALL, ContentHandling.PASSTHROUGH, false), DynamicResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.ALL, ContentHandling.PASSTHROUGH, false), RawDataSingleResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.ALL, ContentHandling.PASSTHROUGH, true), RawDataMultiResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_JSON, ContentHandling.COMPOSE, false), JSONGraphSingleResponseResolver.class);
-		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_JSON, ContentHandling.COMPOSE, true), JSONGraphMultiResponseResolver.class);
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true)
+				, () -> new NDJSONResponseResolver());
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_NDJSON, ContentHandling.PASSTHROUGH, true)
+				, () -> new NDJSONStreamResponseResolver());
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.TEXT_EVENT_STREAM, ContentHandling.PASSTHROUGH, false)
+				, () -> new TextEventSingleStreamResponseResolver());
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.TEXT_EVENT_STREAM, ContentHandling.PASSTHROUGH, true)
+				, () -> new TextEventMultiStreamResponseResolver());
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.ALL, ContentHandling.PASSTHROUGH, false)
+				, () -> new DynamicResponseResolver<Object>(bodyInserterBuilderFactory));
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.ALL, ContentHandling.PASSTHROUGH, false)
+				, () -> new RawDataSingleResponseResolver());
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.ALL, ContentHandling.PASSTHROUGH, true)
+				, () -> new RawDataMultiResponseResolver());
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_JSON, ContentHandling.COMPOSE, false)
+				, () -> new JSONGraphSingleResponseResolver());
+		clientResolverFactory.addResponseResolver(new ClientResponseResolverId(MediaType.APPLICATION_JSON, ContentHandling.COMPOSE, true)
+				, () -> new JSONGraphMultiResponseResolver());
 		
 		return clientResolverFactory;
 	}
@@ -261,25 +278,6 @@ public class GatewayConfiguration {
 		return webSocketMessageResolverFactory;
 	}
 	
-//	@Bean
-//	ContentHandlerFactory contentHandlerFactory(AutowireCapableBeanFactory autowireCapableBeanFactory, DataTransformerFactory dataTransformerFactory) {
-//		this.log.debug("contentHandlerFactory");
-//		
-//		ContentHandlerFactory contentHandlerFactory = new ContentHandlerFactory();
-//		contentHandlerFactory.init(autowireCapableBeanFactory, dataTransformerFactory);
-//		
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.valueOf("text/semi-colon-seperated-values"), CharDelimiterFluxDataBufferHandler.class);
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_FORM_URLENCODED, FormDataHandler.class);
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, JSONObject2StringHandler.class);
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, DataBuffer2JSONObjectHandler.class);
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.MULTIPART_FORM_DATA, MultipartHandler.class);
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_EVENT_STREAM, DataBuffer2ServerSentEventHandler.class);
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, TextPlainHandler.class);
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, DataBuffer2TextPlainHandler.class);
-//		contentHandlerFactory.addServiceRequestHandler(MediaType.ALL, MultiDataBufferHandler.class);
-//		
-//		return contentHandlerFactory;
-//	}
 	@Bean
 	ContentHandlerFactory contentHandlerFactory(DataTransformerFactory dataTransformerFactory) {
 		this.log.debug("contentHandlerFactory");

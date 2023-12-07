@@ -23,10 +23,13 @@ public class FormDataTransformer extends AbstractDataTransformer<MultiValueMap<S
 
 	@Override
 	public MultiValueMap<String, String> transform(MultiValueMap<String, String> source) {
-		// TODO
-		source.add("OptionalParam", "OptionalValue"); // 추가/변경/제거
+		// TODO...
+		
+		LinkedMultiValueMap<String, String> newMap = new LinkedMultiValueMap<>();
+		newMap.addAll(source);
+		newMap.add("OptionalParam", "OptionalValue"); // 추가/변경/제거
 
-		return source;
+		return newMap;
 	}
 
 	@Override
