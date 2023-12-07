@@ -27,7 +27,12 @@ import reactor.core.publisher.SynchronousSink;
 
 
 public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<Flux<DataBuffer>, DataBuffer, String, String, Flux<DataBuffer>> {
-	private final Logger log = LoggerFactory.getLogger(CharDelimiterFluxDataBufferHandler.class);	
+	private final Logger log = LoggerFactory.getLogger(CharDelimiterFluxDataBufferHandler.class);
+	
+	public static final String ARGUMENT_TYPE = "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
+	public static final String RETURN_TYPE = "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
+	public static final String TRANS_ARGUMENT_TYPE = "java.lang.String";
+	public static final String TRANS_RETURN_TYPE = "java.lang.String";
 	
 	private char[] delimiters = null;
 	private boolean stripDelimiter = false;
@@ -49,6 +54,26 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 	public CharDelimiterFluxDataBufferHandler() {
 	}
 	
+	@Override
+	public String getArgumentTypeName() {
+		return ARGUMENT_TYPE;
+	}
+
+	@Override
+	public String getReturnTypeName() {
+		return RETURN_TYPE;
+	}
+
+	@Override
+	public String getTransArgumentTypeName() {
+		return TRANS_ARGUMENT_TYPE;
+	}
+
+	@Override
+	public String getTransReturnTypeName() {
+		return TRANS_RETURN_TYPE;
+	}
+
 	@Override
 	public void init(DataTransformer<String, String> transformer, MediaType backendContentType, MediaType clientContentType) {
 		super.init(transformer, backendContentType, clientContentType);
@@ -89,7 +114,8 @@ public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<F
 		}
 		
 		try(InputStream in = dataBuffer.asInputStream(true)) {
-			int readCount = in.read(data, offset, readableCount);
+//			int readCount = 
+					in.read(data, offset, readableCount);
 //			this.log.debug("READABLECOUNT: " + readableCount + ", OFFSET: " + offset + ", READCOUNT: " + readCount);
 		} catch (IOException e) {
 			e.printStackTrace();

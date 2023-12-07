@@ -1,8 +1,5 @@
 package dagateway.api.handler;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import org.reactivestreams.Publisher;
 import org.springframework.http.MediaType;
 
@@ -46,28 +43,6 @@ public abstract class AbstractContentHandler<P extends Publisher<Cq>, Cq, T, V, 
 		return this.wrapSingle(transformed);
 	}
 	protected abstract R wrapSingle(V value);
-	
-	@Override
-	public String getArgumentTypeName() {
-		Type[] argTypes = this.getTypeArguments();
-
-		return argTypes[0].getTypeName();
-	}
-	
-	@Override
-	public String getReturnTypeName() {
-		Type[] argTypes = this.getTypeArguments();
-
-		return argTypes[4].getTypeName();
-	}
-	
-	private Type[] getTypeArguments() {
-		ParameterizedType genericParent = (ParameterizedType)this.getClass().getGenericSuperclass();
-		Type[] argTypes = genericParent.getActualTypeArguments();
-		
-		return argTypes;
-	}
-
 
 
 }

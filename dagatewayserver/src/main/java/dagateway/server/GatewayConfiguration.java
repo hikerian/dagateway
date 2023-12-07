@@ -261,22 +261,68 @@ public class GatewayConfiguration {
 		return webSocketMessageResolverFactory;
 	}
 	
+//	@Bean
+//	ContentHandlerFactory contentHandlerFactory(AutowireCapableBeanFactory autowireCapableBeanFactory, DataTransformerFactory dataTransformerFactory) {
+//		this.log.debug("contentHandlerFactory");
+//		
+//		ContentHandlerFactory contentHandlerFactory = new ContentHandlerFactory();
+//		contentHandlerFactory.init(autowireCapableBeanFactory, dataTransformerFactory);
+//		
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.valueOf("text/semi-colon-seperated-values"), CharDelimiterFluxDataBufferHandler.class);
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_FORM_URLENCODED, FormDataHandler.class);
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, JSONObject2StringHandler.class);
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, DataBuffer2JSONObjectHandler.class);
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.MULTIPART_FORM_DATA, MultipartHandler.class);
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_EVENT_STREAM, DataBuffer2ServerSentEventHandler.class);
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, TextPlainHandler.class);
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, DataBuffer2TextPlainHandler.class);
+//		contentHandlerFactory.addServiceRequestHandler(MediaType.ALL, MultiDataBufferHandler.class);
+//		
+//		return contentHandlerFactory;
+//	}
 	@Bean
-	ContentHandlerFactory contentHandlerFactory(AutowireCapableBeanFactory autowireCapableBeanFactory, DataTransformerFactory dataTransformerFactory) {
+	ContentHandlerFactory contentHandlerFactory(DataTransformerFactory dataTransformerFactory) {
 		this.log.debug("contentHandlerFactory");
 		
 		ContentHandlerFactory contentHandlerFactory = new ContentHandlerFactory();
-		contentHandlerFactory.init(autowireCapableBeanFactory, dataTransformerFactory);
+		contentHandlerFactory.init(dataTransformerFactory);
 		
-		contentHandlerFactory.addServiceRequestHandler(MediaType.valueOf("text/semi-colon-seperated-values"), CharDelimiterFluxDataBufferHandler.class);
-		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_FORM_URLENCODED, FormDataHandler.class);
-		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, JSONObject2StringHandler.class);
-		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON, DataBuffer2JSONObjectHandler.class);
-		contentHandlerFactory.addServiceRequestHandler(MediaType.MULTIPART_FORM_DATA, MultipartHandler.class);
-		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_EVENT_STREAM, DataBuffer2ServerSentEventHandler.class);
-		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, TextPlainHandler.class);
-		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN, DataBuffer2TextPlainHandler.class);
-		contentHandlerFactory.addServiceRequestHandler(MediaType.ALL, MultiDataBufferHandler.class);
+		contentHandlerFactory.addServiceRequestHandler(MediaType.valueOf("text/semi-colon-seperated-values")
+				, CharDelimiterFluxDataBufferHandler.ARGUMENT_TYPE
+				, CharDelimiterFluxDataBufferHandler.RETURN_TYPE
+				, () -> new CharDelimiterFluxDataBufferHandler());
+		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_FORM_URLENCODED
+				, FormDataHandler.ARGUMENT_TYPE
+				, FormDataHandler.RETURN_TYPE
+				, () -> new FormDataHandler());
+		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON
+				, JSONObject2StringHandler.ARGUMENT_TYPE
+				, JSONObject2StringHandler.RETURN_TYPE
+				, () -> new JSONObject2StringHandler());
+		contentHandlerFactory.addServiceRequestHandler(MediaType.APPLICATION_JSON
+				, DataBuffer2JSONObjectHandler.ARGUMENT_TYPE
+				, DataBuffer2JSONObjectHandler.RETURN_TYPE
+				, () -> new DataBuffer2JSONObjectHandler());
+		contentHandlerFactory.addServiceRequestHandler(MediaType.MULTIPART_FORM_DATA
+				, MultipartHandler.ARGUMENT_TYPE
+				, MultipartHandler.RETURN_TYPE
+				, () -> new MultipartHandler());
+		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_EVENT_STREAM
+				, DataBuffer2ServerSentEventHandler.ARGUMENT_TYPE
+				, DataBuffer2ServerSentEventHandler.RETURN_TYPE
+				, () -> new DataBuffer2ServerSentEventHandler());
+		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN
+				, TextPlainHandler.ARGUMENT_TYPE
+				, TextPlainHandler.RETURN_TYPE
+				, () -> new TextPlainHandler());
+		contentHandlerFactory.addServiceRequestHandler(MediaType.TEXT_PLAIN
+				, DataBuffer2TextPlainHandler.ARGUMENT_TYPE
+				, DataBuffer2TextPlainHandler.RETURN_TYPE
+				, () -> new DataBuffer2TextPlainHandler());
+		contentHandlerFactory.addServiceRequestHandler(MediaType.ALL
+				, MultiDataBufferHandler.ARGUMENT_TYPE
+				, MultiDataBufferHandler.RETURN_TYPE
+				, () -> new MultiDataBufferHandler());
 		
 		return contentHandlerFactory;
 	}

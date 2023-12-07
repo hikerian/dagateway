@@ -17,8 +17,33 @@ import reactor.core.publisher.Mono;
 public class DataBuffer2JSONObjectHandler extends AbstractContentHandler<Flux<DataBuffer>, DataBuffer, JSONObject, JSONObject, Mono<JSONObject>> {
 	private final Logger log = LoggerFactory.getLogger(DataBuffer2JSONObjectHandler.class);
 	
+	public static final String ARGUMENT_TYPE = "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
+	public static final String RETURN_TYPE = "reactor.core.publisher.Mono<net.minidev.json.JSONObject>";
+	public static final String TRANS_ARGUMENT_TYPE = "net.minidev.json.JSONObject";
+	public static final String TRANS_RETURN_TYPE = "net.minidev.json.JSONObject";
+	
 	
 	public DataBuffer2JSONObjectHandler() {
+	}
+
+	@Override
+	public String getArgumentTypeName() {
+		return "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
+	}
+
+	@Override
+	public String getReturnTypeName() {
+		return "reactor.core.publisher.Mono<net.minidev.json.JSONObject>";
+	}
+
+	@Override
+	public String getTransArgumentTypeName() {
+		return "net.minidev.json.JSONObject";
+	}
+
+	@Override
+	public String getTransReturnTypeName() {
+		return "net.minidev.json.JSONObject";
 	}
 
 	@Override

@@ -8,11 +8,35 @@ import reactor.core.publisher.Flux;
 
 
 public class MultiDataBufferHandler extends AbstractContentHandler<Flux<DataBuffer>, DataBuffer, DataBuffer, DataBuffer, Flux<DataBuffer>> {
+	public static final String ARGUMENT_TYPE = "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
+	public static final String RETURN_TYPE = "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
+	public static final String TRANS_ARGUMENT_TYPE = "org.springframework.core.io.buffer.DataBuffer";
+	public static final String TRANS_RETURN_TYPE = "org.springframework.core.io.buffer.DataBuffer";
 	
 	
 	public MultiDataBufferHandler() {
 	}
 	
+	@Override
+	public String getArgumentTypeName() {
+		return ARGUMENT_TYPE;
+	}
+
+	@Override
+	public String getReturnTypeName() {
+		return RETURN_TYPE;
+	}
+
+	@Override
+	public String getTransArgumentTypeName() {
+		return TRANS_ARGUMENT_TYPE;
+	}
+
+	@Override
+	public String getTransReturnTypeName() {
+		return TRANS_RETURN_TYPE;
+	}
+
 	@Override
 	public Flux<DataBuffer> handle(Flux<DataBuffer> requestBody) {
 		// Transform

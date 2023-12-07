@@ -34,11 +34,11 @@ public class DataTransformerFactory {
 		Type[] supportType = handlerType.getActualTypeArguments();
 		
 		DataTransformerId handlerId = new DataTransformerId(from, to, supportType[0], supportType[1]);
-//		this.log.warn("ServiceResponseHandler: " + handlerId);
+		this.log.warn("ServiceResponseHandler: " + handlerId);
 		
 		Class<? extends DataTransformer<?, ?>> oldHandler = this.transformers.get(handlerId);
 		if(oldHandler != null) {
-//			this.log.warn("Handler: " + handlerId + " is already exists. It will be replaced." + oldHandler);
+			this.log.warn("Handler: " + handlerId + " is already exists. It will be replaced." + oldHandler);
 		}
 		this.transformers.put(handlerId, transformerClass);
 	}
@@ -55,27 +55,40 @@ public class DataTransformerFactory {
 		return transformer;
 	}
 	
+	public <T, V> DataTransformer<T, V> newDataTransformer(MediaType from, MediaType to, String argumentType, String returnType, TransformSpec transformRule) {
+		@SuppressWarnings("unchecked")
+		Class<? extends DataTransformer<T, V>> transformerClass = (Class<? extends DataTransformer<T, V>>) this.searchAcceptableTransformer(from, to, argumentType, returnType);
+		DataTransformer<T, V> transformer = Utils.newInstance(transformerClass);
+		
+		transformer.init(transformRule);
+		
+		this.autowireCapableBeanFactory.autowireBean(transformer);
+		
+		return transformer;
+	}
+	
 	private Class<? extends DataTransformer<?, ?>> searchAcceptableTransformer(MediaType from, MediaType to, Type argumentType, Type returnType) {
+		return this.searchAcceptableTransformer(from, to, argumentType.getTypeName(), returnType.getTypeName());
+	}
+	
+	private Class<? extends DataTransformer<?, ?>> searchAcceptableTransformer(MediaType from, MediaType to, String argumentType, String returnType) {
 		Set<Map.Entry<DataTransformerId, Class<? extends DataTransformer<?, ?>>>> entrySet = this.transformers.entrySet();
 		
-		String type1 = argumentType.getTypeName();
-		String type2 = returnType.getTypeName();
-		
 		for(Map.Entry<DataTransformerId, Class<? extends DataTransformer<?, ?>>> entry : entrySet) {
 			DataTransformerId id = entry.getKey();
-			if(id.getFrom().equalsTypeAndSubtype(from) && id.getTo().equalsTypeAndSubtype(to) && id.getSrcType().equals(type1) && id.getRtnType().equals(type2)) {
+			if(id.getFrom().equalsTypeAndSubtype(from) && id.getTo().equalsTypeAndSubtype(to) && id.getSrcType().equals(argumentType) && id.getRtnType().equals(returnType)) {
 				return entry.getValue();
 			}
 		}
 		
 		for(Map.Entry<DataTransformerId, Class<? extends DataTransformer<?, ?>>> entry : entrySet) {
 			DataTransformerId id = entry.getKey();
-			if(id.getFrom().isCompatibleWith(from) && id.getTo().isCompatibleWith(to) && id.getSrcType().equals(type1) && id.getRtnType().equals(type2)) {
+			if(id.getFrom().isCompatibleWith(from) && id.getTo().isCompatibleWith(to) && id.getSrcType().equals(argumentType) && id.getRtnType().equals(returnType)) {
 				return entry.getValue();
 			}
 		}
 		
-		throw new UnsupportedOperationException("FROM: " + from + ", TO: " + to + ", SRC: " + type1 + ", RTN: " + type2);
+		throw new UnsupportedOperationException("FROM: " + from + ", TO: " + to + ", SRC: " + argumentType + ", RTN: " + returnType);
 	}
 	
 
