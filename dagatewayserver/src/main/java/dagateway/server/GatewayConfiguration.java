@@ -84,7 +84,6 @@ import dagateway.server.transform.support.TextEventStreamTransformer;
 import dagateway.server.transform.support.TextPlainDataTransformer;
 
 
-
 @Configuration
 public class GatewayConfiguration {
 	private final Logger log = LoggerFactory.getLogger(GatewayConfiguration.class);
@@ -324,28 +323,47 @@ public class GatewayConfiguration {
 		
 		return contentHandlerFactory;
 	}
-	
+
 	@Bean
-	DataTransformerFactory dataTransformerFactory(AutowireCapableBeanFactory autowireCapableBeanFactory) {
+	DataTransformerFactory dataTransformerFactory() {
 		this.log.debug("dataTransformerFactory");
 		
 		DataTransformerFactory dataTransformerFactory = new DataTransformerFactory();
-		dataTransformerFactory.setAutowireCapableBeanFactory(autowireCapableBeanFactory);
 		
-		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, JSONObjectTransformer.class);
-		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_JSON, MediaType.APPLICATION_NDJSON, JSONObjectTransformer.class);
+		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON
+				, JSONObjectTransformer.ARGUMENT_TYPE, JSONObjectTransformer.RETURN_TYPE
+				, () -> new JSONObjectTransformer());
+		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_JSON, MediaType.APPLICATION_NDJSON
+				, JSONObjectTransformer.ARGUMENT_TYPE, JSONObjectTransformer.RETURN_TYPE
+				, () -> new JSONObjectTransformer());
+
+		dataTransformerFactory.addDataTransformer(MediaType.TEXT_EVENT_STREAM, MediaType.TEXT_EVENT_STREAM
+				, TextEventStreamTransformer.ARGUMENT_TYPE, TextEventStreamTransformer.RETURN_TYPE
+				, () -> new TextEventStreamTransformer());
+		dataTransformerFactory.addDataTransformer(MediaType.MULTIPART_FORM_DATA, MediaType.MULTIPART_FORM_DATA
+				, MultipartDataTransformer.ARGUMENT_TYPE, MultipartDataTransformer.RETURN_TYPE
+				, () -> new MultipartDataTransformer());
+		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_FORM_URLENCODED
+				, FormDataTransformer.ARGUMENT_TYPE, FormDataTransformer.RETURN_TYPE
+				, () -> new FormDataTransformer());
+		dataTransformerFactory.addDataTransformer(MediaType.valueOf("text/semi-colon-seperated-values"), MediaType.valueOf("text/tab-separated-values")
+				, SSV2TSVCharTransformer.ARGUMENT_TYPE, SSV2TSVCharTransformer.RETURN_TYPE
+				, () -> new SSV2TSVCharTransformer());
 		
-		dataTransformerFactory.addDataTransformer(MediaType.TEXT_EVENT_STREAM, MediaType.TEXT_EVENT_STREAM, TextEventStreamTransformer.class);
-		dataTransformerFactory.addDataTransformer(MediaType.MULTIPART_FORM_DATA, MediaType.MULTIPART_FORM_DATA, MultipartDataTransformer.class);
-		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_FORM_URLENCODED, FormDataTransformer.class);
-		dataTransformerFactory.addDataTransformer(MediaType.valueOf("text/semi-colon-seperated-values"), MediaType.valueOf("text/tab-separated-values"), SSV2TSVCharTransformer.class);
+		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON
+				, JSONGraphTransformer.ARGUMENT_TYPE, JSONGraphTransformer.RETURN_TYPE
+				, () -> new JSONGraphTransformer());
 		
-		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON, JSONGraphTransformer.class);
+		dataTransformerFactory.addDataTransformer(MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN
+				, TextPlainDataTransformer.ARGUMENT_TYPE, TextPlainDataTransformer.RETURN_TYPE
+				, () -> new TextPlainDataTransformer());
+		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_OCTET_STREAM
+				, BinaryDataTransformer.ARGUMENT_TYPE, BinaryDataTransformer.RETURN_TYPE
+				, () -> new BinaryDataTransformer());
 		
-		dataTransformerFactory.addDataTransformer(MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, TextPlainDataTransformer.class);
-		dataTransformerFactory.addDataTransformer(MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_OCTET_STREAM, BinaryDataTransformer.class);
-		
-		dataTransformerFactory.addDataTransformer(MediaType.ALL, MediaType.ALL, PassDataTransformer.class);
+		dataTransformerFactory.addDataTransformer(MediaType.ALL, MediaType.ALL
+				, PassDataTransformer.ARGUMENT_TYPE, PassDataTransformer.RETURN_TYPE
+				, () -> new PassDataTransformer());
 		
 		return dataTransformerFactory;
 	}
@@ -358,7 +376,6 @@ public class GatewayConfiguration {
 
 		return new HandshakeWebSocketService(strategy);
 	}
-
 
 
 }

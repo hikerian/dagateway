@@ -12,6 +12,9 @@ import dagateway.api.transform.AbstractDataTransformer;
 public class TextEventStreamTransformer extends AbstractDataTransformer<ServerSentEvent<String>, ServerSentEvent<String>> {
 	private final Logger log = LoggerFactory.getLogger(TextEventStreamTransformer.class);
 	
+	public static final String ARGUMENT_TYPE = "org.springframework.http.codec.ServerSentEvent<java.lang.String>";
+	public static final String RETURN_TYPE = "org.springframework.http.codec.ServerSentEvent<java.lang.String>";
+	
 	
 	public TextEventStreamTransformer() {
 		

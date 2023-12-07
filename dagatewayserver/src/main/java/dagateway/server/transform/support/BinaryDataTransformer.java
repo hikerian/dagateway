@@ -11,9 +11,11 @@ import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 
 
-
 public class BinaryDataTransformer extends AbstractDataTransformer<byte[], byte[]> {
 	private final Logger log = LoggerFactory.getLogger(BinaryDataTransformer.class);
+	
+	public static final String ARGUMENT_TYPE = "byte[]";
+	public static final String RETURN_TYPE = "byte[]";
 	
 	
 	public BinaryDataTransformer() {
@@ -48,5 +50,6 @@ public class BinaryDataTransformer extends AbstractDataTransformer<byte[], byte[
 			throw new RuntimeException(e);
 		}
 	}
+
 
 }

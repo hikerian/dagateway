@@ -12,9 +12,11 @@ import dagateway.api.transform.AbstractDataTransformer;
 import dagateway.api.transform.DividedDataSupport;
 
 
-
 public class PassDataTransformer extends AbstractDataTransformer<DataBuffer, DataBuffer> implements DividedDataSupport {
 	private final Logger log = LoggerFactory.getLogger(PassDataTransformer.class);
+	
+	public static final String ARGUMENT_TYPE = "org.springframework.core.io.buffer.DataBuffer";
+	public static final String RETURN_TYPE = "org.springframework.core.io.buffer.DataBuffer";
 	
 	
 	public PassDataTransformer() {

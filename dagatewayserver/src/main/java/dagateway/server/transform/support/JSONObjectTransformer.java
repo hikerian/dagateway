@@ -12,6 +12,9 @@ import net.minidev.json.JSONObject;
 public class JSONObjectTransformer extends AbstractDataTransformer<JSONObject, JSONObject> {
 	private final Logger log = LoggerFactory.getLogger(JSONObjectTransformer.class);
 	
+	public static final String ARGUMENT_TYPE = "net.minidev.json.JSONObject";
+	public static final String RETURN_TYPE = "net.minidev.json.JSONObject";
+	
 	
 	public JSONObjectTransformer() {
 	}

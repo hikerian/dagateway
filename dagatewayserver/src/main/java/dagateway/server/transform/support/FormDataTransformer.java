@@ -3,6 +3,8 @@ package dagateway.server.transform.support;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -12,6 +14,10 @@ import dagateway.api.transform.AbstractDataTransformer;
 
 
 public class FormDataTransformer extends AbstractDataTransformer<MultiValueMap<String, String>, MultiValueMap<String, String>> {
+	private final Logger log = LoggerFactory.getLogger(FormDataTransformer.class);
+	
+	public static final String ARGUMENT_TYPE = "org.springframework.util.MultiValueMap<java.lang.String, java.lang.String>";
+	public static final String RETURN_TYPE = "org.springframework.util.MultiValueMap<java.lang.String, java.lang.String>";
 
 	
 	public FormDataTransformer() {
@@ -23,6 +29,7 @@ public class FormDataTransformer extends AbstractDataTransformer<MultiValueMap<S
 
 	@Override
 	public MultiValueMap<String, String> transform(MultiValueMap<String, String> source) {
+		this.log.debug("transform");
 		// TODO...
 		
 		LinkedMultiValueMap<String, String> newMap = new LinkedMultiValueMap<>();
@@ -34,6 +41,8 @@ public class FormDataTransformer extends AbstractDataTransformer<MultiValueMap<S
 
 	@Override
 	public MultiValueMap<String, String> transform(ServiceFault fault) {
+		this.log.debug("transform");
+		
 		// TODO Is this really acceptable?
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		Map<String, Object> faultMap = fault.toMap();

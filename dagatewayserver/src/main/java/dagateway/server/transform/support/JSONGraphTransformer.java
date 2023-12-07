@@ -22,6 +22,10 @@ import dagateway.api.transform.AbstractDataTransformer;
 
 public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, DataBuffer> {
 	private final Logger log = LoggerFactory.getLogger(JSONGraphTransformer.class);
+	
+	public static final String ARGUMENT_TYPE = "org.springframework.core.io.buffer.DataBuffer";
+	public static final String RETURN_TYPE = "org.springframework.core.io.buffer.DataBuffer";
+	
 	private DataProxy dataProxy;
 	private MessageSerializer serializer;
 	

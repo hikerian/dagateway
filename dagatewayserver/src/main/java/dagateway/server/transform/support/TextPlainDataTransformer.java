@@ -11,6 +11,9 @@ import dagateway.api.transform.AbstractDataTransformer;
 public class TextPlainDataTransformer extends AbstractDataTransformer<String, String> {
 	private final Logger log = LoggerFactory.getLogger(TextPlainDataTransformer.class);
 	
+	public static final String ARGUMENT_TYPE = "java.lang.String";
+	public static final String RETURN_TYPE = "java.lang.String";
+	
 	
 	public TextPlainDataTransformer() {
 		

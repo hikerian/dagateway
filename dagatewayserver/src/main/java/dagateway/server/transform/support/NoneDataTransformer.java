@@ -7,9 +7,11 @@ import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 
 
-
 public class NoneDataTransformer extends AbstractDataTransformer<Void, Void> {
 	private final Logger log = LoggerFactory.getLogger(NoneDataTransformer.class);
+	
+	public static final String ARGUMENT_TYPE = "java.lang.Void";
+	public static final String RETURN_TYPE = "java.lang.Void";
 	
 	
 	public NoneDataTransformer() {

@@ -1,6 +1,5 @@
 package dagateway.api.transform;
 
-import java.lang.reflect.Type;
 import java.util.Objects;
 
 import org.springframework.http.MediaType;
@@ -12,10 +11,6 @@ public class DataTransformerId {
 	private String srcType;
 	private String rtnType;
 	
-	
-	public DataTransformerId(MediaType from, MediaType to, Type srcType, Type rtnType) {
-		this(from, to, srcType.getTypeName(), rtnType.getTypeName());
-	}
 	
 	public DataTransformerId(MediaType from, MediaType to, String srcType, String rtnType) {
 		this.from  = new MediaType(from.getType(), from.getSubtype());

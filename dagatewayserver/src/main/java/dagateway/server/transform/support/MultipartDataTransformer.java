@@ -20,6 +20,9 @@ import reactor.core.publisher.Flux;
 public class MultipartDataTransformer extends AbstractDataTransformer<Part, Part> {
 	private final Logger log = LoggerFactory.getLogger(MultipartDataTransformer.class);
 	
+	public static final String ARGUMENT_TYPE = "org.springframework.http.codec.multipart.Part";
+	public static final String RETURN_TYPE = "org.springframework.http.codec.multipart.Part";
+	
 	
 	public MultipartDataTransformer() {
 	}

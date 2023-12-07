@@ -11,11 +11,13 @@ import dagateway.api.transform.DividedDataSupport;
 import dagateway.api.transform.StringDelimiterSupport;
 
 
-
 public class StringDelimiterTransformer extends AbstractDataTransformer<String, String> implements StringDelimiterSupport, DividedDataSupport {
 	private final Logger log = LoggerFactory.getLogger(StringDelimiterTransformer.class);
 	
 	private final List<String> delimiters = StringDelimiterSupport.DEFAULT_DELIMITERS;
+	
+	public static final String ARGUMENT_TYPE = "java.lang.String";
+	public static final String RETURN_TYPE = "java.lang.String";
 	
 	
 	public StringDelimiterTransformer() {
