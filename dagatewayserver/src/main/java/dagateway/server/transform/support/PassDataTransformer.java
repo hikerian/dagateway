@@ -26,8 +26,7 @@ public class PassDataTransformer extends AbstractDataTransformer<DataBuffer, Dat
 
 	@Override
 	public DataBuffer transform(DataBuffer source) {
-//		this.log.debug("transform");
-		
+		this.log.debug("transform");
 		return source;
 	}
 

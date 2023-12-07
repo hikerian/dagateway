@@ -22,8 +22,8 @@ public class TextPlainDataTransformer extends AbstractDataTransformer<String, St
 
 	@Override
 	public String transform(String payload) {
-//		this.log.debug("transform");
-		// TODO Auto-generated method stub
+		this.log.debug("transform");
+
 		return payload;
 	}
 

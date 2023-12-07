@@ -33,7 +33,7 @@ public class NDJSONResponseResolver extends MultiBackendResponseResolver<Mono<JS
 
 	@Override
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Flux<ServiceResult<Mono<JSONObject>>> serviceResults) {
-//		this.log.debug("resolve");
+		this.log.debug("resolve");
 		
 		ServerResponse.BodyBuilder bodyBuilder = ServerResponse.ok();
 		

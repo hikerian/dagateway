@@ -25,7 +25,7 @@ public class NDJSONStreamResponseResolver extends MultiBackendResponseResolver<F
 
 	@Override
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-//		this.log.debug("resolve");
+		this.log.debug("resolve");
 		
 		DefaultDataBufferFactory databufferFactory = DefaultDataBufferFactory.sharedInstance;
 		DefaultDataBuffer newlineBuffer = databufferFactory.wrap(new byte[] {'\n'});

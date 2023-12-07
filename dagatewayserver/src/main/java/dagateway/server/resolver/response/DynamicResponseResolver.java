@@ -32,7 +32,7 @@ public class DynamicResponseResolver<Sr> extends SingleBackendResponseResolver<S
 	
 	@Override
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Sr>> serviceResult) {
-//		this.log.debug("RESPONSE CONTENTTYPE: " + this.contentType);
+		this.log.debug("RESPONSE CONTENTTYPE: " + this.contentType);
 		
 		return serviceResult.flatMap(result -> {
 			HttpHeaders backendHeaders = result.getHeaders();

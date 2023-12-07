@@ -24,7 +24,7 @@ public class RawDataSingleResponseResolver extends SingleBackendResponseResolver
 	
 	@Override
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Flux<DataBuffer>>> serviceResult) {
-//		this.log.debug("resolve");
+		this.log.debug("resolve");
 		
 		// Single
 		return serviceResult.flatMap(result -> {

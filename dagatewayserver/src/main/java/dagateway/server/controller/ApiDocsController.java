@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,6 +14,10 @@ import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.function.server.ServerResponse.BodyBuilder;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dagateway.api.context.BackendServer;
 import dagateway.api.context.GatewayContext;
@@ -30,11 +33,11 @@ import reactor.core.publisher.Mono;
 public class ApiDocsController {
 	private final Logger log = LoggerFactory.getLogger(ApiDocsController.class);
 	
-	@Autowired
-	private GatewayContext gatewayContext;
+	private final GatewayContext gatewayContext;
 	
 	
-	public ApiDocsController() {
+	public ApiDocsController(GatewayContext gatewayContext) {
+		this.gatewayContext = gatewayContext;
 	}
 	
 	public Mono<ServerResponse> service(ServerRequest serverRequest) {
@@ -58,26 +61,6 @@ public class ApiDocsController {
 		}).filter((url) -> url != null).toList();
 		
 		Flux<URI> apiDocUriFlux = Flux.fromIterable(apiDocUris);
-//		Flux<OpenAPI> openAPIFlux = apiDocUriFlux.flatMap((apiDocUri) -> {
-//			WebClient webClient = Utils.newWebClient();
-//			RequestBodyUriSpec requestBodyUriSpec = webClient.method(HttpMethod.GET);
-//			requestBodyUriSpec.uri(apiDocUri);
-//			ResponseSpec responseSpec = requestBodyUriSpec.retrieve();
-//			
-//			return responseSpec.bodyToMono(OpenAPI.class);
-//		});
-//		
-//		Mono<OpenAPI> resOpenAPI = openAPIFlux.collect(() -> new OpenAPI(), (openApiIns, backendApi) -> {
-//			openApiIns.components(backendApi.getComponents());
-//			openApiIns.extensions(backendApi.getExtensions());
-//			openApiIns.externalDocs(backendApi.getExternalDocs());
-//			openApiIns.info(backendApi.getInfo());
-//			openApiIns.jsonSchemaDialect(backendApi.getJsonSchemaDialect());
-//			openApiIns.paths(backendApi.getPaths());
-//			openApiIns.security(backendApi.getSecurity());
-//			openApiIns.servers(backendApi.getServers());
-//			openApiIns.tags(backendApi.getTags());
-//		});
 		Flux<String> openAPIFlux = apiDocUriFlux.flatMap((apiDocUri) -> {
 			WebClient webClient = Utils.newWebClient();
 			RequestBodyUriSpec requestBodyUriSpec = webClient.method(HttpMethod.GET);
@@ -89,7 +72,7 @@ public class ApiDocsController {
 		
 		OpenAPIParser openAPIParser = new OpenAPIParser();
 		
-		Mono<OpenAPI> resOpenAPI = openAPIFlux.collect(() -> new OpenAPI(), (openApiIns, backendApiStr) -> {
+		Mono<String> resOpenAPI = openAPIFlux.collect(() -> new OpenAPI(), (openApiIns, backendApiStr) -> {
 			this.log.debug(backendApiStr);
 			
 			SwaggerParseResult parseResult = openAPIParser.readContents(backendApiStr, null, null);
@@ -97,6 +80,8 @@ public class ApiDocsController {
 			if (parseResult.getMessages() != null) {
 				parseResult.getMessages().forEach(this.log::error);
 			}
+			
+			// TODO Filtering and Merging for Service API...
 			
 			OpenAPI openApi = parseResult.getOpenAPI();
 			
@@ -109,11 +94,20 @@ public class ApiDocsController {
 			openApiIns.security(openApi.getSecurity());
 			openApiIns.servers(openApi.getServers());
 			openApiIns.tags(openApi.getTags());
+		}).map((openApiIns) -> {
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.setSerializationInclusion(Include.NON_NULL);
+			
+			try {
+				return objectMapper.writeValueAsString(openApiIns);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
 		});
 		
 		BodyBuilder bodyBuilder = ServerResponse.ok();
 
-		return bodyBuilder.body(resOpenAPI, OpenAPI.class);
+		return bodyBuilder.body(resOpenAPI, String.class);
 	}
 
 

@@ -39,7 +39,7 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 	 */
 	@Override
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Flux<DataBuffer>>> serviceResult) {
-//		this.log.debug("resolve");
+		this.log.debug("resolve");
 		
 		MessageSchema messageStructure = routeContext.getMessageStructure();
 		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {

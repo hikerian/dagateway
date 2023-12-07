@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -43,27 +42,29 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 	public static final int WEBSOCKET_GATEWAY_FILTER_ORDER = Ordered.LOWEST_PRECEDENCE;
 	private final Logger log = LoggerFactory.getLogger(WebsocketGatewayFilter.class);
 	
-	@Autowired
-	private WebSocketService webSocketService;
-	
-	@Autowired
-	private WebSocketMessageResolverFactory webSocketMessageResolverFactory;
-	
-	@Autowired
-	private ContentHandlerFactory contentHandlerFactory;
-	
-	@Autowired
-	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
-	
-	@Autowired
-	private ServiceExceptionResolver exceptionResolver;
+	private final WebSocketService webSocketService;
+	private final WebSocketMessageResolverFactory webSocketMessageResolverFactory;
+	private final ContentHandlerFactory contentHandlerFactory;
+	private final BodyInserterBuilderFactory bodyInserterBuilderFactory;
+	private final ServiceExceptionResolver exceptionResolver;
 	
 	
-	public WebsocketGatewayFilter() {
+	public WebsocketGatewayFilter(WebSocketService webSocketService
+			, WebSocketMessageResolverFactory webSocketMessageResolverFactory
+			, ContentHandlerFactory contentHandlerFactory
+			, BodyInserterBuilderFactory bodyInserterBuilderFactory
+			, ServiceExceptionResolver exceptionResolver) {
+		
+		this.webSocketService = webSocketService;
+		this.webSocketMessageResolverFactory = webSocketMessageResolverFactory;
+		this.contentHandlerFactory = contentHandlerFactory;
+		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
+		this.exceptionResolver = exceptionResolver;
 	}
+	
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-//		this.log.debug("filter: " + exchange.getRequest().getURI());
+		this.log.debug("filter: " + exchange.getRequest().getURI());
 		
 		ServerHttpRequest req = exchange.getRequest();
 		URI reqURI = req.getURI();

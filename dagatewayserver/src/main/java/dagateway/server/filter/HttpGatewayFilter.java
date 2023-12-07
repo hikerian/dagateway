@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -28,16 +27,16 @@ import reactor.core.publisher.Mono;
 public class HttpGatewayFilter implements WebFilter, Ordered {
 	private final Logger log = LoggerFactory.getLogger(HttpGatewayFilter.class);
 	
-	@Autowired
-	private GatewayContext gatewayContext;
+	private final GatewayContext gatewayContext;
 	
 	
-	public HttpGatewayFilter() {
+	public HttpGatewayFilter(GatewayContext gatewayContext) {
+		this.gatewayContext = gatewayContext;
 	}
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-//		this.log.debug("filter: " + exchange.getRequest().getURI());
+		this.log.debug("filter: " + exchange.getRequest().getURI());
 		
 		GatewayRouteContext gatewayRoute = this.gatewayContext.getRoute(exchange);
 		if(gatewayRoute == null) {
@@ -59,7 +58,7 @@ public class HttpGatewayFilter implements WebFilter, Ordered {
 		RouteRequestContext routeContext = new RouteRequestContext(exchange, gatewayRoute, backendServers);
 		ServerWebExchangeUtils.putRouteContext(exchange, routeContext);
 		
-//		this.log.debug("RouteContext putted: " + routeContext);
+		this.log.debug("RouteContext putted: " + routeContext);
 		
 		return chain.filter(exchange);
 	}

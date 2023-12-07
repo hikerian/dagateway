@@ -25,11 +25,11 @@ import reactor.core.publisher.Mono;
 public class WebSocket2WebSocketHandler<T, V> implements WebSocketHandler {
 	private final Logger log = LoggerFactory.getLogger(WebSocket2WebSocketHandler.class);
 
-	private ContentHandlerFactory contentHandlerFactory;
+	private final ContentHandlerFactory contentHandlerFactory;
 	
-	private ServiceSpec serviceSpec;
-	private WebSocketMessageResolver<T> clientResolver;
-	private WebSocketMessageResolver<V> backendResolver;
+	private final ServiceSpec serviceSpec;
+	private final WebSocketMessageResolver<T> clientResolver;
+	private final WebSocketMessageResolver<V> backendResolver;
 	
 	
 	public WebSocket2WebSocketHandler(ContentHandlerFactory contentHandlerFactory
@@ -45,7 +45,7 @@ public class WebSocket2WebSocketHandler<T, V> implements WebSocketHandler {
 
 	@Override
 	public Mono<Void> handle(WebSocketSession session) {
-//		this.log.debug("handle");
+		this.log.debug("handle");
 		
 		// create websocket client
 		HandshakeInfo handshakeInfo = session.getHandshakeInfo();

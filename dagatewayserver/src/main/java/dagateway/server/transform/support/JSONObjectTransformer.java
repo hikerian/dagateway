@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONStyle;
 
 
 
@@ -23,10 +22,7 @@ public class JSONObjectTransformer extends AbstractDataTransformer<JSONObject, J
 
 	@Override
 	public JSONObject transform(JSONObject source) {
-//		this.log.debug("===================== JSONObjectTransformer.transform =====================");
-//		this.log.debug(source.toJSONString(JSONStyle.NO_COMPRESS));
-//		this.log.debug("===========================================================================");
-
+		this.log.debug("transform");
 		return source;
 	}
 

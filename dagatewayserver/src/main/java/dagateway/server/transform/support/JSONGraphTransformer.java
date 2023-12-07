@@ -47,7 +47,7 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 
 	@Override
 	public DataBuffer transform(DataBuffer source) {
-//		this.log.debug("transform");
+		this.log.debug("transform");
 		
 		this.dataProxy.push(source, true);
 		

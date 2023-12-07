@@ -24,7 +24,7 @@ public class RawDataMultiResponseResolver extends MultiBackendResponseResolver<F
 	
 	@Override
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
-//		this.log.debug("resolve");
+		this.log.debug("resolve");
 		
 		ResponseSpec responseSpec = routeContext.getResponseSpec();
 		MediaType responseType = responseSpec.getContentType();

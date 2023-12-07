@@ -25,7 +25,7 @@ public class TextEventSingleStreamResponseResolver extends SingleBackendResponse
 
 	@Override
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Flux<ServerSentEvent<String>>>> serviceResults) {
-//		this.log.debug("resolve");
+		this.log.debug("resolve");
 		
 		HttpHeaders backendHeaders = new HttpHeaders();
 		Mono<ServerResponse> serverResponse = serviceResults.flatMap(result -> {

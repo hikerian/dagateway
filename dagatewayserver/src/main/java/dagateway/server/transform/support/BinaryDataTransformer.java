@@ -26,8 +26,7 @@ public class BinaryDataTransformer extends AbstractDataTransformer<byte[], byte[
 
 	@Override
 	public byte[] transform(byte[] payload) {
-//		this.log.debug("transform");
-		// TODO Auto-generated method stub
+		this.log.debug("transform");
 		return payload;
 	}
 
