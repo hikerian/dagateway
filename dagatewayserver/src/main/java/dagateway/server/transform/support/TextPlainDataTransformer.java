@@ -8,6 +8,9 @@ import dagateway.api.transform.AbstractDataTransformer;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class TextPlainDataTransformer extends AbstractDataTransformer<String, String> {
 	private final Logger log = LoggerFactory.getLogger(TextPlainDataTransformer.class);
 	

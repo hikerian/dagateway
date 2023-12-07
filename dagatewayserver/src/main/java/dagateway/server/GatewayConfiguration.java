@@ -84,6 +84,10 @@ import dagateway.server.transform.support.TextEventStreamTransformer;
 import dagateway.server.transform.support.TextPlainDataTransformer;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 @Configuration
 public class GatewayConfiguration {
 	private final Logger log = LoggerFactory.getLogger(GatewayConfiguration.class);

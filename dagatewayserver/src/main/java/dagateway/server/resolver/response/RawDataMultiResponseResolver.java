@@ -15,6 +15,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class RawDataMultiResponseResolver extends MultiBackendResponseResolver<Flux<DataBuffer>> {
 	private final Logger log = LoggerFactory.getLogger(RawDataMultiResponseResolver.class);
 

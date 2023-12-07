@@ -26,6 +26,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.SynchronousSink;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class CharDelimiterFluxDataBufferHandler extends AbstractContentHandler<Flux<DataBuffer>, DataBuffer, String, String, Flux<DataBuffer>> {
 	private final Logger log = LoggerFactory.getLogger(CharDelimiterFluxDataBufferHandler.class);
 	

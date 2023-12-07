@@ -18,6 +18,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class DataBuffer2TextPlainHandler extends AbstractContentHandler<Flux<DataBuffer>, DataBuffer, String, String, Mono<String>> {
 	private final Logger log = LoggerFactory.getLogger(DataBuffer2TextPlainHandler.class);
 	

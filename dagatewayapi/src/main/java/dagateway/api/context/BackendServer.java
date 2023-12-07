@@ -1,6 +1,9 @@
 package dagateway.api.context;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class BackendServer {
 	private String name;
 	private String url;

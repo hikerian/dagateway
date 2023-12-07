@@ -22,6 +22,10 @@ import dagateway.api.utils.Utils;
 import reactor.core.publisher.Mono;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 	private final Logger log = LoggerFactory.getLogger(WebSocket2HTTPHandler.class);
 

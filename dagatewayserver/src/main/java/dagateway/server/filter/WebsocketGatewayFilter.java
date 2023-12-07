@@ -34,7 +34,7 @@ import reactor.core.publisher.Mono;
  * 웹소켓 직접 처리.
  * 프로토콜 변환을 위해 다변화 처리 필요....
  * between Frontend Gateway and Backend(HTTP or WebSocket...) 
- * @author chodo
+ * @author Dong-il Cho
  * @see org.springframework.cloud.gateway.filter.WebsocketRoutingFilter
  */
 @Component

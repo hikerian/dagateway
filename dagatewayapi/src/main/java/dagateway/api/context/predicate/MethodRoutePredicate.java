@@ -8,6 +8,9 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class MethodRoutePredicate implements RoutePredicate {
 	private List<HttpMethod> methods = new ArrayList<>();
 	
@@ -22,7 +25,7 @@ public class MethodRoutePredicate implements RoutePredicate {
 		}
 		
 		for(String value : values) {
-			HttpMethod method = HttpMethod.resolve(value);
+			HttpMethod method = HttpMethod.valueOf(value);
 			if(method == null) {
 				throw new IllegalArgumentException("Unsupported method: " + value);
 			}

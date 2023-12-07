@@ -23,6 +23,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * @deprecated... 실제로는 사용할 수 없을 듯....
+ * @author Dong-il Cho
  */
 public class NDJSONResponseResolver extends MultiBackendResponseResolver<Mono<JSONObject>> {
 	private final Logger log = LoggerFactory.getLogger(NDJSONResponseResolver.class);

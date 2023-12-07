@@ -14,6 +14,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class TextEventMultiStreamResponseResolver extends MultiBackendResponseResolver<Flux<ServerSentEvent<String>>> {
 	private final Logger log = LoggerFactory.getLogger(TextEventMultiStreamResponseResolver.class);
 	

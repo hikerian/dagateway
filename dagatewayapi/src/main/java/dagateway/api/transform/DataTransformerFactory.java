@@ -12,6 +12,9 @@ import org.springframework.http.MediaType;
 import dagateway.api.context.RouteRequestContext.TransformSpec;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class DataTransformerFactory {
 	private final Logger log = LoggerFactory.getLogger(DataTransformerFactory.class);
 

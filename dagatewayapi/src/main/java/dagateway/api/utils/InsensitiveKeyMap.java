@@ -4,9 +4,10 @@ package dagateway.api.utils;
 import java.util.HashMap;
 
 
+
 /**
- * 대소문자 구분이 없는 Map
- *
+ * Case Insensitive Key Map.
+ * @author Dong-il Cho
  */
 public class InsensitiveKeyMap<K, V> extends HashMap<K, V> {
 	private static final long serialVersionUID = 8463207576106608881L;

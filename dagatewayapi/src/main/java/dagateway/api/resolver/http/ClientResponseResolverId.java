@@ -8,6 +8,9 @@ import dagateway.api.context.route.ContentHandling;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class ClientResponseResolverId {
 	private MediaType mediaType;
 	private ContentHandling contentHandling;

@@ -16,6 +16,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class NDJSONStreamResponseResolver extends MultiBackendResponseResolver<Flux<DataBuffer>> {
 	private final Logger log = LoggerFactory.getLogger(NDJSONStreamResponseResolver.class);
 	

@@ -7,6 +7,9 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class HeaderRoutePredicate implements RoutePredicate {
 	private String name;
 	private String regexp;

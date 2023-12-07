@@ -15,6 +15,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public abstract class SingleBackendResponseResolver<Sr> extends AbstractClientResponseResolver<Sr, Mono<ServiceResult<Sr>>> {
 	public abstract Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Sr>> serviceResults);
 

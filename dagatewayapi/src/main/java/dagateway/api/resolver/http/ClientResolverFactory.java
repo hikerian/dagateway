@@ -12,6 +12,9 @@ import dagateway.api.context.route.ContentHandling;
 import dagateway.api.service.ServiceResult;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class ClientResolverFactory {
 	private Map<ClientRequestResolverId, Supplier<? extends AbstractClientRequestResolver<?, ?>>> clientRequestResolvers = new ConcurrentHashMap<>();
 	private Map<ClientResponseResolverId, Supplier<? extends AbstractClientResponseResolver<?, ?>>> clientResponseResolvers = new ConcurrentHashMap<>();

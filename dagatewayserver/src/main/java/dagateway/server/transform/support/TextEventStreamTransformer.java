@@ -9,6 +9,9 @@ import dagateway.api.transform.AbstractDataTransformer;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class TextEventStreamTransformer extends AbstractDataTransformer<ServerSentEvent<String>, ServerSentEvent<String>> {
 	private final Logger log = LoggerFactory.getLogger(TextEventStreamTransformer.class);
 	

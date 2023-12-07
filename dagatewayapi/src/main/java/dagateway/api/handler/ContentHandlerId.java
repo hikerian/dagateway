@@ -5,6 +5,10 @@ import java.util.Objects;
 import org.springframework.http.MediaType;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class ContentHandlerId {
 	private MediaType from;
 	private String argumentTypeName;

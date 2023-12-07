@@ -4,6 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class ByteArrayStreamBuffer implements StreamBuffer {
 	private ByteArrayOutputStream out;
 	

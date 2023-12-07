@@ -15,6 +15,10 @@ import dagateway.api.transform.AbstractDataTransformer;
 import dagateway.api.transform.DividedDataSupport;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class SSV2TSVCharTransformer extends AbstractDataTransformer<String, String> implements CharDelimiterSupport, DividedDataSupport {
 	private final Logger log = LoggerFactory.getLogger(SSV2TSVCharTransformer.class);
 	

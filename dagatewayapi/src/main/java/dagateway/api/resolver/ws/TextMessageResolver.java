@@ -5,6 +5,9 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class TextMessageResolver extends AbstractMessageResolver<String> {
 	
 	

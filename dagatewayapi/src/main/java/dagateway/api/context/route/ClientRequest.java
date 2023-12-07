@@ -17,6 +17,10 @@ public class ClientRequest {
 		return this.aggregateType;
 	}
 
+	public void setAggregateType(String aggregateType) {
+		this.aggregateType = MediaType.parseMediaType(aggregateType);
+	}
+	
 	public void setAggregateType(MediaType aggregateType) {
 		this.aggregateType = aggregateType;
 	}

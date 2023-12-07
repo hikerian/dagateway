@@ -13,6 +13,10 @@ import dagateway.api.service.ServiceResult;
 import reactor.core.publisher.Mono;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class DynamicResponseResolver<Sr> extends SingleBackendResponseResolver<Sr> {
 	private final Logger log = LoggerFactory.getLogger(DynamicResponseResolver.class);
 	

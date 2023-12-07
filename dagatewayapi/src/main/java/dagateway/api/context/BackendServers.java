@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class BackendServers {
 	private List<BackendServer> backends = new ArrayList<>();
 	

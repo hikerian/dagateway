@@ -18,6 +18,9 @@ import reactor.core.publisher.Flux;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class DataBuffer2ServerSentEventHandler extends AbstractContentHandler<Flux<DataBuffer>, DataBuffer, ServerSentEvent<String>, ServerSentEvent<String>, Flux<ServerSentEvent<String>>> {
 	private final Logger log = LoggerFactory.getLogger(DataBuffer2ServerSentEventHandler.class);
 	

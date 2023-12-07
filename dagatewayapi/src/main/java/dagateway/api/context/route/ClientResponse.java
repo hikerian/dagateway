@@ -19,6 +19,10 @@ public class ClientResponse {
 	public MediaType getContentType() {
 		return this.contentType;
 	}
+	
+	public void setContentType(String contentType) {
+		this.contentType = MediaType.parseMediaType(contentType);
+	}
 
 	public void setContentType(MediaType contentType) {
 		this.contentType = contentType;

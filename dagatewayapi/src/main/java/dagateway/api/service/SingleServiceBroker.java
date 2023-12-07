@@ -14,6 +14,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class SingleServiceBroker<P extends Publisher<Cq>, Cq, Sr> implements ServiceBroker<P, Cq, Sr> {
 	private final Logger log = LoggerFactory.getLogger(SingleServiceBroker.class);
 	

@@ -11,6 +11,10 @@ import dagateway.api.transform.DividedDataSupport;
 import dagateway.api.transform.StringDelimiterSupport;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class StringDelimiterTransformer extends AbstractDataTransformer<String, String> implements StringDelimiterSupport, DividedDataSupport {
 	private final Logger log = LoggerFactory.getLogger(StringDelimiterTransformer.class);
 	

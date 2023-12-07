@@ -9,6 +9,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public abstract class SingleRequestDataResolver<Cq> extends AbstractClientRequestResolver<Cq, Mono<Cq>> {
 	
 	

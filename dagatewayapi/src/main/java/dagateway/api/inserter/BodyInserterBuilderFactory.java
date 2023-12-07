@@ -17,6 +17,10 @@ import dagateway.api.inserter.impl.MultiValueMapInserterBuilder;
 import dagateway.api.inserter.impl.MultipartInserterBuilder;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class BodyInserterBuilderFactory {
 	private final Logger log = LoggerFactory.getLogger(BodyInserterBuilderFactory.class);
 	private Map<String, BodyInserterBuilder<?, ?>> bodyInserterBuilders = new ConcurrentHashMap<>();

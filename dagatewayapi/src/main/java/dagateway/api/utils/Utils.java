@@ -1,6 +1,5 @@
 package dagateway.api.utils;
 
-import java.lang.reflect.Constructor;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +40,6 @@ public class Utils {
 			datas[i] = datas[i].trim();
 		}
 		return datas;
-	}
-	
-	public static <T> T newInstance(Class<T> claxx) {
-		if(claxx != null) {
-			try {
-				Constructor<T> constructor = claxx.getConstructor(new Class<?>[0]);
-				return constructor.newInstance(new Object[0]);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new IllegalArgumentException(claxx + " is not supported type.", e);
-			}
-		}
-		return null;
 	}
 	
 	public static String applyVariable(String pattern, Map<String, String> variables) {

@@ -27,6 +27,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements ServiceDelegator<P, Cq, Sr> {
 	private final Logger log = LoggerFactory.getLogger(ServiceDelegatorImpl.class);
 	

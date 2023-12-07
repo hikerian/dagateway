@@ -6,6 +6,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class JSONObject2StringHandler extends AbstractContentHandler<Mono<JSONObject>, JSONObject, JSONObject, JSONObject, Mono<String>> {
 	public static final String ARGUMENT_TYPE = "reactor.core.publisher.Mono<net.minidev.json.JSONObject>";
 	public static final String RETURN_TYPE = "reactor.core.publisher.Mono<java.lang.String>";

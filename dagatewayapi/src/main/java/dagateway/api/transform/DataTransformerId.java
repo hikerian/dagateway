@@ -5,6 +5,9 @@ import java.util.Objects;
 import org.springframework.http.MediaType;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class DataTransformerId {
 	private MediaType from;
 	private MediaType to;

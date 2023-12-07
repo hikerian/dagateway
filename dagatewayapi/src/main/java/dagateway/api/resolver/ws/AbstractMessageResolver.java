@@ -8,6 +8,9 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public abstract class AbstractMessageResolver<T> implements WebSocketMessageResolver<T> {
 	
 	

@@ -15,6 +15,7 @@ import dagateway.api.utils.ServerWebExchangeUtils;
 
 /**
  * @see org.springframework.cloud.gateway.handler.predicate.PathRoutePredicateFactory
+ * @author Dong-il Cho
  */
 public class PathRoutePredicate implements RoutePredicate {	
 	private List<PathPattern> paths = new ArrayList<>();

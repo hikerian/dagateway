@@ -10,6 +10,10 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import dagateway.api.service.ServiceFault;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class ServiceFaultImpl implements ServiceFault {
 	private static final long serialVersionUID = -1866362952264018817L;
 

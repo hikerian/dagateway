@@ -4,6 +4,10 @@ import dagateway.api.handler.AbstractContentHandler;
 import reactor.core.publisher.Mono;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class TextPlainHandler extends AbstractContentHandler<Mono<String>, String, String, String, Mono<String>> {
 	public static final String ARGUMENT_TYPE = "reactor.core.publisher.Mono<java.lang.String>";
 	public static final String RETURN_TYPE = "reactor.core.publisher.Mono<java.lang.String>";

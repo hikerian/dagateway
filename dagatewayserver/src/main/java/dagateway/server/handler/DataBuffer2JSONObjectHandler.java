@@ -14,6 +14,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class DataBuffer2JSONObjectHandler extends AbstractContentHandler<Flux<DataBuffer>, DataBuffer, JSONObject, JSONObject, Mono<JSONObject>> {
 	private final Logger log = LoggerFactory.getLogger(DataBuffer2JSONObjectHandler.class);
 	

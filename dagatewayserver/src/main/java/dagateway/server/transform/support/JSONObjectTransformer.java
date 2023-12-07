@@ -9,6 +9,9 @@ import net.minidev.json.JSONObject;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class JSONObjectTransformer extends AbstractDataTransformer<JSONObject, JSONObject> {
 	private final Logger log = LoggerFactory.getLogger(JSONObjectTransformer.class);
 	

@@ -9,6 +9,10 @@ import dagateway.api.service.ServiceExceptionResolver;
 import dagateway.api.service.ServiceFault;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class ServiceExceptionResolverImpl implements ServiceExceptionResolver {
 	private final Logger log = LoggerFactory.getLogger(ServiceExceptionResolverImpl.class);
 	

@@ -15,6 +15,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class RawDataSingleResponseResolver extends SingleBackendResponseResolver<Flux<DataBuffer>> {
 	private final Logger log = LoggerFactory.getLogger(RawDataSingleResponseResolver.class);
 

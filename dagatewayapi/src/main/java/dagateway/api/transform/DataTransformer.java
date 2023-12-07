@@ -6,7 +6,7 @@ import dagateway.api.service.ServiceFault;
 
 /**
  * 
- * @author chodo
+ * @author Dong-il Cho
  *
  * @param <T> inputType
  * @param <V> outputType

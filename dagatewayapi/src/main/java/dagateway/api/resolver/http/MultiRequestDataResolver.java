@@ -8,6 +8,10 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public abstract class MultiRequestDataResolver<Cq> extends AbstractClientRequestResolver<Cq, Flux<Cq>> {
 	
 	

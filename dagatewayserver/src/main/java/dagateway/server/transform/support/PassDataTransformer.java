@@ -12,6 +12,10 @@ import dagateway.api.transform.AbstractDataTransformer;
 import dagateway.api.transform.DividedDataSupport;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class PassDataTransformer extends AbstractDataTransformer<DataBuffer, DataBuffer> implements DividedDataSupport {
 	private final Logger log = LoggerFactory.getLogger(PassDataTransformer.class);
 	

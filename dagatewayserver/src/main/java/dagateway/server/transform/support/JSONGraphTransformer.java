@@ -20,6 +20,9 @@ import dagateway.api.transform.AbstractDataTransformer;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, DataBuffer> {
 	private final Logger log = LoggerFactory.getLogger(JSONGraphTransformer.class);
 	

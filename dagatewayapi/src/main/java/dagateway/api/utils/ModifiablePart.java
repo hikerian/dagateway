@@ -7,6 +7,9 @@ import org.springframework.http.codec.multipart.Part;
 import reactor.core.publisher.Flux;
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class ModifiablePart implements Part {
 	private String name;
 	private HttpHeaders httpHeaders;

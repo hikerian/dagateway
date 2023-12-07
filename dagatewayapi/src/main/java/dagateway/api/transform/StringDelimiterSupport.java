@@ -7,6 +7,10 @@ import java.util.List;
 import org.springframework.util.MimeType;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public interface StringDelimiterSupport {
 	public static final List<String> DEFAULT_DELIMITERS = Arrays.asList("\r\n", "\n");
 	public static final MimeType DEFAULT_MIMETYPE = new MimeType("text", "plain", StandardCharsets.UTF_8);

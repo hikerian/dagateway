@@ -11,7 +11,7 @@ import dagateway.api.composer.builder.StreamBuilder;
 
 
 /**
- * 매핑된 노드의 계층구조를 나타내는 Class.
+ * Tree Node Mapping Class.
  * @author Dong-il Cho
  */
 public class MessageNode {

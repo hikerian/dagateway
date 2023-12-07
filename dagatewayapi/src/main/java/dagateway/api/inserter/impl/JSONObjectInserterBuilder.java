@@ -9,6 +9,10 @@ import net.minidev.json.JSONObject;
 import reactor.core.publisher.Mono;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class JSONObjectInserterBuilder extends AbstractBodyInserterBuilder<Mono<JSONObject>, ReactiveHttpOutputMessage> {
 	
 	

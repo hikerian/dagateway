@@ -17,6 +17,9 @@ import dagateway.api.transform.DataTransformerFactory;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class ContentHandlerFactory {
 	private final Logger log = LoggerFactory.getLogger(ContentHandlerFactory.class);
 

@@ -7,6 +7,9 @@ import reactor.core.publisher.Flux;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class MultiDataBufferHandler extends AbstractContentHandler<Flux<DataBuffer>, DataBuffer, DataBuffer, DataBuffer, Flux<DataBuffer>> {
 	public static final String ARGUMENT_TYPE = "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";
 	public static final String RETURN_TYPE = "reactor.core.publisher.Flux<org.springframework.core.io.buffer.DataBuffer>";

@@ -18,6 +18,9 @@ import reactor.core.scheduler.Schedulers;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class MultiServiceBroker<Cq, Sr> implements ServiceBroker<Mono<Cq>, Cq, Sr> {
 	private final Logger log = LoggerFactory.getLogger(MultiServiceBroker.class);
 	

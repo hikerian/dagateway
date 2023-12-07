@@ -9,6 +9,10 @@ import dagateway.api.inserter.AbstractBodyInserterBuilder;
 import reactor.core.publisher.Flux;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class FluxServerSentEventInserterBuilder extends AbstractBodyInserterBuilder<Flux<ServerSentEvent<String>>, ServerHttpResponse> {
 	
 	

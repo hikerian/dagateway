@@ -10,6 +10,9 @@ import dagateway.api.service.ServiceResult;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public abstract class AbstractClientResponseResolver<Sr, P extends Publisher<ServiceResult<Sr>>> implements ClientResponseResolver<P, Sr> {
 	protected MediaType contentType;
 	

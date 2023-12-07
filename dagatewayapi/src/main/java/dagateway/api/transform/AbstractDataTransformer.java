@@ -3,11 +3,13 @@ package dagateway.api.transform;
 import dagateway.api.context.RouteRequestContext.TransformSpec;
 
 
+
 /**
  * json to json hard coding?
  * filter? map? path-> keep -> draw -> tree
  * structural data convertor -> path -> hit or keep or trash
  * source analisys - stream to target structure
+ * @author Dong-il Cho
  */
 public abstract class AbstractDataTransformer<T, V> implements DataTransformer<T, V> {
 	private TransformSpec rule;

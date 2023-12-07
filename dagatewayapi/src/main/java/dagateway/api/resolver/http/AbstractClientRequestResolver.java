@@ -5,6 +5,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public abstract class AbstractClientRequestResolver<Cq, P extends Publisher<Cq>> implements ClientRequestResolver<P, Cq> {
 	protected MediaType from;
 	protected MediaType to;

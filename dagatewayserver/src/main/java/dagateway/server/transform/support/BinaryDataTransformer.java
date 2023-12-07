@@ -11,6 +11,10 @@ import dagateway.api.service.ServiceFault;
 import dagateway.api.transform.AbstractDataTransformer;
 
 
+
+/**
+ * @author Dong-il Cho
+ */
 public class BinaryDataTransformer extends AbstractDataTransformer<byte[], byte[]> {
 	private final Logger log = LoggerFactory.getLogger(BinaryDataTransformer.class);
 	

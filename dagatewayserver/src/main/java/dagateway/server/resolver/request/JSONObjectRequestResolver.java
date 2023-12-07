@@ -9,6 +9,9 @@ import reactor.core.publisher.Mono;
 
 
 
+/**
+ * @author Dong-il Cho
+ */
 public class JSONObjectRequestResolver extends SingleRequestDataResolver<JSONObject> {
 	
 	
