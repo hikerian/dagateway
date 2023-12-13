@@ -14,9 +14,11 @@ public class GatewayRuntimeHints implements RuntimeHintsRegistrar {
 
 	@Override
 	public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+		// static 하위 yaml 파일을 native image 안으로 포함
 		hints.resources().registerPattern("backend/*")
 			.registerPattern("route/*");
 		
+		// reflection hints
 		ReflectionHints reflection = hints.reflection();
 		reflection.registerType(net.minidev.json.JSONObject.class, MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS);
 		
