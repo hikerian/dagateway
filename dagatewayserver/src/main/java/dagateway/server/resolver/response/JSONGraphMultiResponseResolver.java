@@ -80,6 +80,8 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 			ServiceSpec serviceSpec = serviceResult.getServiceSpec();
 			DataProxy dataProxy = serviceSpec.getDataProxy();
 			
+			this.log.error(Thread.currentThread().getClass().getName());
+			
 			Flux<DataBuffer> bodyBuffers = serviceResult.getBody();
 			// last marking
 			bodyBuffers = bodyBuffers.concatWith(Flux.just(DefaultDataBufferFactory.sharedInstance.wrap(new byte[0])));

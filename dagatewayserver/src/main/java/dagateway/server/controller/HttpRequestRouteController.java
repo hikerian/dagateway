@@ -31,6 +31,9 @@ public class HttpRequestRouteController {
 	
 	public <P extends Publisher<Cq>, Cq, Sr> Mono<ServerResponse> service(ServerRequest serverRequest) {
 		this.log.debug("build ServiceTasks");
+		
+		this.log.error(Thread.currentThread().getClass().getName());
+		
 		RouteRequestContext routeContext = ServerWebExchangeUtils.getRouteContext(serverRequest);
 		ServiceBroker<P, Cq, Sr> serviceBroker = this.serviceBrokerBuilder.build(routeContext);
 		

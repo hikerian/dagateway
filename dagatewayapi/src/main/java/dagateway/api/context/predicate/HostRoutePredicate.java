@@ -41,17 +41,12 @@ public class HostRoutePredicate implements RoutePredicate {
 		HttpHeaders headers = serverHttpRequest.getHeaders();
 		InetSocketAddress hostheader = headers.getHost();
 		String hostName = hostheader.getHostString();
-		String acceptedPattern = null;
 		for(String hostPattern : this.hosts) {
 			if(this.antPathMatcher.match(hostPattern, hostName)) {
-				acceptedPattern = hostPattern;
-				break;
+				Map<String, String> variables = this.antPathMatcher.extractUriTemplateVariables(hostPattern, hostName);
+				ServerWebExchangeUtils.putUriTemplateVariables(serverWebExchange, variables);
+				return true;
 			}
-		}
-		if(acceptedPattern != null) {
-			Map<String, String> variables = this.antPathMatcher.extractUriTemplateVariables(acceptedPattern, hostName);
-			ServerWebExchangeUtils.putUriTemplateVariables(serverWebExchange, variables);
-			return true;
 		}
 		
 		return false;

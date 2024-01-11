@@ -41,19 +41,13 @@ public class PathRoutePredicate implements RoutePredicate {
 		ServerHttpRequest serverHttpRequest = serverWebExchange.getRequest();
 		PathContainer path = serverHttpRequest.getPath();
 		
-		PathPattern match = null;
 		for(PathPattern pattern : this.paths) {
 			if(pattern.matches(path)) {
-				match = pattern;
-				break;
+				PathMatchInfo pathMatchInfo = pattern.matchAndExtract(path);
+				ServerWebExchangeUtils.putUriTemplateVariables(serverWebExchange, pathMatchInfo.getUriVariables());
+				
+				return true;
 			}
-		}
-		
-		if(match != null) {
-			PathMatchInfo pathMatchInfo = match.matchAndExtract(path);
-			ServerWebExchangeUtils.putUriTemplateVariables(serverWebExchange, pathMatchInfo.getUriVariables());
-			
-			return true;
 		}
 		
 		return false;

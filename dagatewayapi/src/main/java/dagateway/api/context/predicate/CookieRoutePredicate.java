@@ -37,7 +37,7 @@ public class CookieRoutePredicate implements RoutePredicate {
 			return false;
 		}
 		for(HttpCookie cookie : cookieList) {
-			if(cookie.getValue().matches(this.regexp)) {
+			if(cookie.getName().equalsIgnoreCase(this.name) && cookie.getValue().matches(this.regexp)) {
 				return true;
 			}
 		}

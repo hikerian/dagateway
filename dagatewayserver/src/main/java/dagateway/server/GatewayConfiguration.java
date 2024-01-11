@@ -134,7 +134,7 @@ public class GatewayConfiguration {
 	
 	@Bean
 	GatewayContext gatewayContext(ConfigurableApplicationContext configurableApplicationContext
-			, RoutePredicateBuilder predicateFactory
+			, RoutePredicateBuilder predicateBuilder
 			, @Value("${dagateway.server.route-path}") String routePath
 			, @Value("${dagateway.server.backend-path}") String backendPath) throws Exception {
 		this.log.debug("gatewayContext routePath: " + routePath + ", backendPath: " + backendPath);
@@ -148,7 +148,7 @@ public class GatewayConfiguration {
 
 		// load routes
 		GatewayContext gatewayContext = new GatewayContext();
-		this.loadGatewayContext(gatewayContext, routePath, backendPath, configurableApplicationContext, predicateFactory);
+		this.loadGatewayContext(gatewayContext, routePath, backendPath, configurableApplicationContext, predicateBuilder);
 		
 		return gatewayContext;
 	}
@@ -157,7 +157,7 @@ public class GatewayConfiguration {
 			, String routePath
 			, String backendPath
 			, ConfigurableApplicationContext configurableApplicationContext
-			, RoutePredicateBuilder predicateFactory) throws IOException {
+			, RoutePredicateBuilder predicateBuilder) throws IOException {
 
 		SimpleModule deserializerModule = new SimpleModule();
 		deserializerModule.addDeserializer(RoutePredicate.class, new JsonDeserializer<RoutePredicate>() {
@@ -165,7 +165,7 @@ public class GatewayConfiguration {
 			public RoutePredicate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
 				String predicateShortcut = p.getValueAsString();
 				
-				return predicateFactory.build(predicateShortcut);
+				return predicateBuilder.build(predicateShortcut);
 			}
 		});
 		
