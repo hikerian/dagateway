@@ -1,4 +1,4 @@
-package dagateway.server.transform.support;
+package dagateway.server.transform;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;

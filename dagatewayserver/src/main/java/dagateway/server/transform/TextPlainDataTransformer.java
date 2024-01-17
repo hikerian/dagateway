@@ -1,4 +1,4 @@
-package dagateway.server.transform.support;
+package dagateway.server.transform;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

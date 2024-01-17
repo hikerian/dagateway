@@ -94,6 +94,10 @@ public class ServiceDelegatorImpl<P extends Publisher<Cq>, Cq, Sr> implements Se
 				.flatMap(responseEntity -> {
 //						this.log.debug("BACKEND SERVICE RESPONSE STATUS: " + responseEntity.getStatusCode());
 					
+					
+					System.err.println("ServiceDelegatorThread: " + Thread.currentThread().getClass().getName());
+					
+					
 					HttpHeaders backendHeaders = responseEntity.getHeaders();
 					MediaType backendContentType = backendHeaders.getContentType();
 					MediaType clientResponseType = this.serviceSpec.getClientResponseType();

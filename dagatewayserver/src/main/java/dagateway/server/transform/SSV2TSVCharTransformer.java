@@ -1,4 +1,4 @@
-package dagateway.server.transform.support;
+package dagateway.server.transform;
 
 import java.io.CharArrayWriter;
 import java.util.ArrayList;

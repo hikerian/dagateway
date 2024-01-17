@@ -12,6 +12,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 
 import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.handler.ContentHandlerFactory;
+import dagateway.api.http.WebClientResolver;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.service.ServiceDelegator;
@@ -36,12 +37,15 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 	private final ServiceSpec serviceSpec;
 	private final WebSocketMessageResolver<T> clientResolver;
 	
+	private final WebClientResolver webClientResolver;
+	
 	
 	public WebSocket2HTTPHandler(ContentHandlerFactory contentHandlerFactory
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory
 			, ServiceExceptionResolver exceptionResolver
 			, ServiceSpec serviceSpec
-			, WebSocketMessageResolver<T> clientResolver) {
+			, WebSocketMessageResolver<T> clientResolver
+			, WebClientResolver webClientResolver) {
 		
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
@@ -49,6 +53,8 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 		
 		this.serviceSpec = serviceSpec;
 		this.clientResolver = clientResolver;
+		
+		this.webClientResolver = webClientResolver;
 	}
 
 	@Override
@@ -64,7 +70,9 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 			T payload = this.clientResolver.extract(message);
 			
 			// TODO ServiceDelegator
-			WebClient webClient = Utils.newWebClient();
+//			WebClient webClient = Utils.newWebClient();
+			WebClient webClient = this.webClientResolver.createWebClient();
+			
 			RequestBodyUriSpec requestBodyUriSpec = webClient.method(this.serviceSpec.getMethod());
 			requestBodyUriSpec.uri(this.serviceSpec.createBackendURI());
 			

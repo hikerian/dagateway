@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dagateway.api.context.BackendServer;
 import dagateway.api.context.GatewayContext;
+import dagateway.api.http.WebClientResolver;
 import dagateway.api.utils.Utils;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -39,10 +40,12 @@ public class ApiDocsController {
 	private final Logger log = LoggerFactory.getLogger(ApiDocsController.class);
 	
 	private final GatewayContext gatewayContext;
+	private final WebClientResolver webClientResolver;
 	
 	
-	public ApiDocsController(GatewayContext gatewayContext) {
+	public ApiDocsController(GatewayContext gatewayContext, WebClientResolver webClientResolver) {
 		this.gatewayContext = gatewayContext;
+		this.webClientResolver = webClientResolver;
 	}
 	
 	public Mono<ServerResponse> service(ServerRequest serverRequest) {
@@ -67,7 +70,9 @@ public class ApiDocsController {
 		
 		Flux<URI> apiDocUriFlux = Flux.fromIterable(apiDocUris);
 		Flux<String> openAPIFlux = apiDocUriFlux.flatMap((apiDocUri) -> {
-			WebClient webClient = Utils.newWebClient();
+//			WebClient webClient = Utils.newWebClient();
+			WebClient webClient = this.webClientResolver.createWebClient();
+			
 			RequestBodyUriSpec requestBodyUriSpec = webClient.method(HttpMethod.GET);
 			requestBodyUriSpec.uri(apiDocUri);
 			ResponseSpec responseSpec = requestBodyUriSpec.retrieve();

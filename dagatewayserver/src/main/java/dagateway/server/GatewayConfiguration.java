@@ -39,6 +39,9 @@ import dagateway.api.context.predicate.RoutePredicateBuilder;
 import dagateway.api.context.route.ContentHandling;
 import dagateway.api.context.route.GatewayRoutes;
 import dagateway.api.handler.ContentHandlerFactory;
+import dagateway.api.http.JdkClientResolver;
+import dagateway.api.http.ReactorClientResolver;
+import dagateway.api.http.WebClientResolver;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.http.ClientRequestResolverId;
 import dagateway.api.resolver.http.ClientResolverFactory;
@@ -73,15 +76,15 @@ import dagateway.server.resolver.response.RawDataMultiResponseResolver;
 import dagateway.server.resolver.response.RawDataSingleResponseResolver;
 import dagateway.server.resolver.response.TextEventMultiStreamResponseResolver;
 import dagateway.server.resolver.response.TextEventSingleStreamResponseResolver;
-import dagateway.server.transform.support.BinaryDataTransformer;
-import dagateway.server.transform.support.FormDataTransformer;
-import dagateway.server.transform.support.JSONGraphTransformer;
-import dagateway.server.transform.support.JSONObjectTransformer;
-import dagateway.server.transform.support.MultipartDataTransformer;
-import dagateway.server.transform.support.PassDataTransformer;
-import dagateway.server.transform.support.SSV2TSVCharTransformer;
-import dagateway.server.transform.support.TextEventStreamTransformer;
-import dagateway.server.transform.support.TextPlainDataTransformer;
+import dagateway.server.transform.BinaryDataTransformer;
+import dagateway.server.transform.FormDataTransformer;
+import dagateway.server.transform.JSONGraphTransformer;
+import dagateway.server.transform.JSONObjectTransformer;
+import dagateway.server.transform.MultipartDataTransformer;
+import dagateway.server.transform.PassDataTransformer;
+import dagateway.server.transform.SSV2TSVCharTransformer;
+import dagateway.server.transform.TextEventStreamTransformer;
+import dagateway.server.transform.TextPlainDataTransformer;
 
 
 
@@ -212,14 +215,29 @@ public class GatewayConfiguration {
 	}
 	
 	@Bean
+	WebClientResolver webClientResolver(@Value("${dagateway.webclient}") String webClient) {
+		this.log.debug("webClientResolver");
+		
+		if("reactor".equalsIgnoreCase(webClient)) {
+			return new ReactorClientResolver();
+		}
+		return new JdkClientResolver();
+	}
+	
+	@Bean
 	ServiceBrokerBuilder serviceBrokerBuilder(ContentHandlerFactory contentHandlerFactory
 			, ClientResolverFactory clientResolverFactory
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory
-			, ServiceExceptionResolver exceptionResolver) {
+			, ServiceExceptionResolver exceptionResolver
+			, WebClientResolver webClientResolver) {
 		this.log.debug("serviceBrokerBuilder");
 
 		ServiceBrokerBuilder serviceBrokerBuilder = new ServiceBrokerBuilder();
-		serviceBrokerBuilder.init(contentHandlerFactory, clientResolverFactory, bodyInserterBuilderFactory, exceptionResolver);
+		serviceBrokerBuilder.init(contentHandlerFactory
+				, clientResolverFactory
+				, bodyInserterBuilderFactory
+				, exceptionResolver
+				, webClientResolver);
 		
 		return serviceBrokerBuilder;
 	}

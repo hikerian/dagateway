@@ -19,6 +19,7 @@ import dagateway.api.context.RouteRequestContext;
 import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.context.route.EndpointType;
 import dagateway.api.handler.ContentHandlerFactory;
+import dagateway.api.http.WebClientResolver;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.ws.WebSocketMessageResolver;
 import dagateway.api.resolver.ws.WebSocketMessageResolverFactory;
@@ -47,19 +48,22 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 	private final ContentHandlerFactory contentHandlerFactory;
 	private final BodyInserterBuilderFactory bodyInserterBuilderFactory;
 	private final ServiceExceptionResolver exceptionResolver;
+	private final WebClientResolver webClientResolver;
 	
 	
 	public WebsocketGatewayFilter(WebSocketService webSocketService
 			, WebSocketMessageResolverFactory webSocketMessageResolverFactory
 			, ContentHandlerFactory contentHandlerFactory
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory
-			, ServiceExceptionResolver exceptionResolver) {
+			, ServiceExceptionResolver exceptionResolver
+			, WebClientResolver webClientResolver) {
 		
 		this.webSocketService = webSocketService;
 		this.webSocketMessageResolverFactory = webSocketMessageResolverFactory;
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
 		this.exceptionResolver = exceptionResolver;
+		this.webClientResolver = webClientResolver;
 	}
 	
 	@Override
@@ -119,6 +123,7 @@ public class WebsocketGatewayFilter implements WebFilter, Ordered {
 					, this.exceptionResolver
 					, serviceSpec
 					, clientResolver
+					, this.webClientResolver
 					);
 		}
 		

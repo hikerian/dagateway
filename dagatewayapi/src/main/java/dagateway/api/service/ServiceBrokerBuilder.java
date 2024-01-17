@@ -17,6 +17,7 @@ import dagateway.api.context.RouteRequestContext.ServiceSpec;
 import dagateway.api.context.route.ContentHandling;
 import dagateway.api.context.route.EndpointType;
 import dagateway.api.handler.ContentHandlerFactory;
+import dagateway.api.http.WebClientResolver;
 import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.http.ClientRequestResolver;
 import dagateway.api.resolver.http.ClientResolverFactory;
@@ -37,6 +38,7 @@ public class ServiceBrokerBuilder {
 	private ClientResolverFactory clientResolverFactory;
 	private BodyInserterBuilderFactory bodyInserterBuilderFactory;
 	private ServiceExceptionResolver exceptionResolver;
+	private WebClientResolver webClientResolver;
 	
 	
 	public ServiceBrokerBuilder() {
@@ -45,12 +47,14 @@ public class ServiceBrokerBuilder {
 	public void init(ContentHandlerFactory contentHandlerFactory
 			, ClientResolverFactory clientResolverFactory
 			, BodyInserterBuilderFactory bodyInserterBuilderFactory
-			, ServiceExceptionResolver exceptionResolver) {
+			, ServiceExceptionResolver exceptionResolver
+			, WebClientResolver webClientResolver) {
 
 		this.contentHandlerFactory = contentHandlerFactory;
 		this.clientResolverFactory = clientResolverFactory;
 		this.bodyInserterBuilderFactory = bodyInserterBuilderFactory;
 		this.exceptionResolver = exceptionResolver;
+		this.webClientResolver = webClientResolver;
 	}
 	
 	public <P extends Publisher<Cq>, Cq, Sr> ServiceBroker<P, Cq, Sr> build(RouteRequestContext routeContext) {
@@ -111,7 +115,8 @@ public class ServiceBrokerBuilder {
 	private <P extends Publisher<Cq>, Cq, Sr> ServiceDelegator<P, Cq, Sr> createServiceDelegator(String requestResolverTypeName, String resolverArgTypeName, ServiceSpec serviceSpec) {
 		HttpMethod method = serviceSpec.getMethod();
 		
-		WebClient webClient = Utils.newWebClient();
+//		WebClient webClient = Utils.newWebClient();
+		WebClient webClient = this.webClientResolver.createWebClient();
 		RequestBodyUriSpec requestBodyUriSpec = webClient.method(method);
 		requestBodyUriSpec.uri(serviceSpec.createBackendURI());
 		
