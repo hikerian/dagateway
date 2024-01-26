@@ -70,7 +70,8 @@ public class ContentHandlerFactory {
 
 		@SuppressWarnings("unchecked")
 		Supplier<? extends AbstractContentHandler<P, Cq, T, V, R>> handlerSupplier = 
-		(Supplier<? extends AbstractContentHandler<P, Cq, T, V, R>>) this.searchAcceptableContentHandler((id) -> id.getFrom().equalsTypeAndSubtype(fromType)
+		(Supplier<? extends AbstractContentHandler<P, Cq, T, V, R>>) this.searchAcceptableContentHandler(
+				(id) -> id.getFrom().equalsTypeAndSubtype(fromType)
 				&& (id.getArgumentType().equals(argumentTypeName) || "*".equals(argumentTypeName))
 				&& (id.getReturnTypeName().equals(returnTypeName) || "*".equals(returnTypeName))
 				, (id) -> id.getFrom().isCompatibleWith(fromType)

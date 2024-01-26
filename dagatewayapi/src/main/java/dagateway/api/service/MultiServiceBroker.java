@@ -2,7 +2,6 @@ package dagateway.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,16 +54,11 @@ public class MultiServiceBroker<Cq, Sr> implements ServiceBroker<Mono<Cq>, Cq, S
 		Mono<Cq> monoBody = this.requestResolver.resolve(serverRequest);
 		
 		Flux<ServiceResult<Sr>> serviceResultFlux = monoBody.flatMapMany(body -> {
-//			Flux<ServiceResult<Sr>> serviceResults = Flux.fromIterable(this.serviceDelegatorList)
-//					.flatMap((delegator) -> {
-//						Mono<ServiceResult<Sr>> serviceResult = delegator.run(requestHeaders, Mono.just(body));
-//						return serviceResult;
-//					}).subscribeOn(Schedulers.parallel());
 			Flux<ServiceResult<Sr>> serviceResults = Flux.fromIterable(this.serviceDelegatorList)
 					.flatMap((delegator) -> {
 						Mono<ServiceResult<Sr>> serviceResult = delegator.run(requestHeaders, Mono.just(body));
 						return serviceResult;
-					}).subscribeOn(Schedulers.fromExecutorService(Executors.newVirtualThreadPerTaskExecutor()));
+					}).subscribeOn(Schedulers.parallel());
 
 			return serviceResults;
 		});

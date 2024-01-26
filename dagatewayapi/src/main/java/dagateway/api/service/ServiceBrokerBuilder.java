@@ -22,7 +22,6 @@ import dagateway.api.inserter.BodyInserterBuilderFactory;
 import dagateway.api.resolver.http.ClientRequestResolver;
 import dagateway.api.resolver.http.ClientResolverFactory;
 import dagateway.api.resolver.http.ClientResponseResolver;
-import dagateway.api.utils.Utils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
