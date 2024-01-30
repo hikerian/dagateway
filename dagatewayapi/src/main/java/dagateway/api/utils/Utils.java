@@ -83,13 +83,13 @@ public class Utils {
 		return (colonIdx != -1 ? match.substring(0, colonIdx) : match);
 	}
 	
-	public static void filterHeader(HttpHeaders targetHeaders, HeaderSpec headerMap, Map<String, String> variables) {
-		if(headerMap == null) {
+	public static void filterHeader(HttpHeaders targetHeaders, HeaderSpec headerSpec, Map<String, String> variables) {
+		if(headerSpec == null) {
 			return;
 		}
 
 		// add
-		List<HeaderProperties.HeaderEntry> addHeaders = headerMap.getAdd();
+		List<HeaderProperties.HeaderEntry> addHeaders = headerSpec.getAdd();
 		if(addHeaders != null && addHeaders.size() > 0) {
 			for(HeaderProperties.HeaderEntry entry : addHeaders) {
 				String name = Utils.applyVariable(entry.getName(), variables);
@@ -100,11 +100,11 @@ public class Utils {
 		}
 		
 		// set
-		List<HeaderProperties.HeaderEntry> setHeaders = headerMap.getSet();
+		List<HeaderProperties.HeaderEntry> setHeaders = headerSpec.getSet();
 		if(setHeaders != null && setHeaders.size() > 0) {
 			for(HeaderProperties.HeaderEntry entry : setHeaders) {
 				String name = Utils.applyVariable(entry.getName(), variables);
-				String value = Utils.applyVariable(entry.getName(), variables);
+				String value = Utils.applyVariable(entry.getValue(), variables);
 				
 				targetHeaders.set(name, value);
 			}
@@ -112,12 +112,13 @@ public class Utils {
 		}
 	}
 	
-	public static void filterHeader(HttpHeaders sourceHeaders, HttpHeaders targetHeaders, HeaderSpec headerSpec, Map<String, String> variables) {
+	public static void filterHeader(HttpHeaders sourceHeaders, HttpHeaders targetHeaders
+			, HeaderSpec headerSpec, Map<String, String> variables) {
 		if(headerSpec == null) {
 			return;
 		}
 		
-		List<String> renamedHeaderNames = new ArrayList<String>();
+		List<String> renamedHeaderNames = new ArrayList<>();
 		
 		// rename
 		List<HeaderProperties.HeaderEntry> renameHeaders = headerSpec.getRename();
@@ -126,7 +127,6 @@ public class Utils {
 				List<String> headerValues = sourceHeaders.get(entry.getName());
 				if(headerValues != null && headerValues.size() > 0) {
 					String renameHeader = entry.getValue().trim().toUpperCase();
-					
 					renameHeader = Utils.applyVariable(renameHeader, variables);
 					
 					targetHeaders.addAll(renameHeader, headerValues);
@@ -149,9 +149,9 @@ public class Utils {
 				}
 			} else if(retainKeys.size() > 0) {
 				for(String retainHeader : retainKeys) {
-					List<String> sourceHeader = sourceHeaders.get(retainHeader);
-					if(sourceHeader != null && sourceHeader.size() > 0) {
-						targetHeaders.addAll(retainHeader, sourceHeader);
+					List<String> headerValues = sourceHeaders.get(retainHeader);
+					if(headerValues != null && headerValues.size() > 0) {
+						targetHeaders.addAll(retainHeader, headerValues);
 					}
 				}
 			}

@@ -19,7 +19,6 @@ import dagateway.api.service.ServiceDelegator;
 import dagateway.api.service.ServiceDelegatorImpl;
 import dagateway.api.service.ServiceExceptionResolver;
 import dagateway.api.service.ServiceResult;
-import dagateway.api.utils.Utils;
 import reactor.core.publisher.Mono;
 
 
@@ -69,8 +68,6 @@ public class WebSocket2HTTPHandler<T> implements WebSocketHandler {
 			// TODO add WebSocketMessageResolver
 			T payload = this.clientResolver.extract(message);
 			
-			// TODO ServiceDelegator
-//			WebClient webClient = Utils.newWebClient();
 			WebClient webClient = this.webClientResolver.createWebClient();
 			
 			RequestBodyUriSpec requestBodyUriSpec = webClient.method(this.serviceSpec.getMethod());
