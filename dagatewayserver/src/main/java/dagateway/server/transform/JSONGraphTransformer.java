@@ -41,12 +41,12 @@ public class JSONGraphTransformer extends AbstractDataTransformer<DataBuffer, Da
 		TransformSpec transformSpec = this.getTransformSpec();
 		String query = transformSpec.getBodyGraph();
 		
-		MessageSchema messageStructure = GraphQLComposerBuilder.build(query, transformSpec, GraphQLComposerBuilder.TRANSFORM_GRAPH_KEY, Collections.emptyList());
+		MessageSchema messageSchema = GraphQLComposerBuilder.build(query, transformSpec, GraphQLComposerBuilder.TRANSFORM_GRAPH_KEY, Collections.emptyList());
 		DataProxy dataProxy = new DataProxy();
-		messageStructure.join(dataProxy);
+		messageSchema.join(dataProxy);
 		this.dataProxy = dataProxy;
 		
-		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
+		MessageSerializer serializer = new MessageSerializer(messageSchema, () -> {
 			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		this.serializer = serializer;

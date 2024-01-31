@@ -36,9 +36,9 @@ public class GraphQLComposerBuilder {
 	}
 	
 	public static MessageSchema build(String query, AttributeOwner attributeOwner, String attrKey, List<ServiceSpec> serviceSpecList) {
-		MessageSchema messageStructure = null;
+		MessageSchema messageSchema = null;
 		if(query == null) {
-			return messageStructure;
+			return messageSchema;
 		}
 		DocumentAndVariables documentAndVariable = (DocumentAndVariables)attributeOwner.getAttribute(attrKey);
 		if(documentAndVariable == null) {
@@ -51,12 +51,12 @@ public class GraphQLComposerBuilder {
 			attributeOwner.setAttribute(attrKey, documentAndVariable);
 		}
 		if(serviceSpecList == null || serviceSpecList.isEmpty()) {
-			messageStructure = GraphQLComposerBuilder.build(documentAndVariable);
+			messageSchema = GraphQLComposerBuilder.build(documentAndVariable);
 		} else {
-			messageStructure = GraphQLComposerBuilder.buildAndMap(documentAndVariable, serviceSpecList);
+			messageSchema = GraphQLComposerBuilder.buildAndMap(documentAndVariable, serviceSpecList);
 		}
 		
-		return messageStructure;
+		return messageSchema;
 	}
 	
 	private static MessageSchema build(DocumentAndVariables documentAndVariable) {
@@ -80,20 +80,20 @@ public class GraphQLComposerBuilder {
 		
 		String messageName = operationDefinition.getName();
 		
-		MessageSchema messageStructure = new MessageSchema(messageName);
+		MessageSchema messageSchema = new MessageSchema(messageName);
 		if(messageName != null) {
-			GraphQLComposerBuilder.mapServiceSpecAndProxy(messageStructure, messageName, serviceSpecList);
+			GraphQLComposerBuilder.mapServiceSpecAndProxy(messageSchema, messageName, serviceSpecList);
 		}
 		
 		SelectionSet selectionSet = operationDefinition.getSelectionSet();
 		if(selectionSet != null) {
 			List<Selection> selectionList = selectionSet.getSelections();
 			for(Selection selection : selectionList) {
-				GraphQLComposerBuilder.traversal(messageStructure, selection, variables, serviceSpecList);
+				GraphQLComposerBuilder.traversal(messageSchema, selection, variables, serviceSpecList);
 			}
 		}
 
-		return messageStructure;
+		return messageSchema;
 	}
 	
 	private static void traversal(MessageNode parent, Selection selection, Map<String, Object> variables, List<ServiceSpec> serviceSpecList) {

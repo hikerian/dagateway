@@ -62,7 +62,7 @@ public class ServiceBrokerBuilder {
 		ResponseSpec responseSpec = routeContext.getResponseSpec();
 		List<ServiceSpec> serviceSpecList = routeContext.getServiceSpecList();
 		
-		this.buildMessageStructure(routeContext, responseSpec, serviceSpecList);
+		this.buildMessageSchema(routeContext, responseSpec, serviceSpecList);
 		
 		ServiceBroker<P, Cq, Sr> serviceBroker = null;
 		
@@ -141,7 +141,7 @@ public class ServiceBrokerBuilder {
 		return serviceDelegator;
 	}
 	
-	private void buildMessageStructure(RouteRequestContext routeContext, ResponseSpec responseSpec, List<ServiceSpec> serviceSpecList) {
+	private void buildMessageSchema(RouteRequestContext routeContext, ResponseSpec responseSpec, List<ServiceSpec> serviceSpecList) {
 		// TODO additional context setting
 		ContentHandling contentHandling = responseSpec.getContentHandling();
 		if(contentHandling != ContentHandling.COMPOSE) {
@@ -149,12 +149,12 @@ public class ServiceBrokerBuilder {
 		}
 		
 		String query = responseSpec.getBodyGraph();
-		MessageSchema messageStructure = GraphQLComposerBuilder.build(query, routeContext, GraphQLComposerBuilder.CLIENT_RESPONSE_GRAPH_KEY, serviceSpecList);
-		if(messageStructure == null) {
+		MessageSchema messageSchema = GraphQLComposerBuilder.build(query, routeContext, GraphQLComposerBuilder.CLIENT_RESPONSE_GRAPH_KEY, serviceSpecList);
+		if(messageSchema == null) {
 			return;
 		}
 		
-		routeContext.setMessageStructure(messageStructure);
+		routeContext.setMessageSchema(messageSchema);
 	}
 	
 

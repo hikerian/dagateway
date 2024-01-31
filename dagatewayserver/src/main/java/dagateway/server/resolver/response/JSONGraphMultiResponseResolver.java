@@ -70,8 +70,8 @@ public class JSONGraphMultiResponseResolver extends MultiBackendResponseResolver
 	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, Flux<ServiceResult<Flux<DataBuffer>>> serviceResults) {
 //		this.log.debug("flux flux resolve");
 				
-		MessageSchema messageStructure = routeContext.getMessageStructure();
-		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
+		MessageSchema messageSchema = routeContext.getMessageSchema();
+		MessageSerializer serializer = new MessageSerializer(messageSchema, () -> {
 			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		

@@ -41,8 +41,8 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 	public Mono<ServerResponse> resolve(RouteRequestContext routeContext, Mono<ServiceResult<Flux<DataBuffer>>> serviceResult) {
 		this.log.debug("resolve");
 		
-		MessageSchema messageStructure = routeContext.getMessageStructure();
-		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
+		MessageSchema messageSchema = routeContext.getMessageSchema();
+		MessageSerializer serializer = new MessageSerializer(messageSchema, () -> {
 			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		
@@ -88,8 +88,8 @@ public class JSONGraphSingleResponseResolver extends SingleBackendResponseResolv
 	public Flux<DataBuffer> resolveBody(RouteRequestContext routeContext, ServiceResult<Flux<DataBuffer>> serviceResult) {
 //		this.log.debug("resolve");
 		
-		MessageSchema messageStructure = routeContext.getMessageStructure();
-		MessageSerializer serializer = new MessageSerializer(messageStructure, () -> {
+		MessageSchema messageSchema = routeContext.getMessageSchema();
+		MessageSerializer serializer = new MessageSerializer(messageSchema, () -> {
 			return new JsonStreamBuilder(StreamBuffer.newDefaultStreamBuffer());
 		});
 		

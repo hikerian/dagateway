@@ -50,7 +50,7 @@ public class RouteRequestContext implements AttributeOwner {
 	private GatewayRouteContext gatewayRoute = null;
 	private Map<String, BackendServer> backendServers = null;
 	private Map<String, String> uriTemplateVars = null;
-	private MessageSchema messageStructure = null;
+	private MessageSchema messageSchema = null;
 	
 	
 	public RouteRequestContext(ServerWebExchange serverWebExchange, GatewayRouteContext gatewayRoute, Map<String, BackendServer> backendServers) {
@@ -132,12 +132,12 @@ public class RouteRequestContext implements AttributeOwner {
 		return serviceSpecs;
 	}
 	
-	public void setMessageStructure(MessageSchema messageStructure) {
-		this.messageStructure = messageStructure;
+	public void setMessageSchema(MessageSchema messageSchema) {
+		this.messageSchema = messageSchema;
 	}
 	
-	public MessageSchema getMessageStructure() {
-		return this.messageStructure;
+	public MessageSchema getMessageSchema() {
+		return this.messageSchema;
 	}
 	
 	public Object getAttribute(String name) {
